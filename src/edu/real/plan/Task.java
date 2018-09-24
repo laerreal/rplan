@@ -31,7 +31,7 @@ public class Task
 	/**
 	 * Tasks this one does depends on.
 	 */
-	BiMap<Task> prerequesites;
+	BiMap<Task, Task> prerequesites;
 
 	/**
 	 * Several time references
