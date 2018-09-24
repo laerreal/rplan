@@ -16,7 +16,7 @@ public class Task
 	/**
 	 * Test or sound records, images, etc?
 	 */
-	Collection<Object> notes;
+	Collection<Note> notes;
 
 	/**
 	 * A simple graphical representation.
