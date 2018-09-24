@@ -47,6 +47,11 @@ public class Task
 	int y;
 
 	/**
+	 * Are the notes shown?
+	 */
+	boolean expanded;
+
+	/**
 	 * Unsupported data read from string during loading. Preserved to be saved.
 	 * This is forward compatibility.
 	 */
