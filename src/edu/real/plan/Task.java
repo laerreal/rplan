@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import edu.real.external.BiMap;
 import edu.real.external.ZonedDateTime;
@@ -56,6 +57,12 @@ public class Task
 	 * This is forward compatibility.
 	 */
 	String opaque;
+
+	public Task()
+	{
+		this.expanded = true;
+		this.notes = new LinkedList<Note>();
+	}
 
 	public void save(StringWriter w)
 	{
