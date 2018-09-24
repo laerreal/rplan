@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import edu.real.plan.Plan;
+import edu.real.plan.Task;
+import edu.real.plan.TextNote;
 
 public class MainActivity extends ActionBarActivity
 {
@@ -13,6 +17,19 @@ public class MainActivity extends ActionBarActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		Plan p = new Plan();
+		Task t = new Task();
+		t.setName("Test task #1");
+		t.move(10, 10);
+		t.addNote(new TextNote("This is first example note"));
+		t.addNote(new TextNote("This is 2nd example note"));
+		t.addNote(new TextNote("This is last example note"));
+		p.addTask(t);
+		TaskViewer viewer = new TaskViewer(p,
+				(RelativeLayout) this.findViewById(R.id.pane));
+		viewer.init();
+		viewer.update();
 	}
 
 	@Override
