@@ -140,4 +140,45 @@ public class Task
 			this.opaque = opaque;
 		}
 	}
+
+	public int getX()
+	{
+		return this.x;
+	}
+
+	public int getY()
+	{
+		return this.y;
+	}
+
+	public void move(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+
+	public String getName()
+	{
+		return this.name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public boolean isExpanded()
+	{
+		return this.expanded;
+	}
+
+	public void addNote(Note note)
+	{
+		this.notes.add(note);
+	}
+
+	public Collection<Note> getNotes()
+	{
+		return new LinkedList<Note>(this.notes);
+	}
 }
