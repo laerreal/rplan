@@ -43,7 +43,8 @@ public class Task
 	/**
 	 * Position on a canvas.
 	 */
-	float x, y;
+	int x;
+	int y;
 
 	/**
 	 * Unsupported data read from string during loading. Preserved to be saved.
@@ -63,8 +64,8 @@ public class Task
 				+ "\n");
 		w.write("finish_timestamp " + this.finish_timestamp.toString() + "\n");
 		w.write("deadline\n"); // TODO: a id of deadline?
-		w.write(String.format("x %f\n", this.x));
-		w.write(String.format("y %f\n", this.y));
+		w.write(String.format("x %i\n", this.x));
+		w.write(String.format("y %i\n", this.y));
 		if (this.opaque != null) {
 			w.write(this.opaque);
 		}
@@ -114,7 +115,7 @@ public class Task
 			} else if (fieldnName == "deadline") {
 				val = null; // TODO
 			} else if (fieldnName == "x" || fieldnName == "y") {
-				val = Float.parseFloat(fieldValue);
+				val = Integer.parseInt(fieldValue);
 			} else {
 				val = fieldValue;
 			}
