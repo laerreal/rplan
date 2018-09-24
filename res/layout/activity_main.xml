@@ -1,15 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/RelativeLayout1"
+    android:id="@+id/pane"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="edu.real.android.plan.MainActivity" >
 
     <SurfaceView
-        android:id="@+id/surfaceView1"
+        android:id="@+id/backpane"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_alignParentTop="true" />
+
+
 
 </RelativeLayout>
