@@ -20,9 +20,10 @@ import edu.real.external.BiMap;
 import edu.real.plan.Note;
 import edu.real.plan.Plan;
 import edu.real.plan.Task;
+import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
-public class TaskViewer implements Callback
+public class TaskViewer implements Callback, TaskListener
 {
 	static final int MODE_MOVE = 1;
 
@@ -54,6 +55,8 @@ public class TaskViewer implements Callback
 			View v = this.initTask(task);
 			this.pane.addView(v);
 			this.task2view.put(task, v);
+			v.setOnTouchListener(new TaskViewListener(this, task));
+			task.addListener(this);
 		}
 	}
 
@@ -163,6 +166,12 @@ public class TaskViewer implements Callback
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onMove(Task t)
+	{
+		updateTask(task2view.get(t), t);
 	}
 
 	public int getMode()
