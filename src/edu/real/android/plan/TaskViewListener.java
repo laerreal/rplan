@@ -7,14 +7,17 @@ import edu.real.plan.Task;
 
 public class TaskViewListener implements OnTouchListener
 {
+	public final int DRAG_THRESHOLD = 10;
 	int x, y;
 	boolean dragging;
+	boolean pressed;
 	Task task;
 	TaskViewer viewer;
 
 	public TaskViewListener(TaskViewer tv, Task t)
 	{
 		dragging = false;
+		pressed = false;
 		task = t;
 		viewer = tv;
 	}
@@ -30,20 +33,33 @@ public class TaskViewListener implements OnTouchListener
 			if (viewer.getMode() == TaskViewer.MODE_MOVE) {
 				x = X;
 				y = Y;
-				dragging = true;
+				pressed = true;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (viewer.getMode() == TaskViewer.MODE_MOVE && dragging) {
+			if (viewer.getMode() == TaskViewer.MODE_MOVE) {
 				final int dx = X - x;
 				final int dy = Y - y;
-				x = X;
-				y = Y;
-				task.move(task.getX() + dx, task.getY() + dy);
+				if (pressed) {
+					if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+						dragging = true;
+						pressed = false;
+					}
+				}
+				if (dragging) {
+					x = X;
+					y = Y;
+					task.move(task.getX() + dx, task.getY() + dy);
+				}
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			dragging = false;
+			if (dragging) {
+				dragging = false;
+			} else if (pressed) {
+				// Touched
+				pressed = false;
+			}
 		}
 		return true;
 	}
