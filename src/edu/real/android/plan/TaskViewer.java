@@ -24,12 +24,15 @@ import edu.real.plan.TextNote;
 
 public class TaskViewer implements Callback
 {
+	static final int MODE_MOVE = 1;
+
 	Plan plan;
 	SurfaceView backpane;
 	RelativeLayout pane;
 	Context pane_context;
 	BiMap<Task, View> task2view;
 	Map<View, Collection<View>> taskview2noteviews;
+	int mode;
 
 	public TaskViewer(Plan plan, RelativeLayout pane)
 	{
@@ -41,6 +44,7 @@ public class TaskViewer implements Callback
 		this.task2view = new BiMap<Task, View>();
 		this.backpane.getHolder().addCallback(this);
 		this.taskview2noteviews = new HashMap<View, Collection<View>>();
+		this.mode = MODE_MOVE;
 	}
 
 	public void init()
@@ -155,5 +159,10 @@ public class TaskViewer implements Callback
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public int getMode()
+	{
+		return mode;
 	}
 }
