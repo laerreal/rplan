@@ -34,6 +34,7 @@ public class TaskViewer implements Callback, TaskListener
 	BiMap<Task, View> task2view;
 	Map<View, Collection<View>> taskview2noteviews;
 	int mode;
+	SurfaceHolder holder;
 
 	public TaskViewer(Plan plan, RelativeLayout pane)
 	{
@@ -43,14 +44,14 @@ public class TaskViewer implements Callback, TaskListener
 		this.backpane = (SurfaceView) pane.findViewById(R.id.backpane);
 		this.pane_context = pane.getContext();
 		this.task2view = new BiMap<Task, View>();
-		this.backpane.getHolder().addCallback(this);
+		holder = backpane.getHolder();
+		holder.addCallback(this);
 		this.taskview2noteviews = new HashMap<View, Collection<View>>();
 		this.mode = MODE_MOVE;
 	}
 
 	public void init()
 	{
-
 		for (Task task : this.plan.getTasks()) {
 			View v = this.initTask(task);
 			this.pane.addView(v);
@@ -105,6 +106,8 @@ public class TaskViewer implements Callback, TaskListener
 
 			updateTask(v, t);
 		}
+
+		tryDrawing(holder);
 	}
 
 	private View initNote(Note note)
