@@ -1,35 +1,26 @@
 package edu.real.android.plan;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-import edu.real.plan.Plan;
-import edu.real.plan.Task;
-import edu.real.plan.TextNote;
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends ActionBarActivity implements ServiceConnection
 {
+	TaskViewer viewer;
 
-	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Plan p = new Plan();
-		Task t = new Task();
-		t.setName("Test task #1");
-		t.move(10, 10);
-		t.addNote(new TextNote("This is first example note"));
-		t.addNote(new TextNote("This is 2nd example note"));
-		t.addNote(new TextNote("This is last example note"));
-		p.addTask(t);
-		TaskViewer viewer = new TaskViewer(p,
-				(RelativeLayout) this.findViewById(R.id.pane));
-		viewer.init();
-		viewer.update();
+		bindService(new Intent(getApplicationContext(), RPlanService.class),
+				this, BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -51,5 +42,21 @@ public class MainActivity extends ActionBarActivity
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service)
+	{
+		RPlanServiceBinder binder = (RPlanServiceBinder) service;
+		viewer = new TaskViewer(binder.getService().getPlan(),
+				(RelativeLayout) this.findViewById(R.id.pane));
+		viewer.init();
+		viewer.update();
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name)
+	{
+		// TODO Auto-generated method stub
 	}
 }
