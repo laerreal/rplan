@@ -166,6 +166,9 @@ public class Task
 	{
 		this.x = x;
 		this.y = y;
+		for (TaskListener l : listeners) {
+			l.onMove(this);
+		}
 	}
 
 	public String getName()
