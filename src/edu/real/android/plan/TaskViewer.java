@@ -57,6 +57,19 @@ public class TaskViewer implements Callback
 		}
 	}
 
+	void updateTask(View v, Task t)
+	{
+		v.measure(1000, 1000);
+		int w = v.getMeasuredWidth();
+		int h = v.getMeasuredHeight();
+		int x = t.getX();
+		int y = t.getY();
+
+		LayoutParams lp = new LayoutParams(w, h);
+		lp.leftMargin = x;
+		lp.topMargin = y;
+		v.setLayoutParams(lp);
+	}
 
 	public void update()
 	{
@@ -87,16 +100,7 @@ public class TaskViewer implements Callback
 				}
 			}
 
-			v.measure(1000, 1000);
-			int w = v.getMeasuredWidth();
-			int h = v.getMeasuredHeight();
-			int x = t.getX();
-			int y = t.getY();
-
-			LayoutParams lp = new LayoutParams(w, h);
-			lp.leftMargin = x;
-			lp.topMargin = y;
-			v.setLayoutParams(lp);
+			updateTask(v, t);
 		}
 	}
 
