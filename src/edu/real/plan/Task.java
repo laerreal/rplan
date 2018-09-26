@@ -58,10 +58,16 @@ public class Task
 	 */
 	String opaque;
 
+	/**
+	 * Allow external objects to track this task changes.
+	 */
+	Collection<TaskListener> listeners;
+
 	public Task()
 	{
 		this.expanded = true;
 		this.notes = new LinkedList<Note>();
+		listeners = new LinkedList<TaskListener>();
 	}
 
 	public void save(StringWriter w)
@@ -139,6 +145,11 @@ public class Task
 		} else {
 			this.opaque = opaque;
 		}
+	}
+
+	public void addListener(TaskListener l)
+	{
+		listeners.add(l);
 	}
 
 	public int getX()
