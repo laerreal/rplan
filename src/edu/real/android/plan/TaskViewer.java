@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -190,5 +191,12 @@ public class TaskViewer implements Callback, TaskListener
 	{
 		TextView tv = (TextView) task2view.get(task).findViewWithTag(TAG_NAME);
 		tv.setText(task.getName());
+	}
+
+	public void editTask(Task task)
+	{
+		plan.setCurrentTask(task);
+		Context ctx = pane.getContext();
+		ctx.startActivity(new Intent(ctx, TaskEditActivity.class));
 	}
 }

@@ -59,6 +59,7 @@ public class TaskViewListener implements OnTouchListener
 			} else if (pressed) {
 				// Touched
 				pressed = false;
+				viewer.editTask(task);
 			}
 		}
 		return true;
