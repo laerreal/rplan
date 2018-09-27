@@ -179,6 +179,9 @@ public class Task
 	public void setName(String name)
 	{
 		this.name = name;
+		for (TaskListener l : listeners) {
+			l.onRename(this);
+		}
 	}
 
 	public boolean isExpanded()

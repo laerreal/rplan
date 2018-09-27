@@ -25,6 +25,8 @@ import edu.real.plan.TextNote;
 
 public class TaskViewer implements Callback, TaskListener
 {
+	protected static final String TAG_NAME = "name";
+
 	static final int MODE_MOVE = 1;
 
 	Plan plan;
@@ -129,6 +131,7 @@ public class TaskViewer implements Callback, TaskListener
 		l.setOrientation(LinearLayout.VERTICAL);
 
 		TextView tv_name = new TextView(this.pane_context);
+		tv_name.setTag(TAG_NAME);
 		tv_name.setTextSize(tv_name.getTextSize() * 1.5f);
 		tv_name.setText(task.getName());
 		l.addView(tv_name);
@@ -180,5 +183,12 @@ public class TaskViewer implements Callback, TaskListener
 	public int getMode()
 	{
 		return mode;
+	}
+
+	@Override
+	public void onRename(Task task)
+	{
+		TextView tv = (TextView) task2view.get(task).findViewWithTag(TAG_NAME);
+		tv.setText(task.getName());
 	}
 }
