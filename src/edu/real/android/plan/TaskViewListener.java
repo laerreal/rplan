@@ -41,7 +41,8 @@ public class TaskViewListener implements OnTouchListener
 				final int dx = X - x;
 				final int dy = Y - y;
 				if (pressed) {
-					if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD) {
+					if (Math.abs(dx) > DRAG_THRESHOLD ||
+							Math.abs(dy) > DRAG_THRESHOLD) {
 						dragging = true;
 						pressed = false;
 					}
