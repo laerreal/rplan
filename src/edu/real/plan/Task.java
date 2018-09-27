@@ -195,4 +195,14 @@ public class Task
 	{
 		return new LinkedList<Note>(this.notes);
 	}
+
+	public String getDescription()
+	{
+		return descripton;
+	}
+
+	public void setDescription(String desc)
+	{
+		descripton = desc;
+	}
 }
