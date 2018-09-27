@@ -1,16 +1,13 @@
 package edu.real.android.plan;
 
 import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
-public class MainActivity extends ActionBarActivity implements ServiceConnection
+public class MainActivity extends RPlanActivity
 {
 	TaskViewer viewer;
 
@@ -18,9 +15,6 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		bindService(new Intent(getApplicationContext(), RPlanService.class),
-				this, BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -47,16 +41,11 @@ public class MainActivity extends ActionBarActivity implements ServiceConnection
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
-		RPlanServiceBinder binder = (RPlanServiceBinder) service;
-		viewer = new TaskViewer(binder.getService().getPlan(),
+		super.onServiceConnected(name, service);
+		viewer = new TaskViewer(this.service.getPlan(),
 				(RelativeLayout) this.findViewById(R.id.pane));
 		viewer.init();
 		viewer.update();
 	}
 
-	@Override
-	public void onServiceDisconnected(ComponentName name)
-	{
-		// TODO Auto-generated method stub
-	}
 }
