@@ -22,5 +22,6 @@ public class TextNote extends Note
 	public void setText(String text)
 	{
 		this.text = text;
+		notifyChanged();
 	}
 }
