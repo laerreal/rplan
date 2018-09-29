@@ -3,6 +3,7 @@ package edu.real.external;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class BiMap<K, V>
 {
@@ -35,5 +36,10 @@ public class BiMap<K, V>
 	public Collection<V> values()
 	{
 		return this.fwd.values();
+	}
+
+	public Set<K> keys()
+	{
+		return this.fwd.keySet();
 	}
 }
