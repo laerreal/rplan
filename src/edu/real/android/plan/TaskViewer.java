@@ -1,8 +1,6 @@
 package edu.real.android.plan;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import android.content.Context;
@@ -35,7 +33,7 @@ public class TaskViewer implements Callback, TaskListener
 	RelativeLayout pane;
 	Context pane_context;
 	BiMap<Task, View> task2view;
-	Map<View, Collection<View>> taskview2noteviews;
+	Map<View, BiMap<Note, View>> taskview2noteviews;
 	int mode;
 	SurfaceHolder holder;
 
@@ -49,7 +47,7 @@ public class TaskViewer implements Callback, TaskListener
 		this.task2view = new BiMap<Task, View>();
 		holder = backpane.getHolder();
 		holder.addCallback(this);
-		this.taskview2noteviews = new HashMap<View, Collection<View>>();
+		this.taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
 		this.mode = MODE_MOVE;
 	}
 
@@ -83,10 +81,10 @@ public class TaskViewer implements Callback, TaskListener
 		for (View v : this.task2view.values()) {
 			Task t = this.task2view.getKey(v);
 
-			Collection<View> noteviews = this.taskview2noteviews.get(v);
+			BiMap<Note, View> noteviews = this.taskview2noteviews.get(v);
 			if (t.isExpanded()) {
 				if (noteviews == null) {
-					noteviews = new LinkedList<View>();
+					noteviews = new BiMap<Note, View>();
 					this.taskview2noteviews.put(v, noteviews);
 					ViewGroup vg = (ViewGroup) v;
 
@@ -94,13 +92,14 @@ public class TaskViewer implements Callback, TaskListener
 						View nv = this.initNote(note);
 
 						vg.addView(nv);
+						noteviews.put(note, nv);
 					}
 				}
 			} else {
 				if (noteviews != null) {
 					// Collapsed, remove views
 					ViewGroup vg = (ViewGroup) v;
-					for (View nv : noteviews) {
+					for (View nv : noteviews.values()) {
 						vg.removeView(nv);
 					}
 					this.taskview2noteviews.put(v, null);
