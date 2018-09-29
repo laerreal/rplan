@@ -42,9 +42,11 @@ public class MainActivity extends RPlanActivity
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
 		super.onServiceConnected(name, service);
-		viewer = new TaskViewer(this.service.getPlan(),
-				(RelativeLayout) this.findViewById(R.id.pane));
-		viewer.init();
+		if (viewer == null) {
+			viewer = new TaskViewer(this.service.getPlan(),
+					(RelativeLayout) this.findViewById(R.id.pane));
+			viewer.init();
+		}
 		viewer.update();
 	}
 
