@@ -198,4 +198,20 @@ public class TaskViewer extends TaskListener implements Callback
 		Context ctx = pane.getContext();
 		ctx.startActivity(new Intent(ctx, TaskEditActivity.class));
 	}
+
+	@Override
+	public void onNoteChanged(Task t, Note n)
+	{
+		if (!t.isExpanded()) {
+			return;
+		}
+		BiMap<Note, View> notes = (BiMap<Note, View>) taskview2noteviews
+				.get(task2view.get(t));
+
+		if (n instanceof TextNote) {
+			TextNote tn = (TextNote) n;
+			TextView tv = (TextView) notes.get(tn);
+			tv.setText(tn.getText());
+		}
+	}
 }
