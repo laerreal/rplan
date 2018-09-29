@@ -50,6 +50,7 @@ public class TaskEditActivity extends RPlanActivity
 				TextNote tn = (TextNote) n;
 
 				EditText et = new EditText(this);
+				et.setSingleLine(true);
 				et.setText(tn.getText());
 				ll_notes.addView(et);
 
