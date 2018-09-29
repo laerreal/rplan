@@ -22,7 +22,7 @@ import edu.real.plan.Task;
 import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
-public class TaskViewer implements Callback, TaskListener
+public class TaskViewer extends TaskListener implements Callback
 {
 	protected static final String TAG_NAME = "name";
 

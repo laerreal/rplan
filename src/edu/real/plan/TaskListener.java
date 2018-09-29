@@ -1,8 +1,14 @@
 package edu.real.plan;
 
-public interface TaskListener
+public abstract class TaskListener
 {
-	public void onMove(Task t);
+	public void onMove(Task t)
+	{
+		// ignore
+	}
 
-	public void onRename(Task task);
+	public void onRename(Task task)
+	{
+		// ignore
+	}
 }
