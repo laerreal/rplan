@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import edu.real.external.BiMap;
 import edu.real.external.ZonedDateTime;
 
-public class Task
+public class Task extends NoteListener
 {
 	String name;
 	String descripton;
@@ -192,6 +192,7 @@ public class Task
 	public void addNote(Note note)
 	{
 		this.notes.add(note);
+		note.addListener(this);
 	}
 
 	public Collection<Note> getNotes()
@@ -207,5 +208,13 @@ public class Task
 	public void setDescription(String desc)
 	{
 		descripton = desc;
+	}
+
+	@Override
+	public void onChanged(Note n)
+	{
+		for (TaskListener l : listeners) {
+			l.onNoteChanged(this, n);
+		}
 	}
 }
