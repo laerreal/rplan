@@ -11,4 +11,9 @@ public abstract class TaskListener
 	{
 		// ignore
 	}
+
+	public void onNoteChanged(Task t, Note n)
+	{
+		// ignore
+	}
 }
