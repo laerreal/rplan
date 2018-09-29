@@ -1,6 +1,6 @@
 package edu.real.plan;
 
-public class TextNote implements Note
+public class TextNote extends Note
 {
 	String text;
 

@@ -1,6 +1,6 @@
 package edu.real.plan;
 
-public interface Note
+public abstract class Note
 {
 
 }
