@@ -103,12 +103,12 @@ public class TaskEditActivity extends RPlanActivity
 		boolean tmpb;
 
 		tmp = et_task_name.getText().toString();
-		if (tmp != task.getName()) {
+		if (!tmp.equals(task.getName())) {
 			task.setName(tmp);
 		}
 
 		tmp = et_task_description.getText().toString();
-		if (tmp != task.getDescription()) {
+		if (!tmp.equals(task.getDescription())) {
 			task.setDescription(tmp);
 		}
 
@@ -134,7 +134,7 @@ public class TaskEditActivity extends RPlanActivity
 				}
 
 				tmp = et.getText().toString();
-				if (tmp != tn.getText()) {
+				if (!tmp.equals(tn.getText())) {
 					tn.setText(tmp);
 				}
 			}

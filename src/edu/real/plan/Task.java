@@ -113,7 +113,7 @@ public class Task extends NoteListener
 				fieldnName = l.substring(0, i);
 				fieldValue = l.substring(i + 1);
 			}
-			if (fieldnName == "opaque") {
+			if (fieldnName.equals("opaque")) {
 				// cannot load "opaque" explicitly
 				continue;
 			}
@@ -127,20 +127,20 @@ public class Task extends NoteListener
 			final Object val;
 			if (fieldValue == null) {
 				val = null;
-			} else if (fieldnName == "description") {
+			} else if (fieldnName.equals("description")) {
 				val = fieldValue.replace("\\n", "\n").replace("\\\\", "\\");
-			} else if (fieldnName == "notes") {
+			} else if (fieldnName.equals("notes")) {
 				val = null; // TODO
-			} else if (fieldnName == "color") {
+			} else if (fieldnName.equals("color")) {
 				val = Integer.parseInt(fieldValue);
-			} else if (fieldnName == "icon") {
+			} else if (fieldnName.equals("icon")) {
 				val = null; // TODO
-			} else if (fieldnName == "creation_timestamp" ||
-					fieldnName == "finish_timestamp") {
+			} else if (fieldnName.equals("creation_timestamp") ||
+					fieldnName.equals("finish_timestamp")) {
 				val = ZonedDateTime.parse(fieldValue);
-			} else if (fieldnName == "deadline") {
+			} else if (fieldnName.equals("deadline")) {
 				val = null; // TODO
-			} else if (fieldnName == "x" || fieldnName == "y") {
+			} else if (fieldnName.equals("x") || fieldnName.equals("y")) {
 				val = Integer.parseInt(fieldValue);
 			} else {
 				val = fieldValue;
@@ -148,7 +148,7 @@ public class Task extends NoteListener
 
 			f.set(this, val);
 		}
-		if (opaque == "") {
+		if (opaque.equals("")) {
 			this.opaque = null;
 		} else {
 			this.opaque = opaque;
