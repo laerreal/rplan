@@ -11,6 +11,7 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -18,13 +19,15 @@ import android.widget.TextView;
 import edu.real.external.BiMap;
 import edu.real.plan.Note;
 import edu.real.plan.Plan;
+import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
 public class TaskViewer extends TaskListener implements Callback
 {
-	protected static final String TAG_NAME = "name";
+	static final String TAG_NAME = "name";
+	static final String TAG_CHECKBOX = "checkbox";
 
 	static final int MODE_MOVE = 1;
 
@@ -115,7 +118,39 @@ public class TaskViewer extends TaskListener implements Callback
 	private View initNote(Note note)
 	{
 		final View ret;
-		if (note instanceof TextNote) {
+		if (note instanceof Subtask) {
+			LinearLayout ll = (LinearLayout) (ret = new LinearLayout(
+					pane_context));
+			ll.setOrientation(LinearLayout.HORIZONTAL);
+			CheckBox cb = new CheckBox(pane_context);
+			cb.setTag(TAG_CHECKBOX);
+			cb.setOnCheckedChangeListener(
+					new SubtaskCheckedListener((Subtask) note));
+			ll.addView(cb);
+
+			/* Some margin correction is required. */
+			/* XXX: it could be device-specific */
+			LinearLayout.LayoutParams lp;
+			lp = (android.widget.LinearLayout.LayoutParams) cb
+					.getLayoutParams();
+			lp.setMargins(lp.leftMargin - 5, lp.topMargin - 5, lp.rightMargin,
+					lp.bottomMargin - 5);
+			cb.setLayoutParams(lp);
+
+			TextView tv = new TextView(pane_context);
+			tv.setTag(TAG_NAME);
+			ll.addView(tv);
+
+			/* Some margin correction is required. */
+			/* XXX: it could be device-specific */
+			lp = (android.widget.LinearLayout.LayoutParams) tv
+					.getLayoutParams();
+			lp.setMargins(lp.leftMargin, lp.topMargin - 5, lp.rightMargin,
+					lp.bottomMargin);
+			tv.setLayoutParams(lp);
+
+			updateNoteView(note, ret);
+		} else if (note instanceof TextNote) {
 			ret = new TextView(pane_context);
 			updateNoteView(note, ret);
 		} else {
@@ -215,7 +250,13 @@ public class TaskViewer extends TaskListener implements Callback
 
 	protected void updateNoteView(Note n, View nv)
 	{
-		if (n instanceof TextNote) {
+		if (n instanceof Subtask) {
+			Subtask subtask = (Subtask) n;
+			TextView tv = (TextView) nv.findViewWithTag(TAG_NAME);
+			CheckBox cb = (CheckBox) nv.findViewWithTag(TAG_CHECKBOX);
+			tv.setText(subtask.getText());
+			cb.setChecked(subtask.getChecked());
+		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 			TextView tv = (TextView) nv;
 			tv.setText(tn.getText());
