@@ -186,7 +186,13 @@ public class TaskViewer extends TaskListener implements Callback
 
 	private void updateTaskName(Task task, TextView tv_name)
 	{
-		tv_name.setText(task.getName());
+		String name = task.getName();
+
+		if (name.trim().length() == 0) {
+			name = "<blank>";
+		}
+
+		tv_name.setText(name);
 	}
 
 	@Override
