@@ -4,10 +4,13 @@ import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import edu.real.external.BiMap;
 import edu.real.plan.Note;
+import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TextNote;
 
@@ -51,7 +54,31 @@ public class TaskEditActivity extends RPlanActivity
 		et_task_description.setText(task.getDescription());
 
 		for (Note n : task.getNotes()) {
-			if (n instanceof TextNote) {
+			if (n instanceof Subtask) {
+				Subtask st = (Subtask) n;
+
+				LinearLayout ll = new LinearLayout(this);
+				ll.setOrientation(LinearLayout.HORIZONTAL);
+
+				CheckBox cb = new CheckBox(this);
+				cb.setChecked(st.getChecked());
+				cb.setTag(TaskViewer.TAG_CHECKBOX);
+				ll.addView(cb);
+
+				EditText et = new EditText(this);
+				et.setSingleLine(true);
+				et.setText(st.getText());
+				et.setTag(TaskViewer.TAG_NAME);
+
+				LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+						LayoutParams.WRAP_CONTENT);
+
+				ll.addView(et, lp);
+
+				ll_notes.addView(ll);
+
+				note2view.put(st, ll);
+			} else if (n instanceof TextNote) {
 				TextNote tn = (TextNote) n;
 
 				EditText et = new EditText(this);
@@ -73,6 +100,7 @@ public class TaskEditActivity extends RPlanActivity
 		}
 
 		String tmp;
+		boolean tmpb;
 
 		tmp = et_task_name.getText().toString();
 		if (tmp != task.getName()) {
@@ -86,8 +114,25 @@ public class TaskEditActivity extends RPlanActivity
 
 		for (Note n : note2view.keys()) {
 			if (n instanceof TextNote) {
-				EditText et = (EditText) note2view.get(n);
 				TextNote tn = (TextNote) n;
+				final EditText et;
+				if (n instanceof Subtask) {
+					View v = note2view.get(n);
+					CheckBox cb = (CheckBox) v
+							.findViewWithTag(TaskViewer.TAG_CHECKBOX);
+
+					tmpb = cb.isChecked();
+					Subtask st = (Subtask) n;
+					if (st.getChecked() != tmpb) {
+						st.setChecked(tmpb);
+					}
+
+					et = (EditText) v
+							.findViewWithTag(TaskViewer.TAG_NAME);
+				} else {
+					et = (EditText) note2view.get(n);
+				}
+
 				tmp = et.getText().toString();
 				if (tmp != tn.getText()) {
 					tn.setText(tmp);
