@@ -6,10 +6,12 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -19,12 +21,14 @@ import android.widget.TextView;
 import edu.real.external.BiMap;
 import edu.real.plan.Note;
 import edu.real.plan.Plan;
+import edu.real.plan.PlanListener;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
-public class TaskViewer extends TaskListener implements Callback
+public class TaskViewer extends TaskListener
+		implements Callback, OnTouchListener, PlanListener
 {
 	static final String TAG_NAME = "name";
 	static final String TAG_CHECKBOX = "checkbox";
@@ -52,6 +56,8 @@ public class TaskViewer extends TaskListener implements Callback
 		holder.addCallback(this);
 		this.taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
 		this.mode = MODE_MOVE;
+		backpane.setOnTouchListener(this);
+		plan.addListener(this);
 	}
 
 	public void init()
@@ -282,5 +288,29 @@ public class TaskViewer extends TaskListener implements Callback
 			TextView tv = (TextView) nv;
 			tv.setText(tn.getText());
 		}
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		final int X = (int) event.getRawX();
+		final int Y = (int) event.getRawY();
+
+		switch (event.getActionMasked()) {
+		case MotionEvent.ACTION_UP:
+			Task t = new Task(X, Y);
+			plan.addTask(t);
+			editTask(t);
+			break;
+		}
+		return true;
+	}
+
+	@Override
+	public void onTaskAdded(Plan p, Task t)
+	{
+		View v = initTaskView(t);
+		updateTaskNotes(v, t);
+		updateTask(v, t);
 	}
 }
