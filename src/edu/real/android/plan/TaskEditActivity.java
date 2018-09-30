@@ -36,6 +36,11 @@ public class TaskEditActivity extends RPlanActivity
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
 		super.onServiceConnected(name, service);
+
+		if (task != null) {
+			return;
+		}
+
 		task = this.service.getPlan().getCurrentTask();
 
 		if (task == null) {
