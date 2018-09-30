@@ -63,11 +63,18 @@ public class Task extends NoteListener
 	 */
 	Collection<TaskListener> listeners;
 
+	public Task(int _x, int _y)
+	{
+		x = _x;
+		y = _y;
+		expanded = true;
+		notes = new LinkedList<Note>();
+		listeners = new LinkedList<TaskListener>();
+	}
+
 	public Task()
 	{
-		this.expanded = true;
-		this.notes = new LinkedList<Note>();
-		listeners = new LinkedList<TaskListener>();
+		this(0, 0);
 	}
 
 	public void save(StringWriter w)
