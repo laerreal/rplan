@@ -56,13 +56,19 @@ public class TaskViewer extends TaskListener implements Callback
 
 	public void init()
 	{
-		for (Task task : this.plan.getTasks()) {
-			View v = this.initTask(task);
-			this.pane.addView(v);
-			this.task2view.put(task, v);
-			v.setOnTouchListener(new TaskViewListener(this, task));
-			task.addListener(this);
+		for (Task task : plan.getTasks()) {
+			initTaskView(task);
 		}
+	}
+
+	private View initTaskView(Task task)
+	{
+		View v = initTask(task);
+		pane.addView(v);
+		task2view.put(task, v);
+		v.setOnTouchListener(new TaskViewListener(this, task));
+		task.addListener(this);
+		return v;
 	}
 
 	void updateTask(View v, Task t)
