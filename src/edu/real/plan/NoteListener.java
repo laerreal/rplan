@@ -1,9 +1,6 @@
 package edu.real.plan;
 
-public abstract class NoteListener
+public interface NoteListener
 {
-	public void onChanged(Note n)
-	{
-		// ignore
-	}
+	public void onChanged(Note n);
 }

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import edu.real.external.BiMap;
 import edu.real.external.ZonedDateTime;
 
-public class Task extends NoteListener
+public class Task implements NoteListener
 {
 	String name;
 	String descripton;
