@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import edu.real.plan.Plan;
+import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TextNote;
 
@@ -20,6 +21,8 @@ public class RPlanService extends Service
 		t.addNote(new TextNote("This is first example note"));
 		t.addNote(new TextNote("This is 2nd example note"));
 		t.addNote(new TextNote("This is last example note"));
+		t.addNote(new Subtask("A subtask"));
+		t.addNote(new Subtask("Another subtask", true));
 		p.addTask(t);
 
 		plan = p;
