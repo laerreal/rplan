@@ -116,8 +116,8 @@ public class TaskViewer extends TaskListener implements Callback
 	{
 		final View ret;
 		if (note instanceof TextNote) {
-			TextView tv = (TextView) (ret = new TextView(this.pane_context));
-			tv.setText(((TextNote) note).getText());
+			ret = new TextView(pane_context);
+			updateNoteView(note, ret);
 		} else {
 			TextView tv = (TextView) (ret = new TextView(this.pane_context));
 			tv.setText("Unknown class of note! " + note.getClass().getName());
@@ -208,9 +208,16 @@ public class TaskViewer extends TaskListener implements Callback
 		BiMap<Note, View> notes = (BiMap<Note, View>) taskview2noteviews
 				.get(task2view.get(t));
 
+		View nv = notes.get(n);
+
+		updateNoteView(n, nv);
+	}
+
+	protected void updateNoteView(Note n, View nv)
+	{
 		if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
-			TextView tv = (TextView) notes.get(tn);
+			TextView tv = (TextView) nv;
 			tv.setText(tn.getText());
 		}
 	}
