@@ -90,35 +90,39 @@ public class TaskViewer extends TaskListener implements Callback
 		for (View v : this.task2view.values()) {
 			Task t = this.task2view.getKey(v);
 
-			BiMap<Note, View> noteviews = this.taskview2noteviews.get(v);
-			if (t.isExpanded()) {
-				if (noteviews == null) {
-					noteviews = new BiMap<Note, View>();
-					this.taskview2noteviews.put(v, noteviews);
-					ViewGroup vg = (ViewGroup) v;
-
-					for (Note note : t.getNotes()) {
-						View nv = this.initNote(note);
-
-						vg.addView(nv);
-						noteviews.put(note, nv);
-					}
-				}
-			} else {
-				if (noteviews != null) {
-					// Collapsed, remove views
-					ViewGroup vg = (ViewGroup) v;
-					for (View nv : noteviews.values()) {
-						vg.removeView(nv);
-					}
-					this.taskview2noteviews.put(v, null);
-				}
-			}
-
+			updateTaskNotes(v, t);
 			updateTask(v, t);
 		}
 
 		tryDrawing(holder);
+	}
+
+	private void updateTaskNotes(View v, Task t)
+	{
+		BiMap<Note, View> noteviews = this.taskview2noteviews.get(v);
+		if (t.isExpanded()) {
+			if (noteviews == null) {
+				noteviews = new BiMap<Note, View>();
+				this.taskview2noteviews.put(v, noteviews);
+				ViewGroup vg = (ViewGroup) v;
+
+				for (Note note : t.getNotes()) {
+					View nv = this.initNote(note);
+
+					vg.addView(nv);
+					noteviews.put(note, nv);
+				}
+			}
+		} else {
+			if (noteviews != null) {
+				// Collapsed, remove views
+				ViewGroup vg = (ViewGroup) v;
+				for (View nv : noteviews.values()) {
+					vg.removeView(nv);
+				}
+				this.taskview2noteviews.put(v, null);
+			}
+		}
 	}
 
 	private View initNote(Note note)
