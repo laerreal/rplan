@@ -7,9 +7,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import edu.real.external.BiMap;
+import edu.real.external.Notifier;
 import edu.real.external.ZonedDateTime;
 
-public class Task implements NoteListener
+public class Task extends Notifier<TaskListener> implements NoteListener
 {
 	String name;
 	String descripton;
@@ -58,11 +59,6 @@ public class Task implements NoteListener
 	 */
 	String opaque;
 
-	/**
-	 * Allow external objects to track this task changes.
-	 */
-	Collection<TaskListener> listeners;
-
 	public Task(int _x, int _y)
 	{
 		name = "";
@@ -70,7 +66,6 @@ public class Task implements NoteListener
 		y = _y;
 		expanded = true;
 		notes = new LinkedList<Note>();
-		listeners = new LinkedList<TaskListener>();
 	}
 
 	public Task()
@@ -155,11 +150,6 @@ public class Task implements NoteListener
 		}
 	}
 
-	public void addListener(TaskListener l)
-	{
-		listeners.add(l);
-	}
-
 	public int getX()
 	{
 		return this.x;
@@ -174,9 +164,8 @@ public class Task implements NoteListener
 	{
 		this.x = x;
 		this.y = y;
-		for (TaskListener l : listeners) {
-			l.onMove(this);
-		}
+		for (begin(); next(); l.onMove(this))
+			;
 	}
 
 	public String getName()
@@ -187,9 +176,8 @@ public class Task implements NoteListener
 	public void setName(String name)
 	{
 		this.name = name;
-		for (TaskListener l : listeners) {
-			l.onRename(this);
-		}
+		for (begin(); next(); l.onRename(this))
+			;
 	}
 
 	public boolean isExpanded()
@@ -221,8 +209,7 @@ public class Task implements NoteListener
 	@Override
 	public void onChanged(Note n)
 	{
-		for (TaskListener l : listeners) {
-			l.onNoteChanged(this, n);
-		}
+		for (begin(); next(); l.onNoteChanged(this, n))
+			;
 	}
 }
