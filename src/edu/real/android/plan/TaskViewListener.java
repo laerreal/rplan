@@ -28,7 +28,7 @@ public class TaskViewListener implements OnTouchListener
 		final int X = (int) event.getRawX();
 		final int Y = (int) event.getRawY();
 
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		switch (event.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
 			if (viewer.getMode() == TaskViewer.MODE_MOVE) {
 				x = X;
