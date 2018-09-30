@@ -1,25 +1,11 @@
 package edu.real.plan;
 
-import java.util.Collection;
-import java.util.LinkedList;
+import edu.real.external.Notifier;
 
-public abstract class Note
+public abstract class Note extends Notifier<NoteListener>
 {
-	Collection<NoteListener> listeners;
-
-	protected Note()
-	{
-		listeners = new LinkedList<NoteListener>();
-	}
-
-	public void addListener(NoteListener l)
-	{
-		listeners.add(l);
-	}
-
 	protected void notifyChanged() {
-		for (NoteListener l : listeners) {
-			l.onChanged(this);
-		}
+		for (begin(); next(); l.onChanged(this))
+			;
 	}
 }
