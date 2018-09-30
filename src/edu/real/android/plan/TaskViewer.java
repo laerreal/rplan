@@ -178,10 +178,15 @@ public class TaskViewer extends TaskListener implements Callback
 		TextView tv_name = new TextView(this.pane_context);
 		tv_name.setTag(TAG_NAME);
 		tv_name.setTextSize(tv_name.getTextSize() * 1.5f);
-		tv_name.setText(task.getName());
+		updateTaskName(task, tv_name);
 		l.addView(tv_name);
 
 		return l;
+	}
+
+	private void updateTaskName(Task task, TextView tv_name)
+	{
+		tv_name.setText(task.getName());
 	}
 
 	@Override
@@ -234,7 +239,7 @@ public class TaskViewer extends TaskListener implements Callback
 	public void onRename(Task task)
 	{
 		TextView tv = (TextView) task2view.get(task).findViewWithTag(TAG_NAME);
-		tv.setText(task.getName());
+		updateTaskName(task, tv);
 	}
 
 	public void editTask(Task task)
