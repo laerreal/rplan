@@ -65,6 +65,7 @@ public class Task extends NoteListener
 
 	public Task(int _x, int _y)
 	{
+		name = "";
 		x = _x;
 		y = _y;
 		expanded = true;
