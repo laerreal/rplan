@@ -9,11 +9,23 @@ public abstract class Notifier<L>
 	L listeners[];
 	LinkedList<L> added_listeners;
 
+	int empty;
+	int leftmost_hole;
+	// Holes between elements in `listeners`
+	boolean holes;
+
+	// iteration mode: begin(), next(), l.
+	int i, I;
+	protected L l;
+
 	@SuppressWarnings("unchecked")
 	public Notifier()
 	{
 		added_listeners = new LinkedList<L>();
-		listeners = (L[]) new Object[1];
+		empty = 1;
+		leftmost_hole = 0;
+		holes = false;
+		listeners = (L[]) new Object[empty];
 	}
 
 	public void addListener(L l)
@@ -27,10 +39,108 @@ public abstract class Notifier<L>
 		for (int i = 0; i < I; i++) {
 			if (listeners[i] == l) {
 				listeners[i] = null;
+				empty += 1;
+				if (!holes) {
+					if (i < leftmost_hole - 1) {
+						holes = true;
+					}
+				}
+				if (i < leftmost_hole) {
+					leftmost_hole = i;
+				}
+
 				return true;
 			}
 		}
 		return added_listeners.remove(l);
+	}
+
+	/**
+	 * use example:
+	 *
+	 * for(begin(); next(); l.onEvent(arg1, arg2, ...));
+	 */
+
+	@SuppressWarnings("unchecked")
+	protected void begin()
+	{
+		// prepare listeners array
+		final int added = added_listeners.size();
+
+		int i, j; // local i, j
+		final int I = listeners.length; // local I
+		// copy array if current size is insufficient
+		if (added > empty) {
+			final Object[] nl = new Object[I + added - empty];
+			// holes are removed during copying
+			for (i = 0, j = 0; j < I; i++, j++) {
+				L l;
+				do {
+					l = listeners[j];
+					if (l != null) {
+						break;
+					}
+					j++;
+				} while (j < I);
+				if (l == null) {
+					break;
+				}
+				nl[i] = l;
+			}
+			listeners = (L[]) nl;
+			// all slots will be filled during the loop below
+			holes = false;
+			empty = 0;
+		} else if (holes) {
+			// remove holes
+			// 1. skip filled slots until first hole
+			i = leftmost_hole;
+			j = i + 1;
+			// 2. remove holes by left shifting
+			// leftmost hole index is also computed
+			for (; j < I; i = leftmost_hole, j++, i++) {
+				L l;
+				do {
+					l = listeners[j];
+					if (l != null) {
+						break;
+					}
+					j++;
+				} while (j < I);
+				if (l == null) {
+					break;
+				}
+				listeners[i] = l;
+			}
+			// some slots will be filled during the loop below
+			empty -= added;
+			holes = false;
+		} else {
+			i = leftmost_hole;
+		}
+
+		leftmost_hole = i + added;
+		for (; !added_listeners.isEmpty(); i++) {
+			listeners[i] = added_listeners.removeFirst();
+		}
+
+		// global i, I
+		this.i = 0;
+		this.I = listeners.length;
+	}
+
+	protected boolean next()
+	{
+		// skipping holes
+		while (i < I) {
+			l = listeners[i];
+			i++;
+			if (l != null) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
