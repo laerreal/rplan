@@ -27,8 +27,8 @@ import edu.real.plan.Task;
 import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
-public class TaskViewer extends TaskListener
-		implements Callback, OnTouchListener, PlanListener
+public class TaskViewer
+		implements Callback, OnTouchListener, PlanListener, TaskListener
 {
 	static final String TAG_NAME = "name";
 	static final String TAG_CHECKBOX = "checkbox";

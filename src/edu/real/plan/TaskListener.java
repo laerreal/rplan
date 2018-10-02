@@ -1,19 +1,10 @@
 package edu.real.plan;
 
-public abstract class TaskListener
+public interface TaskListener
 {
-	public void onMove(Task t)
-	{
-		// ignore
-	}
+	public void onMove(Task t);
 
-	public void onRename(Task task)
-	{
-		// ignore
-	}
+	public void onRename(Task task);
 
-	public void onNoteChanged(Task t, Note n)
-	{
-		// ignore
-	}
+	public void onNoteChanged(Task t, Note n);
 }
