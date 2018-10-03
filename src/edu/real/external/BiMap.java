@@ -42,4 +42,11 @@ public class BiMap<K, V>
 	{
 		return this.fwd.keySet();
 	}
+
+	public V pop(K k)
+	{
+		V v = fwd.remove(k);
+		bwd.remove(v);
+		return v;
+	}
 }
