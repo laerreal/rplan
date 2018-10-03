@@ -187,8 +187,10 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public void addNote(Note note)
 	{
-		this.notes.add(note);
+		notes.add(note);
 		note.addListener(this);
+		for (begin(); next(); l.onNoteAdded(this, note))
+			;
 	}
 
 	public Collection<Note> getNotes()
