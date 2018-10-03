@@ -111,6 +111,11 @@ public class TaskEditActivity extends RPlanActivity
 		LinearLayout ll = (LinearLayout) inflater
 				.inflate(R.layout.note_edit_container, null);
 
+		/* Delete button */
+		View bt_delete = ll.findViewById(R.id.bt_delete_note);
+		bt_delete.setOnClickListener(this);
+		bt_delete.setTag(n);
+
 		ll_notes.addView(ll, next_note_index++);
 
 		if (n instanceof Subtask) {
@@ -214,6 +219,15 @@ public class TaskEditActivity extends RPlanActivity
 		} else if (v == bt_add_subtask) {
 			n = new Subtask();
 		} else {
+			Object tag = v.getTag();
+			if (tag == null) {
+				return;
+			}
+			n = (Note) tag;
+			View nv = note2view.pop(n);
+			ll_notes.removeView(nv);
+			next_note_index--;
+			task.removeNote(n);
 			return;
 		}
 		task.addNote(n);
