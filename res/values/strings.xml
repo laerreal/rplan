@@ -7,5 +7,8 @@
     <string name="description">Description</string>
     <string name="add_note">+Note</string>
     <string name="add_subtask">+Task</string>
+    <string name="tb_manage_notes">Manage</string>
+    <string name="tb_simple_notes">Simple</string>
+    <string name="bt_move">Move</string>
 
 </resources>

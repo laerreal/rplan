@@ -1,23 +1,35 @@
 package edu.real.android.plan;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ToggleButton;
 import edu.real.external.BiMap;
 import edu.real.plan.Note;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TextNote;
 
-public class TaskEditActivity extends RPlanActivity implements OnClickListener
+public class TaskEditActivity extends RPlanActivity
+		implements OnClickListener, OnCheckedChangeListener
 {
+	protected final int MODE_NOT_SET = 0;
+	protected final int MODE_SIMPLE = 1;
+	protected final int MODE_MANAGE = 2;
+
 	Task task;
 	LinearLayout ll_notes;
 	int next_note_index;
@@ -26,6 +38,10 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 	BiMap<Note, View> note2view;
 	Button bt_add_note;
 	Button bt_add_subtask;
+	LayoutInflater inflater;
+	LayoutParams note_content_lp;
+	int mode;
+	ToggleButton tb_edit_mode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +60,26 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 		bt_add_note.setOnClickListener(this);
 		bt_add_subtask = (Button) findViewById(R.id.bt_add_subtask);
 		bt_add_subtask.setOnClickListener(this);
+
+		inflater = LayoutInflater.from(this);
+		note_content_lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT, 1);
+
+		mode = MODE_NOT_SET;
+		setMode(MODE_SIMPLE);
+		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
+		tb_edit_mode.setOnCheckedChangeListener(this);
+	}
+
+	private void setMode(int m)
+	{
+		if (m == mode) {
+			return;
+		}
+		mode = m;
+		for (View v : note2view.values()) {
+			applyModeToNoteView((ViewGroup) v);
+		}
 	}
 
 	@Override
@@ -69,41 +105,56 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 		}
 	}
 
+	@SuppressLint("InflateParams")
 	private void addViewForNote(Note n)
 	{
+		LinearLayout ll = (LinearLayout) inflater
+				.inflate(R.layout.note_edit_container, null);
+
+		ll_notes.addView(ll, next_note_index++);
+
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
-
-			LinearLayout ll = new LinearLayout(this);
-			ll.setOrientation(LinearLayout.HORIZONTAL);
 
 			CheckBox cb = new CheckBox(this);
 			cb.setChecked(st.getChecked());
 			cb.setTag(TaskViewer.TAG_CHECKBOX);
-			ll.addView(cb);
+			ll.addView(cb, 0);
 
 			EditText et = new EditText(this);
 			et.setSingleLine(true);
 			et.setText(st.getText());
 			et.setTag(TaskViewer.TAG_NAME);
 
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT);
-
-			ll.addView(et, lp);
-
-			ll_notes.addView(ll, next_note_index++);
-
-			note2view.put(st, ll);
+			et.setGravity(Gravity.FILL_HORIZONTAL);
+			ll.addView(et, 1, note_content_lp);
 		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 
 			EditText et = new EditText(this);
 			et.setSingleLine(true);
 			et.setText(tn.getText());
-			ll_notes.addView(et, next_note_index++);
+			et.setTag(TaskViewer.TAG_NAME);
 
-			note2view.put(tn, et);
+			et.setGravity(Gravity.FILL_HORIZONTAL);
+			ll.addView(et, 0, note_content_lp);
+		}
+
+		applyModeToNoteView(ll);
+		note2view.put(n, ll);
+	}
+
+	private void applyModeToNoteView(ViewGroup vg)
+	{
+		switch (mode) {
+		case MODE_SIMPLE:
+			vg.findViewById(R.id.bt_move_note).setVisibility(View.GONE);
+			vg.findViewById(R.id.bt_delete_note).setVisibility(View.GONE);
+			break;
+		case MODE_MANAGE:
+			vg.findViewById(R.id.bt_move_note).setVisibility(View.VISIBLE);
+			vg.findViewById(R.id.bt_delete_note).setVisibility(View.VISIBLE);
+			break;
 		}
 	}
 
@@ -131,9 +182,9 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 		for (Note n : note2view.keys()) {
 			if (n instanceof TextNote) {
 				TextNote tn = (TextNote) n;
-				final EditText et;
+				View v = note2view.get(n);
+
 				if (n instanceof Subtask) {
-					View v = note2view.get(n);
 					CheckBox cb = (CheckBox) v
 							.findViewWithTag(TaskViewer.TAG_CHECKBOX);
 
@@ -142,12 +193,9 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 					if (st.getChecked() != tmpb) {
 						st.setChecked(tmpb);
 					}
-
-					et = (EditText) v
-							.findViewWithTag(TaskViewer.TAG_NAME);
-				} else {
-					et = (EditText) note2view.get(n);
 				}
+
+				EditText et = (EditText) v.findViewWithTag(TaskViewer.TAG_NAME);
 
 				tmp = et.getText().toString();
 				if (!tmp.equals(tn.getText())) {
@@ -170,5 +218,13 @@ public class TaskEditActivity extends RPlanActivity implements OnClickListener
 		}
 		task.addNote(n);
 		addViewForNote(n);
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+	{
+		if (buttonView == tb_edit_mode) {
+			setMode(isChecked ? MODE_MANAGE : MODE_SIMPLE);
+		}
 	}
 }
