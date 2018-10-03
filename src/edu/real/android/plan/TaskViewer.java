@@ -317,5 +317,16 @@ public class TaskViewer
 	@Override
 	public void onNoteAdded(Task t, Note n)
 	{
+		if (!t.isExpanded()) {
+			return;
+		}
+
+		ViewGroup vg = (ViewGroup) task2view.get(t);
+		BiMap<Note, View> noteviews = taskview2noteviews.get(vg);
+
+		View nv = initNote(n);
+
+		vg.addView(nv);
+		noteviews.put(n, nv);
 	}
 }
