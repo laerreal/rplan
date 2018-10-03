@@ -313,4 +313,9 @@ public class TaskViewer
 		updateTaskNotes(v, t);
 		updateTask(v, t);
 	}
+
+	@Override
+	public void onNoteAdded(Task t, Note n)
+	{
+	}
 }
