@@ -193,6 +193,14 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			;
 	}
 
+	public void removeNote(Note note)
+	{
+		for (begin(); next(); l.onNoteRemoving(this, note))
+			;
+		note.removeListener(this);
+		notes.remove(note);
+	}
+
 	public Collection<Note> getNotes()
 	{
 		return new LinkedList<Note>(this.notes);
