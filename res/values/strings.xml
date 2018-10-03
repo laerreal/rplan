@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">RPlan</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_task_edit">Task Editting</string>
     <string name="description">Description</string>
