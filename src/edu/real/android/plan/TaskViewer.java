@@ -329,4 +329,9 @@ public class TaskViewer
 		vg.addView(nv);
 		noteviews.put(n, nv);
 	}
+
+	@Override
+	public void onNoteRemoving(Task t, Note n)
+	{
+	}
 }

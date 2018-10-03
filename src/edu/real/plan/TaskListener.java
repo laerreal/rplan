@@ -9,4 +9,6 @@ public interface TaskListener
 	public void onNoteChanged(Task t, Note n);
 
 	public void onNoteAdded(Task t, Note n);
+
+	public void onNoteRemoving(Task t, Note n);
 }
