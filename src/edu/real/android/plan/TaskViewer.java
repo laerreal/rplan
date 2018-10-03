@@ -333,5 +333,13 @@ public class TaskViewer
 	@Override
 	public void onNoteRemoving(Task t, Note n)
 	{
+		if (!t.isExpanded()) {
+			return;
+		}
+
+		ViewGroup vg = (ViewGroup) task2view.get(t);
+		BiMap<Note, View> noteviews = taskview2noteviews.get(vg);
+		View v = noteviews.pop(n);
+		vg.removeView(v);
 	}
 }
