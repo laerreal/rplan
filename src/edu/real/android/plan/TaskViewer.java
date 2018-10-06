@@ -358,5 +358,15 @@ public class TaskViewer
 	@Override
 	public void onNoteMoving(Task t, Note n, int idx)
 	{
+		if (!t.isExpanded()) {
+			return;
+		}
+
+		ViewGroup vg = (ViewGroup) task2view.get(t);
+		BiMap<Note, View> noteviews = taskview2noteviews.get(vg);
+		View nv = noteviews.get(n);
+		int offset = vg.indexOfChild(nv) - t.getNoteIndex(n);
+		vg.removeView(nv);
+		vg.addView(nv, idx + offset);
 	}
 }
