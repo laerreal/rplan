@@ -342,4 +342,8 @@ public class TaskViewer
 		View v = noteviews.pop(n);
 		vg.removeView(v);
 	}
+	@Override
+	public void onTaskRemoving(Plan p, Task t)
+	{
+	}
 }
