@@ -10,5 +10,8 @@
     <string name="tb_manage_notes">Manage</string>
     <string name="tb_simple_notes">Simple</string>
     <string name="bt_move">Move</string>
+    <string name="bt_yes">Yes</string>
+    <string name="bt_no">No</string>
+    <string name="msg_remove_task_q">Remove task?</string>
 
 </resources>

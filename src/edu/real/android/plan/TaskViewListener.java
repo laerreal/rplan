@@ -1,30 +1,45 @@
 package edu.real.android.plan;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import edu.real.plan.Task;
 
-public class TaskViewListener implements OnTouchListener
+public class TaskViewListener
+		implements OnTouchListener, OnGestureListener
 {
 	public final int DRAG_THRESHOLD = 10;
 	int x, y;
 	boolean dragging;
 	boolean pressed;
+	boolean longpressed;
 	Task task;
 	TaskViewer viewer;
+	GestureDetector gd;
 
 	public TaskViewListener(TaskViewer tv, Task t)
 	{
 		dragging = false;
 		pressed = false;
+		longpressed = false;
 		task = t;
 		viewer = tv;
+		gd = new GestureDetector(viewer.pane_context, this);
 	}
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
+		gd.onTouchEvent(event);
+
 		final int X = (int) event.getRawX();
 		final int Y = (int) event.getRawY();
 
@@ -34,6 +49,7 @@ public class TaskViewListener implements OnTouchListener
 				x = X;
 				y = Y;
 				pressed = true;
+				longpressed = false;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
@@ -60,10 +76,77 @@ public class TaskViewListener implements OnTouchListener
 			} else if (pressed) {
 				// Touched
 				pressed = false;
-				viewer.editTask(task);
+				if (!longpressed) {
+					viewer.editTask(task);
+				}
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e)
+	{
+		if (dragging) {
+			return;
+		}
+		longpressed = true;
+
+		AlertDialog.Builder builder = new Builder(viewer.pane_context);
+		builder.setMessage(R.string.msg_remove_task_q)
+				.setPositiveButton(R.string.bt_yes, new OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						viewer.removeTask(task);
+					}
+				})
+				.setNegativeButton(R.string.bt_no, null);
+		AlertDialog dialog = builder.create();
+		dialog.show();
+		return;
+	}
+
+	/* unused gestures below */
+
+	@Override
+	public boolean onDown(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onScroll(
+			MotionEvent e1, MotionEvent e2, float distanceX, float distanceY
+	)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onFling(
+			MotionEvent e1, MotionEvent e2, float velocityX, float velocityY
+	)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
