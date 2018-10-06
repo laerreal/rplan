@@ -1,21 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/bt_move_note"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:text="@string/bt_move" />
-
     <ImageButton
-        android:id="@+id/bt_delete_note"
+	    android:id="@+id/bt_delete_note"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="0"
+	    android:src="@android:drawable/ic_delete" />
+
+    <Button
+        android:id="@+id/bt_note_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:src="@android:drawable/ic_delete" />
+        android:text="v" />
+
+    <Button
+        android:id="@+id/bt_note_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="^" />
 
 </LinearLayout>

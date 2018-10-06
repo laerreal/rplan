@@ -116,6 +116,15 @@ public class TaskEditActivity extends RPlanActivity
 		bt_delete.setOnClickListener(this);
 		bt_delete.setTag(n);
 
+		/* Up/Down buttons */
+		View bt_move = ll.findViewById(R.id.bt_note_up);
+		bt_move.setOnClickListener(this);
+		bt_move.setTag(n);
+
+		bt_move = ll.findViewById(R.id.bt_note_down);
+		bt_move.setOnClickListener(this);
+		bt_move.setTag(n);
+
 		ll_notes.addView(ll, next_note_index++);
 
 		if (n instanceof Subtask) {
@@ -153,11 +162,13 @@ public class TaskEditActivity extends RPlanActivity
 	{
 		switch (mode) {
 		case MODE_SIMPLE:
-			vg.findViewById(R.id.bt_move_note).setVisibility(View.GONE);
+			vg.findViewById(R.id.bt_note_up).setVisibility(View.GONE);
+			vg.findViewById(R.id.bt_note_down).setVisibility(View.GONE);
 			vg.findViewById(R.id.bt_delete_note).setVisibility(View.GONE);
 			break;
 		case MODE_MANAGE:
-			vg.findViewById(R.id.bt_move_note).setVisibility(View.VISIBLE);
+			vg.findViewById(R.id.bt_note_up).setVisibility(View.VISIBLE);
+			vg.findViewById(R.id.bt_note_down).setVisibility(View.VISIBLE);
 			vg.findViewById(R.id.bt_delete_note).setVisibility(View.VISIBLE);
 			break;
 		}
@@ -224,10 +235,36 @@ public class TaskEditActivity extends RPlanActivity
 				return;
 			}
 			n = (Note) tag;
-			View nv = note2view.pop(n);
-			ll_notes.removeView(nv);
-			next_note_index--;
-			task.removeNote(n);
+			int idx;
+			View nv;
+			switch (v.getId()) {
+			case R.id.bt_delete_note:
+				nv = note2view.pop(n);
+				ll_notes.removeView(nv);
+				next_note_index--;
+				task.removeNote(n);
+				break;
+			case R.id.bt_note_up:
+				nv = note2view.get(n);
+				idx = ll_notes.indexOfChild(nv);
+				if (idx > 0) {
+					ll_notes.removeViewAt(idx);
+					idx--;
+					ll_notes.addView(nv, idx);
+					task.moveNote(n, idx);
+				}
+				break;
+			case R.id.bt_note_down:
+				nv = note2view.get(n);
+				idx = ll_notes.indexOfChild(nv);
+				if (idx < next_note_index - 1) {
+					ll_notes.removeViewAt(idx);
+					idx++;
+					ll_notes.addView(nv, idx);
+					task.moveNote(n, idx);
+				}
+				break;
+			}
 			return;
 		}
 		task.addNote(n);
@@ -241,4 +278,5 @@ public class TaskEditActivity extends RPlanActivity
 			setMode(isChecked ? MODE_MANAGE : MODE_SIMPLE);
 		}
 	}
+
 }
