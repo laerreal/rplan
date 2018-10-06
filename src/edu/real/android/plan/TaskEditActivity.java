@@ -94,7 +94,8 @@ public class TaskEditActivity extends RPlanActivity
 		task = this.service.getPlan().getCurrentTask();
 
 		if (task == null) {
-			this.finish();
+			finish();
+			return;
 		}
 
 		et_task_name.setText(task.getName());
