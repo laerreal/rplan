@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import edu.real.external.BiMap;
 import edu.real.external.Notifier;
@@ -18,7 +19,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	/**
 	 * Test or sound records, images, etc?
 	 */
-	Collection<Note> notes;
+	List<Note> notes;
 
 	/**
 	 * A simple graphical representation.
@@ -221,5 +222,18 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	{
 		for (begin(); next(); l.onNoteChanged(this, n))
 			;
+	}
+
+	public void moveNote(Note n, int idx)
+	{
+		for (begin(); next(); l.onNoteMoving(this, n, idx))
+			;
+		notes.remove(n);
+		notes.add(idx, n);
+	}
+
+	public int getNoteIndex(Note n)
+	{
+		return notes.indexOf(n);
 	}
 }
