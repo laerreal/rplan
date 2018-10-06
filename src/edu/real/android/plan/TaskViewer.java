@@ -354,4 +354,9 @@ public class TaskViewer
 		View v = task2view.pop(t);
 		pane.removeView(v);
 	}
+
+	@Override
+	public void onNoteMoving(Task t, Note n, int idx)
+	{
+	}
 }

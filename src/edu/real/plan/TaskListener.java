@@ -11,4 +11,6 @@ public interface TaskListener
 	public void onNoteAdded(Task t, Note n);
 
 	public void onNoteRemoving(Task t, Note n);
+
+	public void onNoteMoving(Task t, Note n, int idx);
 }
