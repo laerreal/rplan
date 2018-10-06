@@ -36,4 +36,11 @@ public class Plan extends Notifier<PlanListener>
 	{
 		current_task = t;
 	}
+
+	public void removeTask(Task task)
+	{
+		for (begin(); next(); l.onTaskRemoving(this, task))
+			;
+		tasks.remove(task);
+	}
 }
