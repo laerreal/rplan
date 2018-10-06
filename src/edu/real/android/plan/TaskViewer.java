@@ -345,5 +345,7 @@ public class TaskViewer
 	@Override
 	public void onTaskRemoving(Plan p, Task t)
 	{
+		View v = task2view.pop(t);
+		pane.removeView(v);
 	}
 }
