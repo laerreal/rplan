@@ -142,6 +142,8 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 				val = null; // TODO
 			} else if (fieldnName.equals("x") || fieldnName.equals("y")) {
 				val = Integer.parseInt(fieldValue);
+			} else if (f.getType() == boolean.class) {
+				val = true;
 			} else {
 				val = fieldValue;
 			}
