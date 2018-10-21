@@ -92,6 +92,9 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		w.write("deadline\n"); // TODO: a id of deadline?
 		w.write(String.format("x %i\n", x));
 		w.write(String.format("y %i\n", y));
+		if (collapsed) {
+			w.write("collapsed\n");
+		}
 		if (opaque != null) {
 			w.write(opaque);
 		}
