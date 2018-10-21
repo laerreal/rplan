@@ -43,11 +43,9 @@ public class MainActivity extends RPlanActivity
 	{
 		super.onServiceConnected(name, service);
 		if (viewer == null) {
-			viewer = new TaskViewer(this.service.getPlan(),
-					(RelativeLayout) this.findViewById(R.id.pane));
-			viewer.init();
+			viewer = new TaskViewer((RelativeLayout) findViewById(R.id.pane));
 		}
-		viewer.update();
+		viewer.update(this.service.getPlan());
 	}
 
 }

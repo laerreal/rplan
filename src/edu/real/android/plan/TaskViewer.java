@@ -44,20 +44,19 @@ public class TaskViewer
 	int mode;
 	SurfaceHolder holder;
 
-	public TaskViewer(Plan plan, RelativeLayout pane)
+	public TaskViewer(RelativeLayout pane)
 	{
-		this.plan = plan;
+		plan = null;
 		this.pane = pane;
 		// TODO: lookup by a class or a tag
-		this.backpane = (SurfaceView) pane.findViewById(R.id.backpane);
-		this.pane_context = pane.getContext();
-		this.task2view = new BiMap<Task, View>();
+		backpane = (SurfaceView) pane.findViewById(R.id.backpane);
+		pane_context = pane.getContext();
+		task2view = new BiMap<Task, View>();
 		holder = backpane.getHolder();
 		holder.addCallback(this);
-		this.taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
-		this.mode = MODE_MOVE;
+		taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
+		mode = MODE_MOVE;
 		backpane.setOnTouchListener(this);
-		plan.addListener(this);
 	}
 
 	public void init()
@@ -106,8 +105,21 @@ public class TaskViewer
 		v.setLayoutParams(lp);
 	}
 
-	public void update()
+	public void update(Plan new_plan)
 	{
+		if (new_plan != plan) {
+			if (plan != null) {
+				plan.removeListener(this);
+				deinit();
+			}
+			plan = new_plan;
+			if (plan == null) {
+				return;
+			}
+			plan.addListener(this);
+			init();
+		}
+
 		for (View v : this.task2view.values()) {
 			Task t = this.task2view.getKey(v);
 
