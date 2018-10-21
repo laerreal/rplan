@@ -67,6 +67,21 @@ public class TaskViewer
 		}
 	}
 
+	public void deinit()
+	{
+		for (Task task : task2view.keys()) {
+			task.removeListener(this);
+			pane.removeView(task2view.get(task));
+		}
+
+		/* There are several GUI listeners those keep reference to this
+		 * TaskViewer instance. But they are not expected to be called because
+		 * all those views are removed. */
+
+		task2view.clear();
+		taskview2noteviews.clear();
+	}
+
 	private View initTaskView(Task task)
 	{
 		View v = initTask(task);
