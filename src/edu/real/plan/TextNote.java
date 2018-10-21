@@ -1,7 +1,11 @@
 package edu.real.plan;
 
+import java.io.StringWriter;
+
 public class TextNote extends Note
 {
+	public static final String PREFIX = "text ";
+
 	String text;
 
 	public TextNote()
@@ -23,5 +27,11 @@ public class TextNote extends Note
 	{
 		this.text = text;
 		notifyChanged();
+	}
+
+	@Override
+	public void save(StringWriter w)
+	{
+		w.write(PREFIX + text);
 	}
 }

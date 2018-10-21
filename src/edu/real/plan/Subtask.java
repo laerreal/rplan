@@ -1,7 +1,12 @@
 package edu.real.plan;
 
+import java.io.StringWriter;
+
 public class Subtask extends TextNote
 {
+	public static final String CHECKED_PREFIX = "checked ";
+	public static final String UNCHECKED_PREFIX = "unchecked ";
+
 	boolean checked;
 
 	public Subtask(boolean _checked)
@@ -35,5 +40,11 @@ public class Subtask extends TextNote
 	{
 		checked = _checked;
 		notifyChanged();
+	}
+
+	@Override
+	public void save(StringWriter w)
+	{
+		w.write((checked ? CHECKED_PREFIX : UNCHECKED_PREFIX) + text);
 	}
 }

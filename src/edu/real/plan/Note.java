@@ -1,5 +1,7 @@
 package edu.real.plan;
 
+import java.io.StringWriter;
+
 import edu.real.external.Notifier;
 
 public abstract class Note extends Notifier<NoteListener>
@@ -8,4 +10,6 @@ public abstract class Note extends Notifier<NoteListener>
 		for (begin(); next(); l.onChanged(this))
 			;
 	}
+
+	public abstract void save(StringWriter w);
 }
