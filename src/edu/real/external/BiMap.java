@@ -49,4 +49,10 @@ public class BiMap<K, V>
 		bwd.remove(v);
 		return v;
 	}
+
+	public void clear()
+	{
+		fwd.clear();
+		bwd.clear();
+	}
 }
