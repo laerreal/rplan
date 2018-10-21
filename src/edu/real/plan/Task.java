@@ -76,20 +76,20 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public void save(StringWriter w)
 	{
-		w.write("name " + this.name + "\n");
-		w.write("description " + this.description.replaceAll("\\", "\\\\")
+		w.write("name " + name + "\n");
+		w.write("description " + description.replaceAll("\\", "\\\\")
 				.replaceAll("\n", "\\n") + "\n");
 		w.write("notes\n"); // TODO: how?
-		w.write(String.format("color 0x%08x\n", this.color));
+		w.write(String.format("color 0x%08x\n", color));
 		w.write("icon\n"); // TODO: save a URL?
-		w.write("creation_timestamp " + this.creation_timestamp.toString()
+		w.write("creation_timestamp " + creation_timestamp.toString()
 				+ "\n");
-		w.write("finish_timestamp " + this.finish_timestamp.toString() + "\n");
+		w.write("finish_timestamp " + finish_timestamp.toString() + "\n");
 		w.write("deadline\n"); // TODO: a id of deadline?
-		w.write(String.format("x %i\n", this.x));
-		w.write(String.format("y %i\n", this.y));
-		if (this.opaque != null) {
-			w.write(this.opaque);
+		w.write(String.format("x %i\n", x));
+		w.write(String.format("y %i\n", y));
+		if (opaque != null) {
+			w.write(opaque);
 		}
 	}
 
