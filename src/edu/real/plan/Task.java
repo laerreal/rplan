@@ -79,7 +79,11 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		w.write("name " + name + "\n");
 		w.write("description " + description.replaceAll("\\", "\\\\")
 				.replaceAll("\n", "\\n") + "\n");
-		w.write("notes\n"); // TODO: how?
+		w.write("notes\n");
+		for (Note n : notes) {
+			n.save(w);
+			w.write("\n");
+		}
 		w.write(String.format("color 0x%08x\n", color));
 		w.write("icon\n"); // TODO: save a URL?
 		w.write("creation_timestamp " + creation_timestamp.toString()
