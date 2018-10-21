@@ -16,7 +16,7 @@ public class TextNote extends Note
 
 	public String getText()
 	{
-		return this.text;
+		return text;
 	}
 
 	public void setText(String text)
