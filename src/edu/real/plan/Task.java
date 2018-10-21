@@ -52,7 +52,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	/**
 	 * Are the notes shown?
 	 */
-	boolean expanded;
+	boolean collapsed;
 
 	/**
 	 * Unsupported data read from string during loading. Preserved to be saved.
@@ -65,7 +65,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		name = "";
 		x = _x;
 		y = _y;
-		expanded = true;
+		collapsed = false;
 		notes = new LinkedList<Note>();
 	}
 
@@ -189,7 +189,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public boolean isExpanded()
 	{
-		return this.expanded;
+		return !collapsed;
 	}
 
 	public void addNote(Note note)
