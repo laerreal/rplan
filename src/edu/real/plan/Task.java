@@ -14,7 +14,7 @@ import edu.real.external.ZonedDateTime;
 public class Task extends Notifier<TaskListener> implements NoteListener
 {
 	String name;
-	String descripton;
+	String description;
 
 	/**
 	 * Test or sound records, images, etc?
@@ -77,7 +77,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	public void save(StringWriter w)
 	{
 		w.write("name " + this.name + "\n");
-		w.write("description " + this.descripton.replaceAll("\\", "\\\\")
+		w.write("description " + this.description.replaceAll("\\", "\\\\")
 				.replaceAll("\n", "\\n") + "\n");
 		w.write("notes\n"); // TODO: how?
 		w.write(String.format("color 0x%08x\n", this.color));
@@ -209,12 +209,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public String getDescription()
 	{
-		return descripton;
+		return description;
 	}
 
 	public void setDescription(String desc)
 	{
-		descripton = desc;
+		description = desc;
 	}
 
 	@Override
