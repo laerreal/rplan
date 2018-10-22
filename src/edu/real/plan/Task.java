@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.real.cross.Color;
 import edu.real.external.BiMap;
 import edu.real.external.Notifier;
 import edu.real.external.ZonedDateTime;
@@ -67,6 +68,9 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		y = _y;
 		collapsed = false;
 		notes = new LinkedList<Note>();
+		color = Color.BLACK;
+		creation_timestamp = new ZonedDateTime();
+		prerequesites = new BiMap<Task, Task>();
 	}
 
 	public Task()
