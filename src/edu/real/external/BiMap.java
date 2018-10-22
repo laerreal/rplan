@@ -55,4 +55,9 @@ public class BiMap<K, V>
 		fwd.clear();
 		bwd.clear();
 	}
+
+	public boolean isEmpty()
+	{
+		return fwd.isEmpty();
+	}
 }
