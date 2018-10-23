@@ -30,6 +30,8 @@ import edu.real.plan.TextNote;
 public class TaskViewer
 		implements Callback, OnTouchListener, PlanListener, TaskListener
 {
+	static final int TASK_CREATION_THRESHOLD = 40; // a Manchester distance
+
 	static final String TAG_NAME = "name";
 	static final String TAG_CHECKBOX = "checkbox";
 
@@ -43,6 +45,9 @@ public class TaskViewer
 	Map<View, BiMap<Note, View>> taskview2noteviews;
 	int mode;
 	SurfaceHolder holder;
+
+	int down_x;
+	int down_y;
 
 	public TaskViewer(RelativeLayout pane)
 	{
@@ -324,7 +329,16 @@ public class TaskViewer
 		final int Y = (int) event.getRawY();
 
 		switch (event.getActionMasked()) {
+		case MotionEvent.ACTION_DOWN:
+			down_x = X;
+			down_y = Y;
+			break;
 		case MotionEvent.ACTION_UP:
+			int dx = X - down_x;
+			int dy = Y - down_y;
+			if (Math.abs(dx) + Math.abs(dy) > TASK_CREATION_THRESHOLD) {
+				break;
+			}
 			Task t = new Task(X, Y);
 			plan.addTask(t);
 			editTask(t);
