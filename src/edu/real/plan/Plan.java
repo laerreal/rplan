@@ -7,7 +7,7 @@ import edu.real.external.Notifier;
 
 public class Plan extends Notifier<PlanListener>
 {
-	Collection<Task> tasks;
+	List<Task> tasks;
 	Task current_task;
 
 	public Plan()
