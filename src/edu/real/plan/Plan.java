@@ -12,7 +12,7 @@ public class Plan extends Notifier<PlanListener>
 
 	public Plan()
 	{
-		this.tasks = new LinkedList<Task>();
+		tasks = new LinkedList<Task>();
 	}
 
 	public void addTask(Task task)
@@ -24,7 +24,7 @@ public class Plan extends Notifier<PlanListener>
 
 	public Collection<Task> getTasks()
 	{
-		return new LinkedList<Task>(this.tasks);
+		return new LinkedList<Task>(tasks);
 	}
 
 	public Task getCurrentTask()
