@@ -107,8 +107,10 @@ public class TaskEditActivity extends RPlanActivity
 	}
 
 	@SuppressLint("InflateParams")
-	private void addViewForNote(Note n)
+	private View addViewForNote(Note n)
 	{
+		View main_input = null;
+
 		LinearLayout ll = (LinearLayout) inflater
 				.inflate(R.layout.note_edit_container, null);
 
@@ -143,6 +145,8 @@ public class TaskEditActivity extends RPlanActivity
 
 			et.setGravity(Gravity.FILL_HORIZONTAL);
 			ll.addView(et, 1, note_content_lp);
+
+			main_input = et;
 		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 
@@ -153,10 +157,14 @@ public class TaskEditActivity extends RPlanActivity
 
 			et.setGravity(Gravity.FILL_HORIZONTAL);
 			ll.addView(et, 0, note_content_lp);
+
+			main_input = et;
 		}
 
 		applyModeToNoteView(ll);
 		note2view.put(n, ll);
+
+		return main_input;
 	}
 
 	private void applyModeToNoteView(ViewGroup vg)
@@ -269,7 +277,10 @@ public class TaskEditActivity extends RPlanActivity
 			return;
 		}
 		task.addNote(n);
-		addViewForNote(n);
+		View input = addViewForNote(n);
+		if (input != null) {
+			input.requestFocus();
+		}
 	}
 
 	@Override
