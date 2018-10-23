@@ -43,4 +43,9 @@ public class Plan extends Notifier<PlanListener>
 			;
 		tasks.remove(task);
 	}
+
+	public int getTaskIndex(Task t)
+	{
+		return tasks.indexOf(t);
+	}
 }
