@@ -81,21 +81,34 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	public void save(StringWriter w)
 	{
 		w.write("name " + name + "\n");
-		w.write("description " + description.replaceAll("\\", "\\\\")
-				.replaceAll("\n", "\\n") + "\n");
-		w.write("notes\n");
-		for (Note n : notes) {
-			n.save(w);
-			w.write("\n");
+		if (description != null) {
+			w.write("description " + description.replace("\\", "\\\\")
+					.replace("\n", "\\n") + "\n");
+		}
+		if (!notes.isEmpty()) {
+			w.write("notes\n");
+			for (Note n : notes) {
+				n.save(w);
+				w.write("\n");
+			}
 		}
 		w.write(String.format("color 0x%08x\n", color));
-		w.write("icon\n"); // TODO: save a URL?
+		if (icon != null) {
+			w.write("icon\n"); // TODO: save a URL?
+		}
+		if (!prerequesites.isEmpty()) {
+			w.write("prerequesites\n"); // TODO: how to refer another tasks?
+		}
 		w.write("creation_timestamp " + creation_timestamp.toString()
 				+ "\n");
-		w.write("finish_timestamp " + finish_timestamp.toString() + "\n");
-		w.write("deadline\n"); // TODO: a id of deadline?
-		w.write(String.format("x %i\n", x));
-		w.write(String.format("y %i\n", y));
+		if (finish_timestamp != null) {
+			w.write("finish_timestamp " + finish_timestamp.toString() + "\n");
+		}
+		if (deadline != null) {
+			w.write("deadline\n"); // TODO: a id of deadline?
+		}
+		w.write(String.format("x %d\n", x));
+		w.write(String.format("y %d\n", y));
 		if (collapsed) {
 			w.write("collapsed\n");
 		}
@@ -104,21 +117,24 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		}
 	}
 
-	public void load(String[] lines)
+	public static final Task load(String lines[])
 			throws ParseException, IllegalAccessException,
 			IllegalArgumentException
 	{
+		Task ret = new Task();
 		String opaque = "";
-		for (String l : lines) {
+		int i = 0;
+		for (; i < lines.length; i++) {
+			String l = lines[i];
 			final String fieldnName;
 			final String fieldValue;
-			int i = l.indexOf(" ");
-			if (i < 0) {
+			int sep = l.indexOf(" ");
+			if (sep < 0) {
 				fieldnName = l;
 				fieldValue = null;
 			} else {
-				fieldnName = l.substring(0, i);
-				fieldValue = l.substring(i + 1);
+				fieldnName = l.substring(0, sep);
+				fieldValue = l.substring(sep + 1);
 			}
 			if (fieldnName.equals("opaque")) {
 				// cannot load "opaque" explicitly
@@ -126,20 +142,33 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			}
 			final Field f;
 			try {
-				f = this.getClass().getDeclaredField(fieldnName);
+				f = Task.class.getDeclaredField(fieldnName);
 			} catch (NoSuchFieldException e) {
 				opaque += l + "\n";
 				continue;
 			}
 			final Object val;
-			if (fieldValue == null) {
-				val = null;
-			} else if (fieldnName.equals("description")) {
+			if (fieldnName.equals("description")) {
 				val = fieldValue.replace("\\n", "\n").replace("\\\\", "\\");
 			} else if (fieldnName.equals("notes")) {
-				val = null; // TODO
+				List<Note> _notes = new LinkedList<Note>();
+				Note n;
+				// goto next line
+				i++;
+				while (i < lines.length) {
+					l = lines[i];
+					n = Note.load(l);
+					if (n == null) {
+						// non-note line has been met
+						i--;
+						break;
+					}
+					_notes.add(n);
+					i++;
+				}
+				val = _notes;
 			} else if (fieldnName.equals("color")) {
-				val = Integer.parseInt(fieldValue);
+				val = (int) Long.parseLong(fieldValue.substring(2), 16);
 			} else if (fieldnName.equals("icon")) {
 				val = null; // TODO
 			} else if (fieldnName.equals("creation_timestamp") ||
@@ -155,13 +184,15 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 				val = fieldValue;
 			}
 
-			f.set(this, val);
+			f.set(ret, val);
 		}
 		if (opaque.equals("")) {
-			this.opaque = null;
+			ret.opaque = null;
 		} else {
-			this.opaque = opaque;
+			ret.opaque = opaque;
 		}
+
+		return ret;
 	}
 
 	public int getX()
