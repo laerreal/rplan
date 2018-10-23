@@ -30,6 +30,10 @@ import edu.real.plan.TextNote;
 public class TaskViewer
 		implements Callback, OnTouchListener, PlanListener, TaskListener
 {
+	/* task name will appear right under user's finger */
+	static final int TASK_CREATION_OFFSET_X = -40;
+	static final int TASK_CREATION_OFFSET_Y = -60;
+
 	static final int TASK_CREATION_THRESHOLD = 40; // a Manchester distance
 
 	static final String TAG_NAME = "name";
@@ -339,7 +343,8 @@ public class TaskViewer
 			if (Math.abs(dx) + Math.abs(dy) > TASK_CREATION_THRESHOLD) {
 				break;
 			}
-			Task t = new Task(X, Y);
+			Task t = new Task(X + TASK_CREATION_OFFSET_X,
+					Y + TASK_CREATION_OFFSET_Y);
 			plan.addTask(t);
 			editTask(t);
 			break;
