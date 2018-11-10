@@ -5,7 +5,9 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -45,6 +47,7 @@ public class TaskViewer
 	SurfaceView backpane;
 	RelativeLayout pane;
 	Context pane_context;
+	SharedPreferences prefs;
 	BiMap<Task, View> task2view;
 	Map<View, BiMap<Note, View>> taskview2noteviews;
 	int mode;
@@ -52,6 +55,8 @@ public class TaskViewer
 
 	int down_x;
 	int down_y;
+
+	float task_title_font_scale;
 
 	public TaskViewer(RelativeLayout pane)
 	{
@@ -66,10 +71,17 @@ public class TaskViewer
 		taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
 		mode = MODE_MOVE;
 		backpane.setOnTouchListener(this);
+		prefs = PreferenceManager.getDefaultSharedPreferences(pane_context);
 	}
 
 	public void init()
 	{
+		String tmp = prefs.getString("pref_taskTitleFontScale", "1.5");
+		try {
+			task_title_font_scale = Float.parseFloat(tmp);
+		} catch (NumberFormatException e) {
+			task_title_font_scale = 1.5f;
+		}
 		for (Task task : plan.getTasks()) {
 			initTaskView(task);
 		}
@@ -219,7 +231,7 @@ public class TaskViewer
 
 		TextView tv_name = new TextView(this.pane_context);
 		tv_name.setTag(TAG_NAME);
-		tv_name.setTextSize(tv_name.getTextSize() * 1.5f);
+		tv_name.setTextSize(tv_name.getTextSize() * task_title_font_scale);
 		updateTaskName(task, tv_name);
 		l.addView(tv_name);
 

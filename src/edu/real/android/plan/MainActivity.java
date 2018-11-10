@@ -1,6 +1,7 @@
 package edu.real.android.plan;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
@@ -33,6 +34,7 @@ public class MainActivity extends RPlanActivity
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			startActivity(new Intent(this, RPlanPreferenceActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

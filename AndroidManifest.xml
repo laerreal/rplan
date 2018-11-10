@@ -32,6 +32,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".RPlanPreferenceActivity"
+            >
+        </activity>
     </application>
 
 </manifest>
