@@ -123,6 +123,12 @@ public class TaskViewer
 		LayoutParams lp = new LayoutParams(w, h);
 		lp.leftMargin = x;
 		lp.topMargin = y;
+		// Move the right (bottom) margin beyond the container at least for
+		// width (height) of that task's view (with 1 extra pixel for
+		// sureness).
+		lp.rightMargin = -w - 1;
+		lp.bottomMargin = -h - 1;
+
 		v.setLayoutParams(lp);
 	}
 
