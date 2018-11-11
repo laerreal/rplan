@@ -6,6 +6,7 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.view.View.OnTouchListener;
 import edu.real.plan.Task;
 
 public class TaskViewListener
-		implements OnTouchListener, OnGestureListener
+		implements OnTouchListener, OnGestureListener, OnDoubleTapListener
 {
 	public final int DRAG_THRESHOLD = 10;
 	int x, y;
@@ -32,6 +33,7 @@ public class TaskViewListener
 		task = t;
 		viewer = tv;
 		gd = new GestureDetector(viewer.pane_context, this);
+		gd.setOnDoubleTapListener(this);
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -71,15 +73,13 @@ public class TaskViewListener
 			}
 			break;
 		case MotionEvent.ACTION_UP:
+			/* `dragging` reset could be done during `onSingleTapConfirmed` or
+			 * `onDoubleTap` but there are situations none of them is called on
+			 * `ACTION_UP`. */
 			if (dragging) {
 				dragging = false;
-			} else if (pressed) {
-				// Touched
-				pressed = false;
-				if (!longpressed) {
-					viewer.editTask(task);
-				}
 			}
+			break;
 		}
 		return true;
 	}
@@ -106,6 +106,33 @@ public class TaskViewListener
 		AlertDialog dialog = builder.create();
 		dialog.show();
 		return;
+	}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e)
+	{
+		// Note that this method is called before `onTouch` resets `dragging`.
+		if (!dragging && pressed) {
+			// Touched
+			pressed = false;
+			if (!longpressed) {
+				viewer.editTask(task);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onDoubleTap(MotionEvent e)
+	{
+		// Note that this method is called before `onTouch` resets `dragging`.
+		if (!dragging && pressed) {
+			pressed = false;
+			if (!longpressed) {
+				task.setCollapsed(task.isExpanded());
+			}
+		}
+		return true;
 	}
 
 	/* unused gestures below */
@@ -144,6 +171,13 @@ public class TaskViewListener
 	public boolean onFling(
 			MotionEvent e1, MotionEvent e2, float velocityX, float velocityY
 	)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent e)
 	{
 		// TODO Auto-generated method stub
 		return false;
