@@ -437,5 +437,10 @@ public class TaskViewer
 	@Override
 	public void onCollapsedChanged(Task t, boolean colapsed)
 	{
+		View v = task2view.get(t);
+		updateTaskNotes(v, t);
+		// Because of task's content is likely changed, its layout also must
+		// be updated.
+		updateTask(v, t);
 	}
 }
