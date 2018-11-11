@@ -91,6 +91,8 @@ public class TaskViewListener
 			return;
 		}
 		longpressed = true;
+		// prevent dragging during this (below) dialog is being shown
+		pressed = false;
 
 		AlertDialog.Builder builder = new Builder(viewer.pane_context);
 		builder.setMessage(R.string.msg_remove_task_q)
