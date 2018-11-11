@@ -230,6 +230,13 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		return !collapsed;
 	}
 
+	public void setCollapsed(boolean v)
+	{
+		collapsed = v;
+		for (begin(); next(); l.onCollapsedChanged(this, v))
+			;
+	}
+
 	public void addNote(Note note)
 	{
 		notes.add(note);
