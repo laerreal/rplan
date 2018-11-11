@@ -433,4 +433,9 @@ public class TaskViewer
 		vg.removeView(nv);
 		vg.addView(nv, idx + offset);
 	}
+
+	@Override
+	public void onCollapsedChanged(Task t, boolean colapsed)
+	{
+	}
 }

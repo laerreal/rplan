@@ -13,4 +13,6 @@ public interface TaskListener
 	public void onNoteRemoving(Task t, Note n);
 
 	public void onNoteMoving(Task t, Note n, int idx);
+
+	public void onCollapsedChanged(Task t, boolean colapsed);
 }
