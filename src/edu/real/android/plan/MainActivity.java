@@ -4,18 +4,27 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+import edu.real.external.IOHelper;
 
 public class MainActivity extends RPlanActivity
 {
 	TaskViewer viewer;
+	String import_url;
 
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		Intent i = getIntent();
+		if (i.getAction() == Intent.ACTION_VIEW) {
+			import_url = i.getDataString();
+		}
 	}
 
 	@Override
@@ -47,7 +56,30 @@ public class MainActivity extends RPlanActivity
 		if (viewer == null) {
 			viewer = new TaskViewer((RelativeLayout) findViewById(R.id.pane));
 		}
+		if (import_url != null) {
+			try {
+				final String import_file;
+				if (import_url.startsWith("file:")) {
+					import_file = import_url.substring(5);
+				} else {
+					import_file = import_url;
+				}
+				String text = IOHelper.getStringFromFile(import_file);
+				importMobileNotesJSON(text);
+			} catch (Exception e) {
+				String msg = e.toString();
+				Log.e("MobileNotes", msg);
+				Toast.makeText(getApplicationContext(), msg,
+						Toast.LENGTH_LONG).show();
+			}
+			// import file only once
+			import_url = null;
+		}
 		viewer.update(this.service.getPlan());
 	}
 
+	protected void importMobileNotesJSON(String json_text) throws Exception
+	{
+		throw new Exception("Not implemented");
+	}
 }
