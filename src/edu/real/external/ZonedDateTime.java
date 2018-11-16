@@ -37,6 +37,11 @@ public class ZonedDateTime
 		this(null, null);
 	}
 
+	public ZonedDateTime(long msec)
+	{
+		this(new Date(msec));
+	}
+
 	public static ZonedDateTime parse(String s) throws ParseException
 	{
 		String date = s.substring(0, 19);
