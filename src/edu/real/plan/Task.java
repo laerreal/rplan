@@ -41,6 +41,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	 * Several time references
 	 */
 	ZonedDateTime creation_timestamp;
+	/**
+	 * Not all changes do update this timestamp. Appearance specific changes
+	 * like expanding or moving (entire task) do not update it. But, changing
+	 * or moving a note inside do it.
+	 */
+	ZonedDateTime last_edited_timestamp;
 	ZonedDateTime finish_timestamp;
 	Object deadline;
 
@@ -223,6 +229,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		this.name = name;
 		for (begin(); next(); l.onRename(this))
 			;
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	public boolean isExpanded()
@@ -243,6 +250,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		note.addListener(this);
 		for (begin(); next(); l.onNoteAdded(this, note))
 			;
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	public void removeNote(Note note)
@@ -251,6 +259,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			;
 		note.removeListener(this);
 		notes.remove(note);
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	public Collection<Note> getNotes()
@@ -266,6 +275,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	public void setDescription(String desc)
 	{
 		description = desc;
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	@Override
@@ -273,6 +283,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	{
 		for (begin(); next(); l.onNoteChanged(this, n))
 			;
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	public void moveNote(Note n, int idx)
@@ -281,6 +292,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			;
 		notes.remove(n);
 		notes.add(idx, n);
+		last_edited_timestamp = new ZonedDateTime();
 	}
 
 	public int getNoteIndex(Note n)
