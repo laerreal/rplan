@@ -96,6 +96,7 @@ public class TaskViewListener
 
 		AlertDialog.Builder builder = new Builder(viewer.pane_context);
 		builder.setMessage(R.string.msg_remove_task_q)
+				.setTitle(task.getName())
 				.setPositiveButton(R.string.bt_yes, new OnClickListener()
 				{
 					@Override
