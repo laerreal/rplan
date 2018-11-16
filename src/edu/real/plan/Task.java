@@ -287,4 +287,10 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	{
 		return notes.indexOf(n);
 	}
+
+	public void setCreationTS(ZonedDateTime t) {
+		for (begin(); next(); l.onCreationTSChanging(this, t))
+			;
+		creation_timestamp = t;
+	}
 }

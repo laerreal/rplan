@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import edu.real.external.BiMap;
+import edu.real.external.ZonedDateTime;
 import edu.real.plan.Note;
 import edu.real.plan.Plan;
 import edu.real.plan.PlanListener;
@@ -442,5 +443,12 @@ public class TaskViewer
 		// Because of task's content is likely changed, its layout also must
 		// be updated.
 		updateTask(v, t);
+	}
+
+	@Override
+	public void onCreationTSChanging(Task t, ZonedDateTime ts)
+	{
+		// TODO Auto-generated method stub
+
 	}
 }
