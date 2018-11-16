@@ -305,4 +305,11 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			;
 		creation_timestamp = t;
 	}
+
+	public void setLastEditedTS(ZonedDateTime t)
+	{
+		for (begin(); next(); l.onLastEditedTSChanging(this, t))
+			;
+		last_edited_timestamp = t;
+	}
 }

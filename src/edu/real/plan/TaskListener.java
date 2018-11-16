@@ -19,4 +19,7 @@ public interface TaskListener
 	public void onCollapsedChanged(Task t, boolean colapsed);
 
 	public void onCreationTSChanging(Task t, ZonedDateTime ts);
+
+	/* Called only on explicit edit timestamp changing. */
+	public void onLastEditedTSChanging(Task t, ZonedDateTime ts);
 }

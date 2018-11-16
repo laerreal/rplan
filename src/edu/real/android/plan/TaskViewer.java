@@ -451,4 +451,11 @@ public class TaskViewer
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onLastEditedTSChanging(Task t, ZonedDateTime ts)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }
