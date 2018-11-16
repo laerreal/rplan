@@ -1,5 +1,8 @@
 package edu.real.android.plan;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +13,10 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import edu.real.external.IOHelper;
+import edu.real.external.ZonedDateTime;
+import edu.real.plan.Plan;
+import edu.real.plan.Subtask;
+import edu.real.plan.Task;
 
 public class MainActivity extends RPlanActivity
 {
@@ -80,6 +87,33 @@ public class MainActivity extends RPlanActivity
 
 	protected void importMobileNotesJSON(String json_text) throws Exception
 	{
-		throw new Exception("Not implemented");
+		Plan plan = service.getPlan();
+
+		JSONObject root = new JSONObject(json_text);
+		JSONArray lists = root.getJSONArray("lists");
+		for (int i = 0, I = lists.length(); i < I; i++) {
+			JSONObject list = lists.getJSONObject(i);
+			JSONArray rows = list.getJSONArray("rows");
+			JSONObject row;
+			row = rows.getJSONObject(0);
+			String task_name = row.getString("text");
+
+			Task t = new Task();
+			t.setName(task_name);
+			t.setCreationTS(new ZonedDateTime(list.getLong("created")));
+
+			for (int j = 1, J = rows.length(); j < J; j++) {
+				row = rows.getJSONObject(j);
+				Subtask s = new Subtask(row.getString("text"),
+						row.getInt("checked") != 0);
+
+				t.addNote(s);
+			}
+
+			// after all editing, of course
+			t.setLastEditedTS(new ZonedDateTime(list.getLong("last_edited")));
+
+			plan.addTask(t);
+		}
 	}
 }
