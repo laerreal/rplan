@@ -14,5 +14,7 @@
     <string name="bt_no">No</string>
     <string name="msg_remove_task_q">Remove task?</string>
     <string name="task_title_font_scale">Task title font scale</string>
+    <string name="remove_all_">Remove ALL!!!</string>
+    <string name="remove_all_tasks_">Remove all tasks?</string>
 
 </resources>

@@ -3,7 +3,10 @@ package edu.real.android.plan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -49,8 +52,26 @@ public class MainActivity extends RPlanActivity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		switch(id) {
+		case R.id.action_settings:
 			startActivity(new Intent(this, RPlanPreferenceActivity.class));
+			return true;
+		case R.id.remove_all:
+			(new AlertDialog.Builder(this))
+					.setTitle(R.string.remove_all_tasks_)
+					.setPositiveButton(R.string.bt_yes, new OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							Plan new_plan = new Plan();
+							service.setPlan(new_plan);
+							viewer.update(new_plan);
+						}
+					})
+					.setNegativeButton(R.string.bt_no, null)
+					.create()
+					.show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
