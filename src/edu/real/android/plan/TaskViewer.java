@@ -348,8 +348,8 @@ public class TaskViewer
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
-		final int X = (int) event.getRawX();
-		final int Y = (int) event.getRawY();
+		final int X = (int) event.getX();
+		final int Y = (int) event.getY();
 
 		switch (event.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
