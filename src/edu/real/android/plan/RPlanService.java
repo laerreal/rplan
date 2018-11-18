@@ -11,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
+import edu.real.external.CF;
 import edu.real.plan.Plan;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
@@ -25,6 +27,9 @@ public class RPlanService extends Service
 	@Override
 	public void onCreate()
 	{
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "onCreate");
+
 		internal_storage = getFilesDir();
 		tmp_plan_file = new File(internal_storage, "plan.tmp");
 		plan_file = new File(internal_storage, "plan.txt");
@@ -89,6 +94,9 @@ public class RPlanService extends Service
 
 	public void onDestroy()
 	{
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "onDestroy");
+
 		StringWriter w = new StringWriter();
 		plan.save(w);
 		byte[] bytes;

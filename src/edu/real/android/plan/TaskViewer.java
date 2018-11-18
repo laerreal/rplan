@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import edu.real.external.BiMap;
+import edu.real.external.CF;
 import edu.real.external.ZonedDateTime;
 import edu.real.plan.Note;
 import edu.real.plan.Plan;
@@ -313,7 +315,11 @@ public class TaskViewer
 	{
 		plan.setCurrentTask(task);
 		Context ctx = pane.getContext();
+		if (CF.DEBUG < 1)
+			Log.v("editTask", "starting");
 		ctx.startActivity(new Intent(ctx, TaskEditActivity.class));
+		if (CF.DEBUG < 1)
+			Log.v("editTask", "started");
 	}
 
 	@Override

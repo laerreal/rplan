@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ToggleButton;
 import edu.real.external.BiMap;
+import edu.real.external.CF;
 import edu.real.plan.Note;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
@@ -46,6 +48,9 @@ public class TaskEditActivity extends RPlanActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "onCreate");
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_edit);
 
@@ -69,7 +74,11 @@ public class TaskEditActivity extends RPlanActivity
 		setMode(MODE_SIMPLE);
 		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
 		tb_edit_mode.setOnCheckedChangeListener(this);
+
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "onCreate-d");
 	}
+
 
 	private void setMode(int m)
 	{
@@ -98,12 +107,18 @@ public class TaskEditActivity extends RPlanActivity
 			return;
 		}
 
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "initializing");
+
 		et_task_name.setText(task.getName());
 		et_task_description.setText(task.getDescription());
 
 		for (Note n : task.getNotes()) {
 			addViewForNote(n);
 		}
+
+		if (CF.DEBUG < 1)
+			Log.v(getClass().getName(), "initialized");
 	}
 
 	@SuppressLint("InflateParams")
