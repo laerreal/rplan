@@ -22,9 +22,9 @@ public class RPlanActivity extends AppCompatActivity
 	}
 
 	@Override
-	protected void onStop()
+	protected void onDestroy()
 	{
-		super.onStop();
+		super.onDestroy();
 		service = null;
 		unbindService(this);
 	}
