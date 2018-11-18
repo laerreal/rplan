@@ -1,8 +1,11 @@
 package edu.real.android.plan;
 
+import java.util.Iterator;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,6 +47,8 @@ public class TaskEditActivity extends RPlanActivity
 	LayoutParams note_content_lp;
 	int mode;
 	ToggleButton tb_edit_mode;
+	/* Performs time spread user interface operations */
+	Handler ui_handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -52,6 +57,9 @@ public class TaskEditActivity extends RPlanActivity
 			Log.v(getClass().getName(), "onCreate");
 
 		super.onCreate(savedInstanceState);
+
+		ui_handler = new Handler();
+
 		setContentView(R.layout.activity_task_edit);
 
 		ll_notes = (LinearLayout) findViewById(R.id.ll_task_notes);
@@ -91,6 +99,29 @@ public class TaskEditActivity extends RPlanActivity
 		}
 	}
 
+	class Initializer implements Runnable
+	{
+		Iterator<Note> cur;
+
+		Initializer(Iterator<Note> cur)
+		{
+			this.cur = cur;
+		}
+
+		public void run()
+		{
+			if (cur.hasNext()) {
+				Note n = cur.next();
+				addViewForNote(n);
+				ui_handler.post(this);
+				return;
+			}
+
+			if (CF.DEBUG < 1)
+				Log.v(getClass().getName(), "initialized");
+		}
+	}
+
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service)
 	{
@@ -113,12 +144,7 @@ public class TaskEditActivity extends RPlanActivity
 		et_task_name.setText(task.getName());
 		et_task_description.setText(task.getDescription());
 
-		for (Note n : task.getNotes()) {
-			addViewForNote(n);
-		}
-
-		if (CF.DEBUG < 1)
-			Log.v(getClass().getName(), "initialized");
+		ui_handler.post(new Initializer(task.getNotes().iterator()));
 	}
 
 	@SuppressLint("InflateParams")
