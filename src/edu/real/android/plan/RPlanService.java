@@ -119,7 +119,7 @@ public class RPlanService extends Service
 			e.printStackTrace();
 			return;
 		}
-	};
+	}
 
 	public void setPlan(Plan plan)
 	{
