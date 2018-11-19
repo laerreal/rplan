@@ -162,7 +162,7 @@ public class Plan extends Notifier<PlanListener>
 			}
 		}
 
-		if (current_task > 0 && ret.tasks.size() > current_task) {
+		if (current_task >= 0 && ret.tasks.size() > current_task) {
 			ret.current_task = ret.tasks.get(current_task);
 		}
 
