@@ -68,6 +68,8 @@ public class TaskEditActivity extends RPlanActivity
 
 		ui_handler = new Handler();
 
+		getSupportActionBar().hide();
+
 		setContentView(R.layout.activity_task_edit);
 
 		ll_notes = (LinearLayout) findViewById(R.id.ll_task_notes);
