@@ -1,5 +1,7 @@
 package edu.real.android.plan;
 
+import java.util.TimeZone;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -112,6 +114,7 @@ public class MainActivity extends RPlanActivity
 
 		JSONObject root = new JSONObject(json_text);
 		JSONArray lists = root.getJSONArray("lists");
+		TimeZone mobile_notes_tz = TimeZone.getTimeZone("GMT");
 		for (int i = 0, I = lists.length(); i < I; i++) {
 			JSONObject list = lists.getJSONObject(i);
 			JSONArray rows = list.getJSONArray("rows");
@@ -121,7 +124,8 @@ public class MainActivity extends RPlanActivity
 
 			Task t = new Task();
 			t.setName(task_name);
-			t.setCreationTS(new ZonedDateTime(list.getLong("created")));
+			t.setCreationTS(new ZonedDateTime(list.getLong("created"),
+					mobile_notes_tz));
 
 			for (int j = 1, J = rows.length(); j < J; j++) {
 				row = rows.getJSONObject(j);
@@ -132,7 +136,8 @@ public class MainActivity extends RPlanActivity
 			}
 
 			// after all editing, of course
-			t.setLastEditedTS(new ZonedDateTime(list.getLong("last_edited")));
+			t.setLastEditedTS(new ZonedDateTime(list.getLong("last_edited"),
+					mobile_notes_tz));
 
 			plan.addTask(t);
 		}
