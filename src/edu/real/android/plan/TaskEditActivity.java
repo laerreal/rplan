@@ -4,11 +4,13 @@ import java.util.Iterator;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +51,7 @@ public class TaskEditActivity extends RPlanActivity
 	ToggleButton tb_edit_mode;
 	/* Performs time spread user interface operations */
 	Handler ui_handler;
+	String i_action;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -57,6 +60,11 @@ public class TaskEditActivity extends RPlanActivity
 			Log.v(getClass().getName(), "onCreate");
 
 		super.onCreate(savedInstanceState);
+
+		i_action = getIntent().getAction();
+		if (i_action == null) {
+			i_action = "";
+		}
 
 		ui_handler = new Handler();
 
@@ -134,6 +142,11 @@ public class TaskEditActivity extends RPlanActivity
 		task = this.service.getPlan().getCurrentTask();
 
 		if (task == null) {
+			if (i_action.equals(Intent.ACTION_MAIN)) {
+				/* No current task for just started application. Redirect to
+				 * main activity. */
+				startActivity(new Intent(this, MainActivity.class));
+			}
 			finish();
 			return;
 		}
@@ -332,4 +345,17 @@ public class TaskEditActivity extends RPlanActivity
 		}
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (i_action.equals(Intent.ACTION_MAIN)) {
+				/* user explicitly ended work with current task */
+				service.getPlan().setCurrentTask(null);
+				startActivity(new Intent(this, MainActivity.class));
+				return true;
+			}
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }
