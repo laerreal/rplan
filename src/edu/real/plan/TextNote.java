@@ -43,6 +43,7 @@ public class TextNote extends Note
 	@Override
 	public void save(StringWriter w)
 	{
+		saveIndent(w);
 		w.write(PREFIX + text);
 	}
 }

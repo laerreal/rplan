@@ -22,15 +22,23 @@ public abstract class Note extends Notifier<NoteListener>
 
 	public static final Note load(String line)
 	{
+		int indent = 0;
+		for (int I = line.length(); indent < I
+				&& line.charAt(indent) == ' '; indent++)
+			;
+		if (indent > 0) {
+			line = line.substring(indent);
+		}
 		if (line.startsWith(TextNote.PREFIX)) {
-			return new TextNote(line.substring(TextNote.PREFIX.length()));
+			return new TextNote(line.substring(TextNote.PREFIX.length()),
+					indent);
 		} else if (line.startsWith(Subtask.CHECKED_PREFIX)) {
 			return new Subtask(line.substring(Subtask.CHECKED_PREFIX.length()),
-					true);
+					true, indent);
 		} else if (line.startsWith(Subtask.UNCHECKED_PREFIX)) {
 			return new Subtask(
 					line.substring(Subtask.UNCHECKED_PREFIX.length()),
-					false);
+					false, indent);
 		}
 		return null;
 	}
@@ -49,5 +57,12 @@ public abstract class Note extends Notifier<NoteListener>
 	public int getIndent()
 	{
 		return indent;
+	}
+
+	public void saveIndent(StringWriter w)
+	{
+		for (int i = 0; i < indent; i++) {
+			w.write(' ');
+		}
 	}
 }
