@@ -37,6 +37,12 @@ public abstract class Note extends Notifier<NoteListener>
 
 	public void setIndent(int i)
 	{
+		if (i == indent)
+			return;
+
+		for (begin(); next(); l.onIndenting(this, i))
+			;
+
 		indent = i;
 	}
 

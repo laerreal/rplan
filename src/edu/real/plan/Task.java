@@ -286,6 +286,14 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		last_edited_timestamp = new ZonedDateTime();
 	}
 
+	@Override
+	public void onIndenting(Note n, int new_indent)
+	{
+		for (begin(); next(); l.onNoteIndenting(this, n, new_indent))
+			;
+		last_edited_timestamp = new ZonedDateTime();
+	}
+
 	public void moveNote(Note n, int idx)
 	{
 		for (begin(); next(); l.onNoteMoving(this, n, idx))

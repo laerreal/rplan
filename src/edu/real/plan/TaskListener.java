@@ -10,6 +10,8 @@ public interface TaskListener
 
 	public void onNoteChanged(Task t, Note n);
 
+	public void onNoteIndenting(Task t, Note n, int new_indent);
+
 	public void onNoteAdded(Task t, Note n);
 
 	public void onNoteRemoving(Task t, Note n);

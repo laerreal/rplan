@@ -336,6 +336,13 @@ public class TaskViewer
 		updateNoteView(n, nv);
 	}
 
+	@Override
+	public void onNoteIndenting(Task t, Note n, int new_indent)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 	protected void updateNoteView(Note n, View nv)
 	{
 		if (n instanceof Subtask) {
