@@ -13,8 +13,19 @@ public class TextNote extends Note
 		this("");
 	}
 
+	public TextNote(int indent)
+	{
+		this("", indent);
+	}
+
 	public TextNote(String text)
 	{
+		this(text, 0);
+	}
+
+	public TextNote(String text, int indent)
+	{
+		super(indent);
 		this.text = text;
 	}
 

@@ -6,6 +6,13 @@ import edu.real.external.Notifier;
 
 public abstract class Note extends Notifier<NoteListener>
 {
+	private int indent;
+
+	public Note(int _indent)
+	{
+		indent = _indent;
+	}
+
 	protected void notifyChanged() {
 		for (begin(); next(); l.onChanged(this))
 			;
@@ -26,5 +33,15 @@ public abstract class Note extends Notifier<NoteListener>
 					false);
 		}
 		return null;
+	}
+
+	public void setIndent(int i)
+	{
+		indent = i;
+	}
+
+	public int getIndent()
+	{
+		return indent;
 	}
 }

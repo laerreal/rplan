@@ -17,7 +17,12 @@ public class Subtask extends TextNote
 
 	public Subtask(String text, boolean _checked)
 	{
-		super(text);
+		this(text, _checked, 0);
+	}
+
+	public Subtask(String text, boolean _checked, int _indent)
+	{
+		super(text, _indent);
 		checked = _checked;
 	}
 
