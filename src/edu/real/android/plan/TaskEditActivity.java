@@ -33,6 +33,7 @@ import edu.real.plan.TextNote;
 public class TaskEditActivity extends RPlanActivity
 		implements OnClickListener, OnCheckedChangeListener
 {
+	public static final int INDENTATION_STEP = 50;
 	protected final int MODE_NOT_SET = 0;
 	protected final int MODE_SIMPLE = 1;
 	protected final int MODE_MANAGE = 2;
@@ -185,6 +186,13 @@ public class TaskEditActivity extends RPlanActivity
 		bt_move.setTag(n);
 
 		ll_notes.addView(ll, next_note_index++);
+
+		int indent = n.getIndent();
+		if (indent > 0) {
+			LayoutParams lp = (LayoutParams) ll.getLayoutParams();
+			lp.setMargins(INDENTATION_STEP * indent, 0, 0, 0);
+			ll.setLayoutParams(lp);
+		}
 
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
