@@ -76,6 +76,8 @@ public class RPlanService extends Service
 		t.addNote(new TextNote("This is last example note"));
 		t.addNote(new Subtask("A subtask"));
 		t.addNote(new Subtask("Another subtask", true));
+		t.addNote(new TextNote("text with 1 indent", 1));
+		t.addNote(new Subtask("subtask with 2 indent", false, 2));
 		p.addTask(t);
 
 		plan = p;
