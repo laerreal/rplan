@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+import edu.real.android.plan.shortcuts.TLParams;
+import edu.real.android.plan.shortcuts.TaskLayout;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.external.ZonedDateTime;
@@ -51,8 +53,8 @@ public class TaskViewer
 	RelativeLayout pane;
 	Context pane_context;
 	SharedPreferences prefs;
-	BiMap<Task, View> task2view;
-	Map<View, BiMap<Note, View>> taskview2noteviews;
+	BiMap<Task, TaskLayout> task2view;
+	Map<TaskLayout, BiMap<Note, View>> taskview2noteviews;
 	int mode;
 	SurfaceHolder holder;
 
@@ -68,10 +70,10 @@ public class TaskViewer
 		// TODO: lookup by a class or a tag
 		backpane = (SurfaceView) pane.findViewById(R.id.backpane);
 		pane_context = pane.getContext();
-		task2view = new BiMap<Task, View>();
+		task2view = new BiMap<Task, TaskLayout>();
 		holder = backpane.getHolder();
 		holder.addCallback(this);
-		taskview2noteviews = new HashMap<View, BiMap<Note, View>>();
+		taskview2noteviews = new HashMap<TaskLayout, BiMap<Note, View>>();
 		mode = MODE_MOVE;
 		backpane.setOnTouchListener(this);
 		prefs = PreferenceManager.getDefaultSharedPreferences(pane_context);
@@ -105,21 +107,21 @@ public class TaskViewer
 		taskview2noteviews.clear();
 	}
 
-	private View initTaskView(Task task)
+	private TaskLayout initTaskView(Task task)
 	{
-		View v = initTask(task);
-		pane.addView(v);
-		task2view.put(task, v);
-		v.setOnTouchListener(new TaskViewListener(this, task));
+		TaskLayout tl = initTask(task);
+		pane.addView(tl);
+		task2view.put(task, tl);
+		tl.setOnTouchListener(new TaskViewListener(this, task));
 		task.addListener(this);
-		return v;
+		return tl;
 	}
 
-	void updateTask(View v, Task t)
+	void updateTask(TaskLayout tl, Task t)
 	{
-		v.measure(1000, 1000);
-		int w = v.getMeasuredWidth();
-		int h = v.getMeasuredHeight();
+		tl.measure(1000, 1000);
+		int w = tl.getMeasuredWidth();
+		int h = tl.getMeasuredHeight();
 		int x = t.getX();
 		int y = t.getY();
 
@@ -132,7 +134,7 @@ public class TaskViewer
 		lp.rightMargin = -w - 1;
 		lp.bottomMargin = -h - 1;
 
-		v.setLayoutParams(lp);
+		tl.setLayoutParams(lp);
 	}
 
 	public void update(Plan new_plan)
@@ -150,40 +152,38 @@ public class TaskViewer
 			init();
 		}
 
-		for (View v : this.task2view.values()) {
-			Task t = this.task2view.getKey(v);
+		for (TaskLayout tl : this.task2view.values()) {
+			Task t = this.task2view.getKey(tl);
 
-			updateTaskNotes(v, t);
-			updateTask(v, t);
+			updateTaskNotes(tl, t);
+			updateTask(tl, t);
 		}
 
 		tryDrawing(holder);
 	}
 
-	private void updateTaskNotes(View v, Task t)
+	private void updateTaskNotes(TaskLayout tl, Task t)
 	{
-		BiMap<Note, View> noteviews = this.taskview2noteviews.get(v);
+		BiMap<Note, View> noteviews = this.taskview2noteviews.get(tl);
 		if (t.isExpanded()) {
 			if (noteviews == null) {
 				noteviews = new BiMap<Note, View>();
-				this.taskview2noteviews.put(v, noteviews);
-				ViewGroup vg = (ViewGroup) v;
+				this.taskview2noteviews.put(tl, noteviews);
 
 				for (Note note : t.getNotes()) {
 					View nv = this.initNote(note);
 
-					vg.addView(nv);
+					tl.addView(nv);
 					noteviews.put(note, nv);
 				}
 			}
 		} else {
 			if (noteviews != null) {
 				// Collapsed, remove views
-				ViewGroup vg = (ViewGroup) v;
 				for (View nv : noteviews.values()) {
-					vg.removeView(nv);
+					tl.removeView(nv);
 				}
-				this.taskview2noteviews.put(v, null);
+				this.taskview2noteviews.put(tl, null);
 			}
 		}
 	}
@@ -203,9 +203,8 @@ public class TaskViewer
 
 			/* Some margin correction is required. */
 			/* XXX: it could be device-specific */
-			LinearLayout.LayoutParams lp;
-			lp = (android.widget.LinearLayout.LayoutParams) cb
-					.getLayoutParams();
+			TLParams lp;
+			lp = (TLParams) cb.getLayoutParams();
 			lp.setMargins(lp.leftMargin - 5, lp.topMargin - 5, lp.rightMargin,
 					lp.bottomMargin - 5);
 			cb.setLayoutParams(lp);
@@ -216,8 +215,7 @@ public class TaskViewer
 
 			/* Some margin correction is required. */
 			/* XXX: it could be device-specific */
-			lp = (android.widget.LinearLayout.LayoutParams) tv
-					.getLayoutParams();
+			lp = (TLParams) tv.getLayoutParams();
 			lp.setMargins(lp.leftMargin, lp.topMargin - 5, lp.rightMargin,
 					lp.bottomMargin);
 			tv.setLayoutParams(lp);
@@ -233,10 +231,9 @@ public class TaskViewer
 		return ret;
 	}
 
-	public View initTask(Task task)
+	public TaskLayout initTask(Task task)
 	{
-		LinearLayout l = new LinearLayout(this.pane_context);
-		l.setOrientation(LinearLayout.VERTICAL);
+		TaskLayout l = new TaskLayout(this.pane_context);
 
 		TextView tv_name = new TextView(this.pane_context);
 		tv_name.setTag(TAG_NAME);
