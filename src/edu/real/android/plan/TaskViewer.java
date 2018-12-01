@@ -328,12 +328,17 @@ public class TaskViewer
 		if (!t.isExpanded()) {
 			return;
 		}
+		View nv = getNoteView(t, n);
+		updateNoteView(n, nv);
+	}
+
+	private View getNoteView(Task t, Note n)
+	{
 		BiMap<Note, View> notes = (BiMap<Note, View>) taskview2noteviews
 				.get(task2view.get(t));
 
 		View nv = notes.get(n);
-
-		updateNoteView(n, nv);
+		return nv;
 	}
 
 	@Override
