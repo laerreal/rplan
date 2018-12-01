@@ -35,6 +35,7 @@ import edu.real.plan.TextNote;
 public class TaskViewer
 		implements Callback, OnTouchListener, PlanListener, TaskListener
 {
+	private static final int SUBTASK_PADDING_REDUCTION = 20;
 	private static final int NOTE_INDENT_STEP = 50;
 	/* task name will appear right under user's finger */
 	static final int TASK_CREATION_OFFSET_X = -40;
@@ -219,8 +220,9 @@ public class TaskViewer
 			LinearLayout.LayoutParams lp;
 			lp = (android.widget.LinearLayout.LayoutParams) cb
 					.getLayoutParams();
-			lp.setMargins(lp.leftMargin - 5, lp.topMargin - 5, lp.rightMargin,
-					lp.bottomMargin - 5);
+			lp.setMargins(lp.leftMargin - SUBTASK_PADDING_REDUCTION,
+					lp.topMargin - SUBTASK_PADDING_REDUCTION, lp.rightMargin,
+					lp.bottomMargin - SUBTASK_PADDING_REDUCTION);
 			cb.setLayoutParams(lp);
 
 			TextView tv = new TextView(pane_context);
@@ -231,8 +233,9 @@ public class TaskViewer
 			/* XXX: it could be device-specific */
 			lp = (android.widget.LinearLayout.LayoutParams) tv
 					.getLayoutParams();
-			lp.setMargins(lp.leftMargin, lp.topMargin - 5, lp.rightMargin,
-					lp.bottomMargin);
+			lp.setMargins(lp.leftMargin,
+					lp.topMargin - SUBTASK_PADDING_REDUCTION,
+					lp.rightMargin, lp.bottomMargin);
 			tv.setLayoutParams(lp);
 
 			updateNoteView(note, ret);
