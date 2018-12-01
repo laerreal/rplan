@@ -35,6 +35,7 @@ import edu.real.plan.TextNote;
 public class TaskViewer
 		implements Callback, OnTouchListener, PlanListener, TaskListener
 {
+	private static final int NOTE_INDENT_STEP = 50;
 	/* task name will appear right under user's finger */
 	static final int TASK_CREATION_OFFSET_X = -40;
 	static final int TASK_CREATION_OFFSET_Y = -60;
@@ -174,6 +175,8 @@ public class TaskViewer
 
 					vg.addView(nv);
 					noteviews.put(note, nv);
+
+					updateNoteIndent(note, nv);
 				}
 			}
 		} else {
@@ -186,6 +189,16 @@ public class TaskViewer
 				this.taskview2noteviews.put(v, null);
 			}
 		}
+	}
+
+	private void updateNoteIndent(Note note, View nv)
+	{
+		android.widget.LinearLayout.LayoutParams nlp;
+		nlp = (android.widget.LinearLayout.LayoutParams) nv
+				.getLayoutParams();
+		nlp.setMargins(NOTE_INDENT_STEP * note.getIndent(), nlp.topMargin,
+				nlp.rightMargin, nlp.bottomMargin);
+		nv.setLayoutParams(nlp);
 	}
 
 	private View initNote(Note note)
@@ -344,8 +357,11 @@ public class TaskViewer
 	@Override
 	public void onNoteIndenting(Task t, Note n, int new_indent)
 	{
-		// TODO Auto-generated method stub
+		if (!t.isExpanded()) {
+			return;
+		}
 
+		updateNoteIndent(n, getNoteView(t, n));
 	}
 
 	protected void updateNoteView(Note n, View nv)
