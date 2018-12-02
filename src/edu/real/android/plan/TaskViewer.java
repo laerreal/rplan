@@ -177,7 +177,7 @@ public class TaskViewer
 					vg.addView(nv);
 					noteviews.put(note, nv);
 
-					updateNoteIndent(note, nv);
+					updateNoteIndent(note, nv, note.getIndent());
 				}
 			}
 		} else {
@@ -192,12 +192,12 @@ public class TaskViewer
 		}
 	}
 
-	private void updateNoteIndent(Note note, View nv)
+	private void updateNoteIndent(Note note, View nv, int indent)
 	{
 		android.widget.LinearLayout.LayoutParams nlp;
 		nlp = (android.widget.LinearLayout.LayoutParams) nv
 				.getLayoutParams();
-		nlp.setMargins(NOTE_INDENT_STEP * note.getIndent(), nlp.topMargin,
+		nlp.setMargins(NOTE_INDENT_STEP * indent, nlp.topMargin,
 				nlp.rightMargin, nlp.bottomMargin);
 		nv.setLayoutParams(nlp);
 	}
@@ -364,7 +364,7 @@ public class TaskViewer
 			return;
 		}
 
-		updateNoteIndent(n, getNoteView(t, n));
+		updateNoteIndent(n, getNoteView(t, n), new_indent);
 	}
 
 	protected void updateNoteView(Note n, View nv)
