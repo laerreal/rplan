@@ -198,6 +198,10 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			ret.opaque = opaque;
 		}
 
+		for (Note n : ret.notes) {
+			n.addListener(ret);
+		}
+
 		return ret;
 	}
 
