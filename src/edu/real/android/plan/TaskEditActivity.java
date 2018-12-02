@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,7 +36,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		OnClickListener, // for buttons
 		OnCheckedChangeListener, // for check box of subtask
 		// for notes, to implement indentation of fling
-		OnGestureListener, OnTouchListener
+		OnTouchListener
 {
 	public static final int INDENTATION_STEP = 50;
 	protected final int MODE_NOT_SET = 0;
@@ -58,7 +56,6 @@ public class TaskEditActivity extends RPlanActivity implements
 	int mode;
 	ToggleButton tb_edit_mode;
 	/* Indentation by fling. */
-	GestureDetector gd;
 	View last_touched;
 	/* Performs time spread user interface operations */
 	Handler ui_handler;
@@ -104,7 +101,19 @@ public class TaskEditActivity extends RPlanActivity implements
 		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
 		tb_edit_mode.setOnCheckedChangeListener(this);
 
-		gd = new GestureDetector(this, this);
+		/* XXX: This horrible hack is required to workaround conflict between
+		 * standard ScrollView and gesture detection. The standard SV do not
+		 * pass motion events those are directed vertically, because they do
+		 * vertical scrolling internally and are consumed. Only near horizontal
+		 * events are passed, with small Y absolute value. A horizontal fling
+		 * gesture is designed to result in note indentation changing. It is
+		 * desired to accept greater absolute Y values to note indentation. To
+		 * catch motion events with greater absolute Y values a special
+		 * IndentScrollView class has been inherited. It sees all motion
+		 * events, detects horizontal fling and notify this TaskEditActivity
+		 * when an indentation is possible. If this TEA find out the gesture
+		 * over a note view then the indentation is actually applied. */
+		((IndentScrollView) findViewById(R.id.sv_notes)).tea = this;
 
 		if (CF.DEBUG < 1)
 			Log.v(getClass().getName(), "onCreate-d");
@@ -389,30 +398,15 @@ public class TaskEditActivity extends RPlanActivity implements
 
 	/* Gesture detection for notes */
 
-	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
 		last_touched = v;
-		gd.onTouchEvent(event);
-		// do not mask touch events for note input
 		return false;
 	}
 
-	@Override
-	public boolean onFling(
-			MotionEvent e1, MotionEvent e2, float velocityX, float velocityY
-	)
+	public void indent(int i)
 	{
-		if (CF.DEBUG < 1)
-			Log.i(getClass().toString(),
-				"onFling " + velocityX + ", " + velocityY);
-
-		if (Math.abs(velocityX) < 1.5 * Math.abs(velocityY)) {
-			// fling is not horizontal enough
-			return true;
-		}
-
 		Object tmp = last_touched;
 		Note n = null;
 		View nv = null; // init. var., just to make Eclipse checker happy
@@ -424,56 +418,11 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		if (n == null) {
 			// fling on something that is not a view for a note
-			return true;
+			return;
 		}
 
-		final int i = n.getIndent();
-		if (i > 0 && velocityX < 0) {
-			n.setIndent(i - 1);
-		} else if (velocityX > 0) {
-			n.setIndent(i + 1);
-		}
-
+		n.setIndent(Math.max(0, n.getIndent() + i));
 		updateIndent(n, nv);
-
-		return true;
-	}
-
-	@Override
-	public boolean onDown(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onScroll(
-			MotionEvent e1, MotionEvent e2, float distanceX, float distanceY
-	)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

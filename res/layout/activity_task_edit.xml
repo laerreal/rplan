@@ -29,8 +29,8 @@
         android:ems="10"
         android:inputType="textMultiLine" />
 
-    <ScrollView
-        android:id="@+id/scrollView1"
+    <edu.real.android.plan.IndentScrollView
+        android:id="@+id/sv_notes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
@@ -59,7 +59,7 @@
                     android:text="@string/add_subtask" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </edu.real.android.plan.IndentScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
