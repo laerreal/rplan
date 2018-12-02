@@ -117,6 +117,7 @@ public abstract class Notifier<L>
 			holes = false;
 		} else {
 			i = leftmost_hole;
+			empty -= added;
 		}
 
 		leftmost_hole = i + added;
