@@ -188,11 +188,9 @@ public class TaskEditActivity extends RPlanActivity
 		ll_notes.addView(ll, next_note_index++);
 
 		int indent = n.getIndent();
-		if (indent > 0) {
 			LayoutParams lp = (LayoutParams) ll.getLayoutParams();
 			lp.setMargins(INDENTATION_STEP * indent, 0, 0, 0);
 			ll.setLayoutParams(lp);
-		}
 
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
