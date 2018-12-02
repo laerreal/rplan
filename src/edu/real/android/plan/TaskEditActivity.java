@@ -187,10 +187,7 @@ public class TaskEditActivity extends RPlanActivity
 
 		ll_notes.addView(ll, next_note_index++);
 
-		int indent = n.getIndent();
-			LayoutParams lp = (LayoutParams) ll.getLayoutParams();
-			lp.setMargins(INDENTATION_STEP * indent, 0, 0, 0);
-			ll.setLayoutParams(lp);
+		updateIndent(n, ll);
 
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
@@ -227,6 +224,14 @@ public class TaskEditActivity extends RPlanActivity
 		note2view.put(n, ll);
 
 		return main_input;
+	}
+
+	private void updateIndent(Note n, View v)
+	{
+		int indent = n.getIndent();
+		LayoutParams lp = (LayoutParams) v.getLayoutParams();
+		lp.setMargins(INDENTATION_STEP * indent, 0, 0, 0);
+		v.setLayoutParams(lp);
 	}
 
 	private void applyModeToNoteView(ViewGroup vg)
