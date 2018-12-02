@@ -9,11 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,8 +34,11 @@ import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TextNote;
 
-public class TaskEditActivity extends RPlanActivity
-		implements OnClickListener, OnCheckedChangeListener
+public class TaskEditActivity extends RPlanActivity implements
+		OnClickListener, // for buttons
+		OnCheckedChangeListener, // for check box of subtask
+		// for notes, to implement indentation of fling
+		OnGestureListener, OnTouchListener
 {
 	public static final int INDENTATION_STEP = 50;
 	protected final int MODE_NOT_SET = 0;
@@ -50,6 +57,9 @@ public class TaskEditActivity extends RPlanActivity
 	LayoutParams note_content_lp;
 	int mode;
 	ToggleButton tb_edit_mode;
+	/* Indentation by fling. */
+	GestureDetector gd;
+	View last_touched;
 	/* Performs time spread user interface operations */
 	Handler ui_handler;
 	String i_action;
@@ -93,6 +103,8 @@ public class TaskEditActivity extends RPlanActivity
 		setMode(MODE_SIMPLE);
 		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
 		tb_edit_mode.setOnCheckedChangeListener(this);
+
+		gd = new GestureDetector(this, this);
 
 		if (CF.DEBUG < 1)
 			Log.v(getClass().getName(), "onCreate-d");
@@ -219,6 +231,8 @@ public class TaskEditActivity extends RPlanActivity
 
 			main_input = et;
 		}
+
+		main_input.setOnTouchListener(this);
 
 		applyModeToNoteView(ll);
 		note2view.put(n, ll);
@@ -371,4 +385,95 @@ public class TaskEditActivity extends RPlanActivity
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+
+	/* Gesture detection for notes */
+
+	@SuppressLint("ClickableViewAccessibility")
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		last_touched = v;
+		gd.onTouchEvent(event);
+		// do not mask touch events for note input
+		return false;
+	}
+
+	@Override
+	public boolean onFling(
+			MotionEvent e1, MotionEvent e2, float velocityX, float velocityY
+	)
+	{
+		if (CF.DEBUG < 1)
+			Log.i(getClass().toString(),
+				"onFling " + velocityX + ", " + velocityY);
+
+		if (Math.abs(velocityX) < 1.5 * Math.abs(velocityY)) {
+			// fling is not horizontal enough
+			return true;
+		}
+
+		Object tmp = last_touched;
+		Note n = null;
+		View nv = null; // init. var., just to make Eclipse checker happy
+		while (n == null && tmp instanceof View) {
+			nv = (View) tmp;
+			n = note2view.getKey(nv);
+			tmp = nv.getParent();
+		}
+
+		if (n == null) {
+			// fling on something that is not a view for a note
+			return true;
+		}
+
+		final int i = n.getIndent();
+		if (i > 0 && velocityX < 0) {
+			n.setIndent(i - 1);
+		} else if (velocityX > 0) {
+			n.setIndent(i + 1);
+		}
+
+		updateIndent(n, nv);
+
+		return true;
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onScroll(
+			MotionEvent e1, MotionEvent e2, float distanceX, float distanceY
+	)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
