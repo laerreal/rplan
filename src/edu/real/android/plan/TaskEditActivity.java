@@ -76,7 +76,8 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		ui_handler = new Handler();
 
-		getSupportActionBar().hide();
+		/* TODO: use getSupportActionBar to support API 8 (2.2) */
+		getActionBar().hide();
 
 		setContentView(R.layout.activity_task_edit);
 
