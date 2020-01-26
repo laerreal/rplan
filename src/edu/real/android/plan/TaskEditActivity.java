@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -36,7 +38,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		OnClickListener, // for buttons
 		OnCheckedChangeListener, // for check box of subtask
 		// for notes, to implement indentation of fling
-		OnTouchListener
+		OnTouchListener,
+		// to insert notes below currently focused
+		OnFocusChangeListener
 {
 	public static final int INDENTATION_STEP = 50;
 	protected final int MODE_NOT_SET = 0;
@@ -45,7 +49,6 @@ public class TaskEditActivity extends RPlanActivity implements
 
 	Task task;
 	LinearLayout ll_notes;
-	int next_note_index;
 	EditText et_task_description;
 	EditText et_task_name;
 	BiMap<Note, View> note2view;
@@ -57,9 +60,12 @@ public class TaskEditActivity extends RPlanActivity implements
 	ToggleButton tb_edit_mode;
 	/* Indentation by fling. */
 	View last_touched;
+	/* Note insertion below. */
+	View last_focused;
 	/* Performs time spread user interface operations */
 	Handler ui_handler;
 	String i_action;
+	LinearLayout ll_buttons_below_task_notes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -86,9 +92,8 @@ public class TaskEditActivity extends RPlanActivity implements
 		et_task_name = (EditText) findViewById(R.id.et_task_name);
 
 		note2view = new BiMap<Note, View>();
-		next_note_index = 0;
 
-		LinearLayout buttons_below_task_notes =
+		ll_buttons_below_task_notes =
 				(LinearLayout) findViewById(R.id.ll_buttons_below_task_notes);
 		LinearLayout buttons_in_toolbar =
 				(LinearLayout) findViewById(R.id.ll_buttons_in_toolbar);
@@ -98,7 +103,7 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		final LinearLayout ll_add_buttons_container;
 		if (add_buttons_among_tasks) {
-			ll_add_buttons_container = buttons_below_task_notes;
+			ll_add_buttons_container = ll_buttons_below_task_notes;
 		} else {
 			ll_add_buttons_container = buttons_in_toolbar;
 		}
@@ -165,7 +170,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		{
 			if (cur.hasNext()) {
 				Note n = cur.next();
-				addViewForNote(n);
+				addViewForNote(-1, n);
 				ui_handler.post(this);
 				return;
 			}
@@ -206,7 +211,7 @@ public class TaskEditActivity extends RPlanActivity implements
 	}
 
 	@SuppressLint("InflateParams")
-	private View addViewForNote(Note n)
+	private View addViewForNote(int index, Note n)
 	{
 		View main_input = null;
 
@@ -227,7 +232,11 @@ public class TaskEditActivity extends RPlanActivity implements
 		bt_move.setOnClickListener(this);
 		bt_move.setTag(n);
 
-		ll_notes.addView(ll, next_note_index++);
+		if (index < 0) {
+			index += ll_notes.indexOfChild(ll_buttons_below_task_notes) + 1;
+		}
+
+		ll_notes.addView(ll, index);
 
 		updateIndent(n, ll);
 
@@ -263,6 +272,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 
 		main_input.setOnTouchListener(this);
+		main_input.setOnFocusChangeListener(this);
 
 		applyModeToNoteView(ll);
 		note2view.put(n, ll);
@@ -345,6 +355,22 @@ public class TaskEditActivity extends RPlanActivity implements
 	public void onClick(View v)
 	{
 		Note n;
+		int note_index = -1;
+
+		/* Insert note below last touched note */
+		if (last_touched != null) {
+			View note_v = last_focused;
+			while (note_v != null) {
+				ViewParent p = note_v.getParent();
+				if (p == ll_notes) {
+					note_index = ll_notes.indexOfChild(note_v) + 1;
+					break;
+				} else {
+					note_v = (View) p;
+				}
+			}
+		}
+
 		if (v == bt_add_note) {
 			n = new TextNote();
 		} else if (v == bt_add_subtask) {
@@ -361,7 +387,6 @@ public class TaskEditActivity extends RPlanActivity implements
 			case R.id.bt_delete_note:
 				nv = note2view.pop(n);
 				ll_notes.removeView(nv);
-				next_note_index--;
 				task.removeNote(n);
 				break;
 			case R.id.bt_note_up:
@@ -377,7 +402,9 @@ public class TaskEditActivity extends RPlanActivity implements
 			case R.id.bt_note_down:
 				nv = note2view.get(n);
 				idx = ll_notes.indexOfChild(nv);
-				if (idx < next_note_index - 1) {
+				int buttons_idx =
+						ll_notes.indexOfChild(ll_buttons_below_task_notes);
+				if (idx < buttons_idx - 1) {
 					ll_notes.removeViewAt(idx);
 					idx++;
 					ll_notes.addView(nv, idx);
@@ -387,8 +414,8 @@ public class TaskEditActivity extends RPlanActivity implements
 			}
 			return;
 		}
-		task.addNote(n);
-		View input = addViewForNote(n);
+		task.insertNote(note_index, n);
+		View input = addViewForNote(note_index, n);
 		if (input != null) {
 			input.requestFocus();
 		}
@@ -444,6 +471,12 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		n.setIndent(Math.max(0, n.getIndent() + i));
 		updateIndent(n, nv);
+	}
+
+
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		last_focused = v;
 	}
 
 }

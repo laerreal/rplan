@@ -250,9 +250,17 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public void addNote(Note note)
 	{
-		notes.add(note);
+		this.insertNote(-1, note);
+	}
+
+	public void insertNote(int index, Note note)
+	{
+		if (index < 0) {
+			index += notes.size() + 1;
+		}
+		notes.add(index, note);
 		note.addListener(this);
-		for (begin(); next(); l.onNoteAdded(this, note))
+		for (begin(); next(); l.onNoteAdded(this, index, note))
 			;
 		last_edited_timestamp = new ZonedDateTime();
 	}

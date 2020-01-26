@@ -417,7 +417,7 @@ public class TaskViewer
 	}
 
 	@Override
-	public void onNoteAdded(Task t, Note n)
+	public void onNoteAdded(Task t, int index, Note n)
 	{
 		if (!t.isExpanded()) {
 			return;
@@ -428,7 +428,7 @@ public class TaskViewer
 
 		View nv = initNote(n);
 
-		vg.addView(nv);
+		vg.addView(nv, index);
 		noteviews.put(n, nv);
 	}
 

@@ -12,7 +12,7 @@ public interface TaskListener
 
 	public void onNoteIndenting(Task t, Note n, int new_indent);
 
-	public void onNoteAdded(Task t, Note n);
+	public void onNoteAdded(Task t, int index, Note n);
 
 	public void onNoteRemoving(Task t, Note n);
 
