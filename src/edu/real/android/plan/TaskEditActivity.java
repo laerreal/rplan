@@ -88,17 +88,28 @@ public class TaskEditActivity extends RPlanActivity implements
 		note2view = new BiMap<Note, View>();
 		next_note_index = 0;
 
-
 		LinearLayout buttons_below_task_notes =
 				(LinearLayout) findViewById(R.id.ll_buttons_below_task_notes);
+		LinearLayout buttons_in_toolbar =
+				(LinearLayout) findViewById(R.id.ll_buttons_in_toolbar);
+
+		/* TODO: add a preference */
+		boolean add_buttons_among_tasks = false;
+
+		final LinearLayout ll_add_buttons_container;
+		if (add_buttons_among_tasks) {
+			ll_add_buttons_container = buttons_below_task_notes;
+		} else {
+			ll_add_buttons_container = buttons_in_toolbar;
+		}
 
 		bt_add_note = new Button(this);
-		buttons_below_task_notes.addView(bt_add_note);
+		ll_add_buttons_container.addView(bt_add_note, 0);
 		bt_add_note.setText(R.string.add_note);
 		bt_add_note.setOnClickListener(this);
 
 		bt_add_subtask = new Button(this);
-		buttons_below_task_notes.addView(bt_add_subtask);
+		ll_add_buttons_container.addView(bt_add_subtask, 1);
 		bt_add_subtask.setText(R.string.add_subtask);
 		bt_add_subtask.setOnClickListener(this);
 

@@ -54,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
+        android:id="@+id/ll_buttons_in_toolbar"
         android:gravity="right" >
 
         <ToggleButton
