@@ -42,21 +42,10 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/ll_buttons_below_task_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/bt_add_note"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_note" />
-
-                <Button
-                    android:id="@+id/bt_add_subtask"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_subtask" />
             </LinearLayout>
         </LinearLayout>
     </edu.real.android.plan.IndentScrollView>
