@@ -88,6 +88,10 @@ public class MainActivity extends RPlanActivity
 			Intent shareIntent = Intent.createChooser(shareBackup, null);
 			startActivity(shareIntent);
 			return true;
+		case R.id.import_backup:
+			Intent importIntent = new Intent(this, ImportActivity.class);
+			startActivity(importIntent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

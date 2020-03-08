@@ -46,6 +46,7 @@
             android:name=".RPlanPreferenceActivity"
             >
         </activity>
+        <activity android:name=".ImportActivity"></activity>
     </application>
 
 </manifest>

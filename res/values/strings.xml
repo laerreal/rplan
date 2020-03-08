@@ -17,5 +17,8 @@
     <string name="remove_all_">Remove ALL!!!</string>
     <string name="remove_all_tasks_">Remove all tasks?</string>
     <string name="save_backup_share_">Save Backup (Share)</string>
+    <string name="import_">Import</string>
+    <string name="imported_replaces_current_">Импортированные данные земенят существующие.</string>
+    <string name="insert_imported_here_">Вставьте сюда импортируемые данные резервной копии.</string>
 
 </resources>
