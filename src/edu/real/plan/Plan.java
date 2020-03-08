@@ -76,6 +76,13 @@ public class Plan extends Notifier<PlanListener>
 		}
 	}
 
+	public String saveAsString()
+	{
+		StringWriter w = new StringWriter();
+		save(w);
+		return w.toString();
+	}
+
 	public static final Plan load(String text)
 			throws IllegalAccessException, IllegalArgumentException
 	{

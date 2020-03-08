@@ -99,11 +99,10 @@ public class RPlanService extends Service
 		if (CF.DEBUG < 1)
 			Log.v(getClass().getName(), "onDestroy");
 
-		StringWriter w = new StringWriter();
-		plan.save(w);
+		String plan_s = plan.saveAsString();
 		byte[] bytes;
 		try {
-			bytes = w.toString().getBytes("UTF-8");
+			bytes = plan_s.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 			return;
