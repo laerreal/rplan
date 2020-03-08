@@ -428,7 +428,7 @@ public class TaskViewer
 
 		View nv = initNote(n);
 
-		vg.addView(nv, index);
+		vg.addView(nv, index + 1 /* shift because of title */);
 		noteviews.put(n, nv);
 	}
 
