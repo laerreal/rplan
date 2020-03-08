@@ -11,5 +11,8 @@
     <item
         android:id="@+id/remove_all"
         android:title="@string/remove_all_"/>
+    <item
+        android:id="@+id/save_backup_share"
+        android:title="@string/save_backup_share_"/>
 
 </menu>

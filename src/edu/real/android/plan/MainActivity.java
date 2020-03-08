@@ -75,6 +75,19 @@ public class MainActivity extends RPlanActivity
 					.create()
 					.show();
 			return true;
+		case R.id.save_backup_share:
+			if (service == null) {
+				return true;
+			}
+			Plan plan = service.getPlan();
+			Intent shareBackup = new Intent(Intent.ACTION_SEND);
+			shareBackup.putExtra(Intent.EXTRA_TEXT, plan.saveAsString());
+			shareBackup.putExtra(Intent.EXTRA_SUBJECT, "RPlan Backup");
+			shareBackup.setType("text/plain");
+
+			Intent shareIntent = Intent.createChooser(shareBackup, null);
+			startActivity(shareIntent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

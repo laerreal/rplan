@@ -16,5 +16,6 @@
     <string name="task_title_font_scale">Task title font scale</string>
     <string name="remove_all_">Remove ALL!!!</string>
     <string name="remove_all_tasks_">Remove all tasks?</string>
+    <string name="save_backup_share_">Save Backup (Share)</string>
 
 </resources>
