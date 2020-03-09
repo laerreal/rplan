@@ -351,24 +351,28 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 	}
 
+	public int getNoteIndexByView(View v)
+	{
+		while (v != null) {
+			ViewParent p = v.getParent();
+			if (p == ll_notes) {
+				return ll_notes.indexOfChild(v);
+			} else {
+				v = (View) p;
+			}
+		}
+		return -1;
+	}
+
 	@Override
 	public void onClick(View v)
 	{
 		Note n;
-		int note_index = -1;
 
 		/* Insert note below last touched note */
-		if (last_touched != null) {
-			View note_v = last_focused;
-			while (note_v != null) {
-				ViewParent p = note_v.getParent();
-				if (p == ll_notes) {
-					note_index = ll_notes.indexOfChild(note_v) + 1;
-					break;
-				} else {
-					note_v = (View) p;
-				}
-			}
+		int note_index = getNoteIndexByView(last_focused);
+		if (note_index >= 0) { /* found */
+			note_index++;
 		}
 
 		if (v == bt_add_note) {
