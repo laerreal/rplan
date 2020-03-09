@@ -279,6 +279,11 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		return new LinkedList<Note>(this.notes);
 	}
 
+	public int getNotesCount()
+	{
+		return notes.size();
+	}
+
 	public String getDescription()
 	{
 		return description;
