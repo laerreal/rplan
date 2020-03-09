@@ -37,7 +37,8 @@ import edu.real.plan.TextNote;
 public class TaskEditActivity extends RPlanActivity implements
 		OnClickListener, // for buttons
 		OnCheckedChangeListener, // for check box of subtask
-		// for notes, to implement indentation of fling
+		// 1. for notes, to implement indentation of fling
+		// 2. to disable vertical scroll while drag button is being held.
 		OnTouchListener,
 		// to insert notes below currently focused
 		OnFocusChangeListener
@@ -58,6 +59,7 @@ public class TaskEditActivity extends RPlanActivity implements
 	LayoutParams note_content_lp;
 	int mode;
 	ToggleButton tb_edit_mode;
+	ToggleButton tb_drag;
 	/* Indentation by fling. */
 	View last_touched;
 	/* Note insertion below. */
@@ -66,6 +68,9 @@ public class TaskEditActivity extends RPlanActivity implements
 	Handler ui_handler;
 	String i_action;
 	LinearLayout ll_buttons_below_task_notes;
+	IndentScrollView sv_notes;
+	int dragged_index;
+	Note dragged_note;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -127,6 +132,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
 		tb_edit_mode.setOnCheckedChangeListener(this);
 
+		sv_notes = (IndentScrollView) findViewById(R.id.sv_notes);
 		/* XXX: This horrible hack is required to workaround conflict between
 		 * standard ScrollView and gesture detection. The standard SV do not
 		 * pass motion events those are directed vertically, because they do
@@ -139,7 +145,12 @@ public class TaskEditActivity extends RPlanActivity implements
 		 * events, detects horizontal fling and notify this TaskEditActivity
 		 * when an indentation is possible. If this TEA find out the gesture
 		 * over a note view then the indentation is actually applied. */
-		((IndentScrollView) findViewById(R.id.sv_notes)).tea = this;
+		sv_notes.tea = this;
+
+		tb_drag = (ToggleButton) findViewById(R.id.tb_drag);
+		tb_drag.setOnCheckedChangeListener(this);
+		setDragging(tb_drag.isChecked());
+		dragged_index = -1;
 
 		if (CF.DEBUG < 1)
 			Log.v(getClass().getName(), "onCreate-d");
@@ -154,6 +165,14 @@ public class TaskEditActivity extends RPlanActivity implements
 		mode = m;
 		for (View v : note2view.values()) {
 			applyModeToNoteView((ViewGroup) v);
+		}
+	}
+
+	protected void setDragging(boolean enabled)
+	{
+		int visibility = enabled ? View.VISIBLE : View.GONE;
+		for (View v : note2view.values()) {
+			((ViewGroup)v).findViewById(R.id.bt_drag).setVisibility(visibility);
 		}
 	}
 
@@ -232,6 +251,11 @@ public class TaskEditActivity extends RPlanActivity implements
 		bt_move.setOnClickListener(this);
 		bt_move.setTag(n);
 
+		/* Drag button */
+		View bt_drag = ll.findViewById(R.id.bt_drag);
+		bt_drag.setOnTouchListener(this);
+		bt_drag.setTag(n);
+
 		if (index < 0) {
 			index += ll_notes.indexOfChild(ll_buttons_below_task_notes) + 1;
 		}
@@ -275,6 +299,11 @@ public class TaskEditActivity extends RPlanActivity implements
 		main_input.setOnFocusChangeListener(this);
 
 		applyModeToNoteView(ll);
+
+		/* Drag buttons visibility */
+		ll.findViewById(R.id.bt_drag).setVisibility(
+				tb_drag.isChecked() ? View.VISIBLE : View.GONE);
+
 		note2view.put(n, ll);
 
 		return main_input;
@@ -430,6 +459,8 @@ public class TaskEditActivity extends RPlanActivity implements
 	{
 		if (buttonView == tb_edit_mode) {
 			setMode(isChecked ? MODE_MANAGE : MODE_SIMPLE);
+		} else if (buttonView == tb_drag) {
+			setDragging(isChecked);
 		}
 	}
 
@@ -454,7 +485,72 @@ public class TaskEditActivity extends RPlanActivity implements
 	public boolean onTouch(View v, MotionEvent event)
 	{
 		last_touched = v;
+
+		final int action = event.getActionMasked();
+
+		switch (v.getId()) {
+		case R.id.bt_drag:
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				/* Drag stopping is done by dispatchTouchEvent because the `v`iew will
+				   be removed-added during dragging. */
+				sv_notes.drag_mode = true;
+				dragged_note = (Note) v.getTag();
+				dragged_index = getNoteIndexByView(v);
+				break;
+			}
+			break;
+		}
 		return false;
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev)
+	{
+		if (dragged_index >= 0) {
+			final int action = ev.getActionMasked();
+			switch (action) {
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_CANCEL:
+				sv_notes.drag_mode = false;
+				dragged_note = null;
+				dragged_index = -1;
+				break;
+			case MotionEvent.ACTION_MOVE:
+				// Log.i(getClass().getSimpleName(), ev.toString());
+				float y = ev.getY();
+
+				int xy[] = new int[2];
+
+				for (View v : note2view.values()) {
+					v.getLocationInWindow(xy);
+					if (y < xy[1]) {
+						continue;
+					}
+					if (xy[1] + v.getHeight() < y) {
+						continue;
+					}
+					int note_index = ll_notes.indexOfChild(v);
+					// Log.i(getClass().getSimpleName(), "note_index = " + note_index);
+					if (note_index != dragged_index
+						&& note_index < task.getNotesCount()) {
+						// Log.i(getClass().getSimpleName(),
+						//	"Drag " + dragged_index + " -> " + note_index);
+
+						task.moveNote(dragged_note, note_index);
+
+						View note_view = note2view.get(dragged_note);
+						ll_notes.removeView(note_view);
+						ll_notes.addView(note_view, note_index);
+
+						dragged_index = note_index;
+					}
+					break;
+				}
+				break;
+			}
+		}
+		return super.dispatchTouchEvent(ev);
 	}
 
 	public void indent(int i)
@@ -476,7 +572,6 @@ public class TaskEditActivity extends RPlanActivity implements
 		n.setIndent(Math.max(0, n.getIndent() + i));
 		updateIndent(n, nv);
 	}
-
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {

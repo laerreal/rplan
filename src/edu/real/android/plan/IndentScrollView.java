@@ -16,6 +16,7 @@ public class IndentScrollView extends ScrollView
 	GestureDetector gd;
 	/* XXX: See comment near usage of this field in TaskEditActivity. */
 	TaskEditActivity tea;
+	public boolean drag_mode;
 
 	public IndentScrollView(Context context, AttributeSet attrs, int defStyleAttr)
 	{
@@ -37,6 +38,7 @@ public class IndentScrollView extends ScrollView
 
 	private void init()
 	{
+		drag_mode = false;
 		gd = new GestureDetector(this.getContext(), this);
 		tea = null;
 	}
@@ -44,6 +46,9 @@ public class IndentScrollView extends ScrollView
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev)
 	{
+		if (drag_mode) {
+			return false;
+		}
 		if (tea != null) {
 			if (CF.DEBUG < -1)
 				Log.i(getClass().toString(), "onInterceptTouchEvent");

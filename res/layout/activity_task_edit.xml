@@ -64,6 +64,13 @@
             android:textOff="@string/tb_simple_notes"
             android:textOn="@string/tb_manage_notes" />
 
+        <ToggleButton
+            android:id="@+id/tb_drag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="↕"
+            android:textOn="↕" />
+
     </LinearLayout>
 
 </LinearLayout>
