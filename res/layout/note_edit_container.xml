@@ -17,7 +17,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="0"
         android:minHeight="24dp"
-        android:text="v" />
+        android:text="↓" />
 
     <Button
         android:id="@+id/bt_note_up"
@@ -25,7 +25,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="0"
         android:minHeight="24dp"
-        android:text="^" />
+        android:text="↑" />
 
     <Button
         android:id="@+id/bt_drag"
