@@ -3,6 +3,7 @@ package edu.real.android.plan;
 import java.util.Iterator;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -88,7 +89,10 @@ public class TaskEditActivity extends RPlanActivity implements
 		ui_handler = new Handler();
 
 		/* TODO: use getSupportActionBar to support API 8 (2.2) */
-		getActionBar().hide();
+		ActionBar ab = getActionBar();
+		if (ab != null) {
+			ab.hide();
+		}
 
 		setContentView(R.layout.activity_task_edit);
 

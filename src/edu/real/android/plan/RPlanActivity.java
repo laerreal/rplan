@@ -5,9 +5,10 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
 
 
-public class RPlanActivity extends Activity
+public class RPlanActivity extends AppCompatActivity
 		implements ServiceConnection
 {
 
