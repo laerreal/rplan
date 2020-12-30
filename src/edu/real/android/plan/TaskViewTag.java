@@ -1,5 +1,6 @@
 package edu.real.android.plan;
 
+import android.graphics.Rect;
 import android.view.View;
 import edu.real.plan.Task;
 import android.widget.RelativeLayout.LayoutParams;
@@ -15,6 +16,7 @@ public class TaskViewTag {
 	private LayoutParams lp;
 	/* TODO: now we do not detect task invalidation */
 	private final boolean measured = false;
+	private final int frame_padding = 5;
 
 	public TaskViewTag(View v, Task t)
 	{
@@ -54,5 +56,16 @@ public class TaskViewTag {
 	public void updateLayoutParams(int offset_x, int offset_y)
 	{
 		v.setLayoutParams(getLayoutParams(offset_x, offset_y));
+	}
+
+	public Rect getFrameRect(int offset_x, int offset_y)
+	{
+		measure();
+		int x = t.getX() + offset_x;
+		int y = t.getY() + offset_y;
+		return new Rect(
+			x - frame_padding, y - frame_padding,
+			x + measured_w + frame_padding, y + measured_h + frame_padding
+		);
 	}
 }

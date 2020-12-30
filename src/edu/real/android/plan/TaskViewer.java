@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -67,6 +71,12 @@ public class TaskViewer
 
 	float task_title_font_scale;
 
+	Paint paint_task_frame;
+
+	Handler handler;
+	TaskViewerSurfaceUpdater updater;
+	boolean invalid;
+
 	public TaskViewer(RelativeLayout pane)
 	{
 		dragged = false;
@@ -83,6 +93,14 @@ public class TaskViewer
 		mode = MODE_MOVE;
 		backpane.setOnTouchListener(this);
 		prefs = PreferenceManager.getDefaultSharedPreferences(pane_context);
+
+		paint_task_frame = new Paint();
+		paint_task_frame.setColor(Color.GRAY);
+		paint_task_frame.setStyle(Paint.Style.STROKE);
+
+		handler = new Handler(Looper.getMainLooper());
+		invalid = true;
+		updater = new TaskViewerSurfaceUpdater(this);
 	}
 
 	public void init()
@@ -128,6 +146,7 @@ public class TaskViewer
 	{
 		TaskViewTag tag = (TaskViewTag)v.getTag();
 		tag.updateLayoutParams(offset_x, offset_y);
+		invalidate();
 	}
 
 	public void update(Plan new_plan)
@@ -283,6 +302,7 @@ public class TaskViewer
 
 	private void tryDrawing(SurfaceHolder holder)
 	{
+		invalid = false;
 		Canvas canvas = holder.lockCanvas();
 		if (canvas != null) {
 			drawMyStuff(canvas);
@@ -293,13 +313,17 @@ public class TaskViewer
 	private void drawMyStuff(final Canvas canvas)
 	{
 		canvas.drawRGB(255, 255, 255);
+		for (View v : this.task2view.values()) {
+			TaskViewTag tag = (TaskViewTag)v.getTag();
+			canvas.drawRect(tag.getFrameRect(offset_x, offset_y),
+				paint_task_frame);
+		}
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -521,5 +545,32 @@ public class TaskViewer
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	class TaskViewerSurfaceUpdater implements Runnable {
+		private TaskViewer tv;
+
+		TaskViewerSurfaceUpdater(TaskViewer tv)
+		{
+			this.tv = tv;
+		}
+
+		@Override
+		public void run()
+		{
+			if ((CF.DEBUG_FLAGS & CF.DEBUG_LOG_TASK_VIEW_INVALIDATES) != 0)
+				Log.v("TaskViewerSurfaceUpdater", "drawing");
+			tv.tryDrawing(tv.holder);
+		}
+
+	}
+
+	public void invalidate()
+	{
+		if (invalid) {
+			return;
+		}
+		invalid = true;
+		handler.postDelayed(updater, 10);
 	}
 }
