@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -24,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import edu.real.cross.Intersections;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.external.ZonedDateTime;
@@ -71,6 +74,8 @@ public class TaskViewer
 	float task_title_font_scale;
 
 	Paint paint_task_frame;
+	Paint paint_task_pointer;
+	float task_pointer_radius = 10;
 
 	Handler handler;
 	TaskViewerSurfaceUpdater updater;
@@ -96,6 +101,10 @@ public class TaskViewer
 		paint_task_frame = new Paint();
 		paint_task_frame.setColor(Color.GRAY);
 		paint_task_frame.setStyle(Paint.Style.STROKE);
+
+		paint_task_pointer = new Paint();
+		paint_task_pointer.setColor(Color.GRAY);
+		paint_task_pointer.setStyle(Paint.Style.FILL);
 
 		handler = new Handler(Looper.getMainLooper());
 		invalid = true;
@@ -311,10 +320,60 @@ public class TaskViewer
 	private void drawMyStuff(final Canvas canvas)
 	{
 		canvas.drawRGB(255, 255, 255);
+
+		Rect cnvRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+
 		for (View v : this.task2view.values()) {
-			TaskViewTag tag = (TaskViewTag)v.getTag();
-			canvas.drawRect(tag.getFrameRect(offset_x, offset_y),
-				paint_task_frame);
+			TaskViewTag tag = (TaskViewTag) v.getTag();
+			Rect taskRect = tag.getFrameRect(offset_x, offset_y);
+			if (Rect.intersects(cnvRect, taskRect)) {
+				canvas.drawRect(taskRect, paint_task_frame);
+			} else {
+				float cnvMidX = cnvRect.exactCenterX();
+				float cnvMidY = cnvRect.exactCenterY();
+				float taskMidX = taskRect.exactCenterX();
+				float taskMidY = taskRect.exactCenterY();
+
+				Point p;
+
+				while (true) { /* Not a loop */
+					p = Intersections.lineline(
+							cnvMidX, cnvMidY, taskMidX, taskMidY,
+							cnvRect.left, cnvRect.top,
+							cnvRect.right, cnvRect.top);
+
+					if (p != null) {
+						break;
+					}
+
+					p = Intersections.lineline(
+							cnvMidX, cnvMidY, taskMidX, taskMidY,
+							cnvRect.right, cnvRect.top,
+							cnvRect.right, cnvRect.bottom);
+
+					if (p != null) {
+						break;
+					}
+
+					p = Intersections.lineline(
+							cnvMidX, cnvMidY, taskMidX, taskMidY,
+							cnvRect.right, cnvRect.bottom,
+							cnvRect.left, cnvRect.bottom);
+
+					if (p != null) {
+						break;
+					}
+
+					p = Intersections.lineline(
+							cnvMidX, cnvMidY, taskMidX, taskMidY,
+							cnvRect.left, cnvRect.bottom,
+							cnvRect.left, cnvRect.top);
+					break;
+				}
+
+				canvas.drawCircle(p.x, p.y, task_pointer_radius,
+						paint_task_pointer);
+			}
 		}
 	}
 
