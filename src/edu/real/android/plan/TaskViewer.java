@@ -36,8 +36,7 @@ import edu.real.plan.TaskListener;
 import edu.real.plan.TextNote;
 
 public class TaskViewer
-		implements Callback, OnTouchListener, PlanListener, TaskListener
-{
+		implements Callback, OnTouchListener, PlanListener, TaskListener {
 	private static final int SUBTASK_PADDING_REDUCTION = 20;
 	private static final int NOTE_INDENT_STEP = 50;
 	/* task name will appear right under user's finger */
@@ -144,7 +143,7 @@ public class TaskViewer
 
 	void updateTask(View v, Task t)
 	{
-		TaskViewTag tag = (TaskViewTag)v.getTag();
+		TaskViewTag tag = (TaskViewTag) v.getTag();
 		tag.updateLayoutParams(offset_x, offset_y);
 		invalidate();
 	}
@@ -294,8 +293,7 @@ public class TaskViewer
 
 	@Override
 	public void surfaceChanged(
-			SurfaceHolder holder, int format, int width, int height
-	)
+			SurfaceHolder holder, int format, int width, int height)
 	{
 		tryDrawing(holder);
 	}
