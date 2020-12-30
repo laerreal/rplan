@@ -117,6 +117,7 @@ public class TaskViewer
 	private View initTaskView(Task task)
 	{
 		View v = initTask(task);
+		v.setTag(new TaskViewTag(v, task));
 		pane.addView(v);
 		task2view.put(task, v);
 		v.setOnTouchListener(new TaskViewListener(this, task));
@@ -126,22 +127,8 @@ public class TaskViewer
 
 	void updateTask(View v, Task t)
 	{
-		v.measure(1000, 1000);
-		int w = v.getMeasuredWidth();
-		int h = v.getMeasuredHeight();
-		int x = t.getX();
-		int y = t.getY();
-
-		LayoutParams lp = new LayoutParams(w, h);
-		lp.leftMargin = x + offset_x;
-		lp.topMargin = y + offset_y;
-		// Move the right (bottom) margin beyond the container at least for
-		// width (height) of that task's view (with 1 extra pixel for
-		// sureness).
-		lp.rightMargin = -w - 1 - offset_x;
-		lp.bottomMargin = -h - 1 - offset_y;
-
-		v.setLayoutParams(lp);
+		TaskViewTag tag = (TaskViewTag)v.getTag();
+		tag.updateLayoutParams(offset_x, offset_y);
 	}
 
 	public void update(Plan new_plan)
