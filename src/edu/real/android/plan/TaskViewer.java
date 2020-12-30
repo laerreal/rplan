@@ -60,11 +60,18 @@ public class TaskViewer
 
 	int down_x;
 	int down_y;
+	boolean dragged;
+	int prev_x;
+	int prev_y;
+	int offset_x;
+	int offset_y;
 
 	float task_title_font_scale;
 
 	public TaskViewer(RelativeLayout pane)
 	{
+		dragged = false;
+		offset_x = offset_y = 0;
 		plan = null;
 		this.pane = pane;
 		// TODO: lookup by a class or a tag
@@ -126,13 +133,13 @@ public class TaskViewer
 		int y = t.getY();
 
 		LayoutParams lp = new LayoutParams(w, h);
-		lp.leftMargin = x;
-		lp.topMargin = y;
+		lp.leftMargin = x + offset_x;
+		lp.topMargin = y + offset_y;
 		// Move the right (bottom) margin beyond the container at least for
 		// width (height) of that task's view (with 1 extra pixel for
 		// sureness).
-		lp.rightMargin = -w - 1;
-		lp.bottomMargin = -h - 1;
+		lp.rightMargin = -w - 1 - offset_x;
+		lp.bottomMargin = -h - 1 - offset_y;
 
 		v.setLayoutParams(lp);
 	}
@@ -387,16 +394,19 @@ public class TaskViewer
 	{
 		final int X = (int) event.getX();
 		final int Y = (int) event.getY();
+		int dx;
+		int dy;
 
 		switch (event.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
 			down_x = X;
 			down_y = Y;
+			dragged = false;
 			break;
 		case MotionEvent.ACTION_UP:
-			int dx = X - down_x;
-			int dy = Y - down_y;
-			if (Math.abs(dx) + Math.abs(dy) > TASK_CREATION_THRESHOLD) {
+			dx = X - down_x;
+			dy = Y - down_y;
+			if (dragged) {
 				break;
 			}
 			Task t = new Task(X + TASK_CREATION_OFFSET_X,
@@ -404,8 +414,39 @@ public class TaskViewer
 			plan.addTask(t);
 			editTask(t);
 			break;
+		case MotionEvent.ACTION_MOVE:
+			dx = X - down_x;
+			dy = Y - down_y;
+			if (!dragged) {
+				if (Math.abs(dx) + Math.abs(dy) > TASK_CREATION_THRESHOLD) {
+					dragged = true;
+					prev_x = down_x;
+					prev_y = down_y;
+				} else {
+					break;
+				}
+			}
+			dx = X - prev_x;
+			dy = Y - prev_y;
+
+			drag(dx, dy);
+
+			prev_x = X;
+			prev_y = Y;
+			break;
 		}
 		return true;
+	}
+
+	private void drag(int dx, int dy)
+	{
+		offset_x += dx;
+		offset_y += dy;
+		for (View v : this.task2view.values()) {
+			Task t = this.task2view.getKey(v);
+
+			updateTask(v, t);
+		}
 	}
 
 	@Override
