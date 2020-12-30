@@ -68,8 +68,6 @@ public class TaskViewer
 	boolean dragged;
 	int prev_x;
 	int prev_y;
-	int offset_x;
-	int offset_y;
 
 	float task_title_font_scale;
 
@@ -84,7 +82,6 @@ public class TaskViewer
 	public TaskViewer(RelativeLayout pane)
 	{
 		dragged = false;
-		offset_x = offset_y = 0;
 		plan = null;
 		this.pane = pane;
 		// TODO: lookup by a class or a tag
@@ -153,7 +150,7 @@ public class TaskViewer
 	void updateTask(View v, Task t)
 	{
 		TaskViewTag tag = (TaskViewTag) v.getTag();
-		tag.updateLayoutParams(offset_x, offset_y);
+		tag.updateLayoutParams(plan.getViewOffsetX(), plan.getViewOffsetY());
 		invalidate();
 	}
 
@@ -325,7 +322,8 @@ public class TaskViewer
 
 		for (View v : this.task2view.values()) {
 			TaskViewTag tag = (TaskViewTag) v.getTag();
-			Rect taskRect = tag.getFrameRect(offset_x, offset_y);
+			Rect taskRect = tag.getFrameRect(plan.getViewOffsetX(),
+					plan.getViewOffsetY());
 			if (Rect.intersects(cnvRect, taskRect)) {
 				canvas.drawRect(taskRect, paint_task_frame);
 			} else {
@@ -507,8 +505,15 @@ public class TaskViewer
 
 	private void drag(int dx, int dy)
 	{
-		offset_x += dx;
-		offset_y += dy;
+		plan.setViewOffset(plan.getViewOffsetX() + dx,
+				plan.getViewOffsetY() + dy);
+	}
+
+	public void onViewDragged(Plan p)
+	{
+		if (p != plan) {
+			return;
+		}
 		for (View v : this.task2view.values()) {
 			Task t = this.task2view.getKey(v);
 

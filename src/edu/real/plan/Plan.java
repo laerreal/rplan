@@ -11,6 +11,8 @@ public class Plan extends Notifier<PlanListener>
 {
 	List<Task> tasks;
 	Task current_task;
+	int view_offset_x;
+	int view_offset_y;
 
 	/**
 	 * Unsupported data read from string during loading. Preserved to be saved.
@@ -21,6 +23,24 @@ public class Plan extends Notifier<PlanListener>
 	public Plan()
 	{
 		tasks = new LinkedList<Task>();
+	}
+
+	public int getViewOffsetX()
+	{
+		return view_offset_x;
+	}
+
+	public int getViewOffsetY()
+	{
+		return view_offset_y;
+	}
+
+	public void setViewOffset(int x, int y)
+	{
+		view_offset_x = x;
+		view_offset_y = y;
+		for (begin(); next(); l.onViewDragged(this))
+			;
 	}
 
 	public void addTask(Task task)
@@ -71,6 +91,8 @@ public class Plan extends Notifier<PlanListener>
 			w.write(String.format("current_task %d\n",
 					getTaskIndex(current_task)));
 		}
+		w.write(String.format("view_offset_x %d\n", view_offset_x));
+		w.write(String.format("view_offset_y %d\n", view_offset_y));
 		if (opaque != null) {
 			w.write(opaque);
 		}
@@ -163,6 +185,10 @@ public class Plan extends Notifier<PlanListener>
 						task_lines.clear();
 					}
 				}
+			} else if (fieldName.equals("view_offset_x")) {
+				ret.view_offset_x = Integer.parseInt(fieldValue);
+			} else if (fieldName.equals("view_offset_y")) {
+				ret.view_offset_y = Integer.parseInt(fieldValue);
 			} else {
 				opaque += l + "\n";
 				continue;
