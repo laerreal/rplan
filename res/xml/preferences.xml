@@ -11,5 +11,11 @@
         android:summary="@string/task_pointer_radius_summary"
         android:defaultValue="15"
         />
+    <EditTextPreference
+        android:key="pref_subtaskPaddingReduction"
+        android:title="@string/subtask_padding_reduction"
+        android:summary="@string/subtask_padding_reduction_summary"
+        android:defaultValue="5"
+        />
 
 </PreferenceScreen>

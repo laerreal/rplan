@@ -37,4 +37,6 @@
     <string name="insert_imported_here_">Вставьте сюда импортируемые данные резервной копии.</string>
     <string name="task_pointer_radius_summary">Определяет размер точки на границе экрана, указывающей на задачу за пределами видимой части плана.</string>
     <string name="task_pointer_radius">Радиус указателя на задачу</string>
+    <string name="subtask_padding_reduction">Уменьшение отступа между подзадачами</string>
+    <string name="subtask_padding_reduction_summary">Позволяет отображать развёрнутые задачи на плане компактнее. Отрицательные значения увеличивают отступ.</string>
 </resources>

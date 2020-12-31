@@ -40,7 +40,7 @@ import edu.real.plan.TextNote;
 
 public class TaskViewer
 		implements Callback, OnTouchListener, PlanListener, TaskListener {
-	private static final int SUBTASK_PADDING_REDUCTION = 20;
+	private int subtask_padding_reduction;
 	private static final int NOTE_INDENT_STEP = 50;
 	/* task name will appear right under user's finger */
 	static final int TASK_CREATION_OFFSET_X = -40;
@@ -122,6 +122,13 @@ public class TaskViewer
 			task_pointer_radius = Float.parseFloat(tmp);
 		} catch (NumberFormatException e) {
 			task_pointer_radius = 15.0f;
+		}
+
+		tmp = prefs.getString("pref_subtaskPaddingReduction", "5");
+		try {
+			subtask_padding_reduction = Integer.parseInt(tmp);
+		} catch (NumberFormatException e) {
+			subtask_padding_reduction = 5;
 		}
 
 		for (Task task : plan.getTasks()) {
@@ -245,9 +252,9 @@ public class TaskViewer
 			LinearLayout.LayoutParams lp;
 			lp = (android.widget.LinearLayout.LayoutParams) cb
 					.getLayoutParams();
-			lp.setMargins(lp.leftMargin - SUBTASK_PADDING_REDUCTION,
-					lp.topMargin - SUBTASK_PADDING_REDUCTION, lp.rightMargin,
-					lp.bottomMargin - SUBTASK_PADDING_REDUCTION);
+			lp.setMargins(lp.leftMargin - subtask_padding_reduction,
+					lp.topMargin - subtask_padding_reduction, lp.rightMargin,
+					lp.bottomMargin - subtask_padding_reduction);
 			cb.setLayoutParams(lp);
 
 			TextView tv = new TextView(pane_context);
@@ -259,7 +266,7 @@ public class TaskViewer
 			lp = (android.widget.LinearLayout.LayoutParams) tv
 					.getLayoutParams();
 			lp.setMargins(lp.leftMargin,
-					lp.topMargin - SUBTASK_PADDING_REDUCTION,
+					lp.topMargin - subtask_padding_reduction,
 					lp.rightMargin, lp.bottomMargin);
 			tv.setLayoutParams(lp);
 
