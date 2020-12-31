@@ -33,8 +33,8 @@
     <string name="export_share_">Экспорт (Поделиться)</string>
     <!-- <string name="import_">Import</string> -->
     <string name="import_">Импорт</string>
-    <string name="imported_replaces_current_">Импортированные данные земенят существующие.</string>
+    <string name="imported_replaces_current_">Импортированные данные заменят существующие.</string>
     <string name="insert_imported_here_">Вставьте сюда импортируемые данные резервной копии.</string>
-    <string name="task_pointer_radius_summary">Определяет размер точки на границе экрана, указывающей на задачу за переделами видимой части плана.</string>
+    <string name="task_pointer_radius_summary">Определяет размер точки на границе экрана, указывающей на задачу за пределами видимой части плана.</string>
     <string name="task_pointer_radius">Радиус указателя на задачу</string>
 </resources>
