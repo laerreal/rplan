@@ -474,8 +474,10 @@ public class TaskViewer
 			if (dragged) {
 				break;
 			}
-			Task t = new Task(X + TASK_CREATION_OFFSET_X,
-					Y + TASK_CREATION_OFFSET_Y);
+			Task t = new Task(
+					X + TASK_CREATION_OFFSET_X - plan.getViewOffsetX(),
+					Y + TASK_CREATION_OFFSET_Y - plan.getViewOffsetY()
+			);
 			plan.addTask(t);
 			editTask(t);
 			break;
