@@ -11,4 +11,9 @@ public class CF
 	static public final int DEBUG_FLAGS = 0
 		// | DEBUG_LOG_TASK_VIEW_INVALIDATES
 		;
+
+	static public boolean isSet(int flags)
+	{
+		return (DEBUG_FLAGS & DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS) != 0;
+	}
 }
