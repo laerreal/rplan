@@ -568,6 +568,7 @@ public class TaskViewer
 	{
 		View v = task2view.pop(t);
 		pane.removeView(v);
+		invalidate();
 	}
 
 	@Override
