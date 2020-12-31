@@ -12,10 +12,10 @@
         android:id="@+id/remove_all"
         android:title="@string/remove_all_"/>
     <item
-        android:id="@+id/save_backup_share"
-        android:title="@string/save_backup_share_"/>
+        android:id="@+id/export_share"
+        android:title="@string/export_share_"/>
     <item
-        android:id="@+id/import_backup"
+        android:id="@+id/import_"
         android:title="@string/import_"/>
 
 </menu>

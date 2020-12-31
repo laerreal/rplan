@@ -75,7 +75,7 @@ public class MainActivity extends RPlanActivity
 					.create()
 					.show();
 			return true;
-		case R.id.save_backup_share:
+		case R.id.export_share:
 			if (service == null) {
 				return true;
 			}
@@ -88,7 +88,7 @@ public class MainActivity extends RPlanActivity
 			Intent shareIntent = Intent.createChooser(shareBackup, null);
 			startActivity(shareIntent);
 			return true;
-		case R.id.import_backup:
+		case R.id.import_:
 			Intent importIntent = new Intent(this, ImportActivity.class);
 			startActivity(importIntent);
 			return true;
