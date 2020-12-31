@@ -47,14 +47,22 @@ public class TaskViewTag {
 	{
 		measure();
 
+		int x = t.getX(), y = t.getY();
+
 		LayoutParams lp = new LayoutParams(measured_w, measured_h);
-		lp.leftMargin = t.getX() + offset_x;
-		lp.topMargin = t.getY() + offset_y;
-		// Move the right (bottom) margin beyond the container at least for
-		// width (height) of that task's view (with 1 extra pixel for
-		// sureness).
-		lp.rightMargin = -measured_w - 1 - offset_x;
-		lp.bottomMargin = -measured_h - 1 - offset_y;
+		lp.leftMargin = x + offset_x;
+		lp.topMargin = y + offset_y;
+
+		View p = (View) v.getParent();
+		int pw = p.getWidth();
+		int ph = p.getHeight();
+
+		int right = (x + offset_x + measure_w + 1);
+		int bottom = (y + offset_y + measure_h + 1);
+
+		// Add 1 extra pixel for sureness.
+		lp.rightMargin = pw - right;
+		lp.bottomMargin = ph - bottom;
 
 		if (CF.isSet(CF.DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS))
 			Log.v(this.getClass().getName(), String.format("LP: %d %d %d %d",
