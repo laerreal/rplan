@@ -73,7 +73,7 @@ public class TaskViewer
 
 	Paint paint_task_frame;
 	Paint paint_task_pointer;
-	float task_pointer_radius = 10;
+	float task_pointer_radius;
 
 	Handler handler;
 	TaskViewerSurfaceUpdater updater;
@@ -116,6 +116,14 @@ public class TaskViewer
 		} catch (NumberFormatException e) {
 			task_title_font_scale = 1.5f;
 		}
+
+		tmp = prefs.getString("pref_taskPointerRadius", "15");
+		try {
+			task_pointer_radius = Float.parseFloat(tmp);
+		} catch (NumberFormatException e) {
+			task_pointer_radius = 15.0f;
+		}
+
 		for (Task task : plan.getTasks()) {
 			initTaskView(task);
 		}

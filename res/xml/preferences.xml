@@ -5,5 +5,11 @@
         android:key="pref_taskTitleFontScale"
         android:defaultValue="1.5"
         />
+    <EditTextPreference
+        android:key="pref_taskPointerRadius"
+        android:title="@string/task_pointer_radius"
+        android:summary="@string/task_pointer_radius_summary"
+        android:defaultValue="15"
+        />
 
 </PreferenceScreen>
