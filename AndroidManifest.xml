@@ -2,8 +2,8 @@
 <!--  https://stackoverflow.com/questions/9629125/versioncode-vs-versionname-in-android-manifest  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.real.android.plan"
-    android:versionCode="3"
-    android:versionName="1.3" >
+    android:versionCode="4"
+    android:versionName="1.4" >
 
     <!-- android:minSdkVersion="11" is removed because of Android Studio
     limitation but is added because of Eclipse do not have the limitation.
