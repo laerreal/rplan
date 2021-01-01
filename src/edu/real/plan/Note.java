@@ -65,4 +65,14 @@ public abstract class Note extends Notifier<NoteListener>
 			w.write(' ');
 		}
 	}
+
+	public static String preprocessHTML(String html)
+	{
+		String lines[] = html.split("[\n\r]+");
+		String ret = "";
+		for (String l : lines) {
+			ret = ret + l;
+		}
+		return ret;
+	}
 }

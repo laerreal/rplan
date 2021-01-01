@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -460,12 +461,12 @@ public class TaskViewer
 			Subtask subtask = (Subtask) n;
 			TextView tv = (TextView) nv.findViewWithTag(TAG_NAME);
 			CheckBox cb = (CheckBox) nv.findViewWithTag(TAG_CHECKBOX);
-			tv.setText(subtask.getText());
+			tv.setText(Html.fromHtml(subtask.getText()));
 			cb.setChecked(subtask.getChecked());
 		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 			TextView tv = (TextView) nv;
-			tv.setText(tn.getText());
+			tv.setText(Html.fromHtml(tn.getText()));
 		}
 	}
 

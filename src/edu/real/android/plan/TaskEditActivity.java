@@ -6,9 +6,13 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -160,7 +164,6 @@ public class TaskEditActivity extends RPlanActivity implements
 			Log.v(getClass().getName(), "onCreate-d");
 	}
 
-
 	private void setMode(int m)
 	{
 		if (m == mode) {
@@ -278,7 +281,7 @@ public class TaskEditActivity extends RPlanActivity implements
 
 			EditText et = new EditText(this);
 			et.setSingleLine(true);
-			et.setText(st.getText());
+			et.setText(Html.fromHtml(st.getText()));
 			et.setTag(TaskViewer.TAG_NAME);
 
 			et.setGravity(Gravity.FILL_HORIZONTAL);
@@ -290,7 +293,7 @@ public class TaskEditActivity extends RPlanActivity implements
 
 			EditText et = new EditText(this);
 			et.setSingleLine(true);
-			et.setText(tn.getText());
+			et.setText(Html.fromHtml(tn.getText()));
 			et.setTag(TaskViewer.TAG_NAME);
 
 			et.setGravity(Gravity.FILL_HORIZONTAL);
@@ -376,7 +379,8 @@ public class TaskEditActivity extends RPlanActivity implements
 
 				EditText et = (EditText) v.findViewWithTag(TaskViewer.TAG_NAME);
 
-				tmp = et.getText().toString();
+				tmp = Note.preprocessHTML(
+						noteToHTML((SpannableStringBuilder) et.getText()));
 				if (!tmp.equals(tn.getText())) {
 					tn.setText(tmp);
 				}
@@ -468,6 +472,41 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 	}
 
+	/* Note, Html.toHtml yields to many junk. */
+	static private String noteToHTML(SpannableStringBuilder text)
+	{
+		String ret = "";
+		int next_i;
+		int I = text.length();
+		for (int i = 0; i < I; i = next_i) {
+			next_i = text.nextSpanTransition(i, I, StyleSpan.class);
+
+			boolean bold = false,
+					italic = false;
+
+			StyleSpan spans[] = text.getSpans(i, next_i, StyleSpan.class);
+			for (StyleSpan span : spans) {
+				int style = span.getStyle();
+				if ((style & Typeface.BOLD) != 0) {
+					bold = true;
+				}
+				if ((style & Typeface.ITALIC) != 0) {
+					italic = true;
+				}
+			}
+
+			String part = text.subSequence(i, next_i).toString();
+			if (bold) {
+				part = "<b>" + part + "</b>";
+			}
+			if (italic) {
+				part = "<i>" + part + "</i>";
+			}
+			ret += part;
+		}
+		return ret;
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -481,7 +520,6 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
 
 	/* Gesture detection for notes */
 
