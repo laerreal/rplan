@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -32,6 +33,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ToggleButton;
+import edu.real.cross.StringTools;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.plan.Note;
@@ -77,6 +79,9 @@ public class TaskEditActivity extends RPlanActivity implements
 	int dragged_index;
 	Note dragged_note;
 
+	ToggleButton tb_bold;
+	ToggleButton tb_italic;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -99,6 +104,12 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 
 		setContentView(R.layout.activity_task_edit);
+
+		tb_bold = (ToggleButton) findViewById(R.id.tb_bold);
+		tb_italic = (ToggleButton) findViewById(R.id.tb_italic);
+
+		tb_bold.setOnCheckedChangeListener(this);
+		tb_italic.setOnCheckedChangeListener(this);
 
 		ll_notes = (LinearLayout) findViewById(R.id.ll_task_notes);
 		et_task_description = (EditText) findViewById(
@@ -281,7 +292,7 @@ public class TaskEditActivity extends RPlanActivity implements
 			cb.setTag(TaskViewer.TAG_CHECKBOX);
 			ll.addView(cb, 0);
 
-			EditText et = new EditText(this);
+			EditText et = new RPlanEditText(this);
 			et.setSingleLine(true);
 			et.setText(Html.fromHtml(st.getText()));
 			et.setTag(TaskViewer.TAG_NAME);
@@ -293,7 +304,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 
-			EditText et = new EditText(this);
+			EditText et = new RPlanEditText(this);
 			et.setSingleLine(true);
 			et.setText(Html.fromHtml(tn.getText()));
 			et.setTag(TaskViewer.TAG_NAME);
@@ -468,10 +479,112 @@ public class TaskEditActivity extends RPlanActivity implements
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 	{
+		boolean newIsChecked = isChecked;
 		if (buttonView == tb_edit_mode) {
 			setMode(isChecked ? MODE_MANAGE : MODE_SIMPLE);
+		} else if (buttonView == tb_bold) {
+			newIsChecked = applyTypeface(Typeface.BOLD, isChecked);
+		} else if (buttonView == tb_italic) {
+			newIsChecked = applyTypeface(Typeface.ITALIC, isChecked);
 		} else if (buttonView == tb_drag) {
 			setDragging(isChecked);
+		}
+		if (newIsChecked != isChecked) {
+			buttonView.setChecked(newIsChecked);
+		}
+	}
+
+	private boolean applyTypeface(int tf, boolean set)
+	{
+		SpannableStringBuilder text;
+		EditText et;
+		try {
+			et = (EditText) last_focused;
+			text = (SpannableStringBuilder) et.getText();
+		} catch (Exception e) {
+			return false;
+		}
+		int selStart = et.getSelectionStart();
+		int selEnd = et.getSelectionEnd();
+
+		if (selStart == selEnd) {
+			/* Try to format word at cursor. */
+			int word[] = new int[2];
+			if (StringTools.wordAt(text.toString(), selStart, word)) {
+				selStart = word[0];
+				selEnd = word[1];
+			} else {
+				return false;
+			}
+		}
+
+		splitSpans(text, selStart);
+		splitSpans(text, selEnd);
+
+		StyleSpan spans[];
+
+		if (set) {
+			int next_i;
+			for (int i = selStart; i < selEnd; i = next_i) {
+				next_i = text.nextSpanTransition(i, selEnd, StyleSpan.class);
+				spans = text.getSpans(i, next_i, StyleSpan.class);
+
+				boolean found = false;
+				for (StyleSpan span : spans) {
+					if ((span.getStyle() & tf) != 0) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					text.setSpan(new StyleSpan(tf), i, next_i,
+							Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+				}
+			}
+		} else {
+			int next_i;
+			for (int i = selStart; i < selEnd; i = next_i) {
+				next_i = text.nextSpanTransition(i, selEnd, StyleSpan.class);
+				spans = text.getSpans(i, next_i, StyleSpan.class);
+
+				for (StyleSpan span : spans) {
+					int style = span.getStyle();
+					if ((style & tf) == 0) {
+						continue;
+					}
+					text.removeSpan(span);
+					style &= ~tf;
+					if (style != 0) {
+						text.setSpan(new StyleSpan(style), selStart, selEnd,
+								Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+					}
+				}
+			}
+		}
+
+		return set;
+	}
+
+	static private void splitSpans(SpannableStringBuilder text, int j)
+	{
+		int next_i;
+		int I = text.length();
+		for (int i = 0; i < I; i = next_i) {
+			next_i = text.nextSpanTransition(i, I, StyleSpan.class);
+			if (next_i <= j) {
+				continue;
+			}
+			if (j == i) {
+				break;
+			}
+			StyleSpan spans[] = text.getSpans(i, next_i, StyleSpan.class);
+			for (StyleSpan span : spans) {
+				text.removeSpan(span);
+				text.setSpan(span, i, j, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+				text.setSpan(new StyleSpan(span.getStyle()), j, next_i,
+						Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			}
+			break;
 		}
 	}
 

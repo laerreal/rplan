@@ -51,6 +51,33 @@
     </edu.real.android.plan.IndentScrollView>
 
     <LinearLayout
+        android:id="@+id/ll_format_buttons"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="end"
+    >
+
+        <ToggleButton
+            android:id="@+id/tb_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="B"
+            android:textOn="B"
+            android:textStyle="bold" />
+
+        <ToggleButton
+            android:id="@+id/tb_italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="I"
+            android:textOn="I"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
