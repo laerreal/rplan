@@ -155,7 +155,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 			}
 			final Object val;
 			if (fieldnName.equals("description")) {
-				val = fieldValue.replace("\\n", "\n").replace("\\\\", "\\");
+				if (fieldValue == null) {
+					val = "";
+				} else {
+					val = fieldValue.replace("\\n", "\n").replace("\\\\",
+							"\\");
+				}
 			} else if (fieldnName.equals("notes")) {
 				List<Note> _notes = new LinkedList<Note>();
 				Note n;
