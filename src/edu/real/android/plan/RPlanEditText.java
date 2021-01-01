@@ -1,5 +1,6 @@
 package edu.real.android.plan;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -13,37 +14,40 @@ import edu.real.cross.StringTools;
 /* TODO: extract generic edu.real.android.REditText */
 public class RPlanEditText extends EditText {
 
-	public RPlanEditText(TaskEditActivity context)
+	/* Use Context instead of TaskEditActivity for compatibility with
+	 * visual designer. */
+	public RPlanEditText(Context context)
 	{
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 
-	public RPlanEditText(TaskEditActivity context, AttributeSet attrs)
+	public RPlanEditText(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 	}
 
-	public RPlanEditText(TaskEditActivity context, AttributeSet attrs,
+	public RPlanEditText(Context context, AttributeSet attrs,
 			int defStyleAttr)
 	{
 		super(context, attrs, defStyleAttr);
-		// TODO Auto-generated constructor stub
 	}
 
-	public RPlanEditText(TaskEditActivity context, AttributeSet attrs,
+	public RPlanEditText(Context context, AttributeSet attrs,
 			int defStyleAttr,
 			int defStyleRes)
 	{
 		super(context, attrs, defStyleAttr, defStyleRes);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void onSelectionChanged(int selStart, int selEnd)
 	{
 		super.onSelectionChanged(selStart, selEnd);
+
+		if (isInEditMode()) {
+			return;
+		}
+
 		/*
 		Log.v(this.getClass().getName(),
 			String.format("Sel: %d %d", selStart, selEnd));
