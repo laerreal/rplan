@@ -734,7 +734,10 @@ public class TaskEditActivity extends RPlanActivity implements
 	@Override
 	public void onFocusChange(View v, boolean hasFocus)
 	{
-		last_focused = v;
+		/* That callback is called for note edit views only. */
+		if (hasFocus) {
+			last_focused = v;
+		}
 	}
 
 }
