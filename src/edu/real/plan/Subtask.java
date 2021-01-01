@@ -4,8 +4,8 @@ import java.io.StringWriter;
 
 public class Subtask extends TextNote
 {
-	public static final String CHECKED_PREFIX = "checked ";
-	public static final String UNCHECKED_PREFIX = "unchecked ";
+	public static final String CHECKED_PREFIX = "checked";
+	public static final String UNCHECKED_PREFIX = "unchecked";
 
 	boolean checked;
 

@@ -4,7 +4,7 @@ import java.io.StringWriter;
 
 public class TextNote extends Note
 {
-	public static final String PREFIX = "text ";
+	public static final String PREFIX = "text";
 
 	String text;
 
