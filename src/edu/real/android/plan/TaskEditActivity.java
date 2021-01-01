@@ -101,15 +101,16 @@ public class TaskEditActivity extends RPlanActivity implements
 		setContentView(R.layout.activity_task_edit);
 
 		ll_notes = (LinearLayout) findViewById(R.id.ll_task_notes);
-		et_task_description = (EditText) findViewById(R.id.et_task_description);
+		et_task_description = (EditText) findViewById(
+				R.id.et_task_description);
 		et_task_name = (EditText) findViewById(R.id.et_task_name);
 
 		note2view = new BiMap<Note, View>();
 
-		ll_buttons_below_task_notes =
-				(LinearLayout) findViewById(R.id.ll_buttons_below_task_notes);
-		LinearLayout buttons_in_toolbar =
-				(LinearLayout) findViewById(R.id.ll_buttons_in_toolbar);
+		ll_buttons_below_task_notes = (LinearLayout) findViewById(
+				R.id.ll_buttons_below_task_notes);
+		LinearLayout buttons_in_toolbar = (LinearLayout) findViewById(
+				R.id.ll_buttons_in_toolbar);
 
 		/* TODO: add a preference */
 		boolean add_buttons_among_tasks = false;
@@ -179,7 +180,8 @@ public class TaskEditActivity extends RPlanActivity implements
 	{
 		int visibility = enabled ? View.VISIBLE : View.GONE;
 		for (View v : note2view.values()) {
-			((ViewGroup)v).findViewById(R.id.bt_drag).setVisibility(visibility);
+			((ViewGroup) v).findViewById(R.id.bt_drag)
+					.setVisibility(visibility);
 		}
 	}
 
@@ -377,7 +379,8 @@ public class TaskEditActivity extends RPlanActivity implements
 					}
 				}
 
-				EditText et = (EditText) v.findViewWithTag(TaskViewer.TAG_NAME);
+				EditText et = (EditText) v
+						.findViewWithTag(TaskViewer.TAG_NAME);
 
 				tmp = Note.preprocessHTML(
 						noteToHTML((SpannableStringBuilder) et.getText()));
@@ -443,8 +446,8 @@ public class TaskEditActivity extends RPlanActivity implements
 			case R.id.bt_note_down:
 				nv = note2view.get(n);
 				idx = ll_notes.indexOfChild(nv);
-				int buttons_idx =
-						ll_notes.indexOfChild(ll_buttons_below_task_notes);
+				int buttons_idx = ll_notes
+						.indexOfChild(ll_buttons_below_task_notes);
 				if (idx < buttons_idx - 1) {
 					ll_notes.removeViewAt(idx);
 					idx++;
@@ -575,7 +578,7 @@ public class TaskEditActivity extends RPlanActivity implements
 					int note_index = ll_notes.indexOfChild(v);
 					// Log.i(getClass().getSimpleName(), "note_index = " + note_index);
 					if (note_index != dragged_index
-						&& note_index < task.getNotesCount()) {
+							&& note_index < task.getNotesCount()) {
 						// Log.i(getClass().getSimpleName(),
 						//	"Drag " + dragged_index + " -> " + note_index);
 
@@ -616,7 +619,8 @@ public class TaskEditActivity extends RPlanActivity implements
 	}
 
 	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
+	public void onFocusChange(View v, boolean hasFocus)
+	{
 		last_focused = v;
 	}
 
