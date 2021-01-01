@@ -57,8 +57,8 @@ public class TaskViewTag {
 		int pw = p.getWidth();
 		int ph = p.getHeight();
 
-		int right = (x + offset_x + measure_w + 1);
-		int bottom = (y + offset_y + measure_h + 1);
+		int right = (x + offset_x + measured_w + 1);
+		int bottom = (y + offset_y + measured_h + 1);
 
 		// Add 1 extra pixel for sureness.
 		lp.rightMargin = pw - right;
