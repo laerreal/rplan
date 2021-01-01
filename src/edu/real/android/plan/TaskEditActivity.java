@@ -15,7 +15,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -106,6 +105,8 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		setContentView(R.layout.activity_task_edit);
 
+		inflater = LayoutInflater.from(this);
+
 		ll_format_buttons = (LinearLayout) findViewById(
 				R.id.ll_format_buttons);
 		/* It will become visible when note edit widget get focus. */
@@ -138,17 +139,18 @@ public class TaskEditActivity extends RPlanActivity implements
 			ll_add_buttons_container = buttons_in_toolbar;
 		}
 
-		bt_add_note = new Button(this);
+		bt_add_note = (Button) inflater.inflate(R.layout.note_add_button,
+				null);
 		ll_add_buttons_container.addView(bt_add_note, 0);
 		bt_add_note.setText(R.string.add_note);
 		bt_add_note.setOnClickListener(this);
 
-		bt_add_subtask = new Button(this);
+		bt_add_subtask = (Button) inflater.inflate(R.layout.note_add_button,
+				null);
 		ll_add_buttons_container.addView(bt_add_subtask, 1);
 		bt_add_subtask.setText(R.string.add_subtask);
 		bt_add_subtask.setOnClickListener(this);
 
-		inflater = LayoutInflater.from(this);
 		note_content_lp = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT, 1);
 
@@ -292,29 +294,26 @@ public class TaskEditActivity extends RPlanActivity implements
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
 
-			CheckBox cb = new CheckBox(this);
+			CheckBox cb = (CheckBox) inflater
+					.inflate(R.layout.note_edit_checkbox, null);
 			cb.setChecked(st.getChecked());
 			cb.setTag(TaskViewer.TAG_CHECKBOX);
 			ll.addView(cb, 0);
 
-			EditText et = new RPlanEditText(this);
-			et.setSingleLine(true);
-			et.setText(Html.fromHtml(st.getText()));
-			et.setTag(TaskViewer.TAG_NAME);
+			EditText et = genNoteEditText();
 
-			et.setGravity(Gravity.FILL_HORIZONTAL);
+			et.setText(Html.fromHtml(st.getText()));
+
 			ll.addView(et, 1, note_content_lp);
 
 			main_input = et;
 		} else if (n instanceof TextNote) {
 			TextNote tn = (TextNote) n;
 
-			EditText et = new RPlanEditText(this);
-			et.setSingleLine(true);
-			et.setText(Html.fromHtml(tn.getText()));
-			et.setTag(TaskViewer.TAG_NAME);
+			EditText et = genNoteEditText();
 
-			et.setGravity(Gravity.FILL_HORIZONTAL);
+			et.setText(Html.fromHtml(tn.getText()));
+
 			ll.addView(et, 0, note_content_lp);
 
 			main_input = et;
@@ -332,6 +331,29 @@ public class TaskEditActivity extends RPlanActivity implements
 		note2view.put(n, ll);
 
 		return main_input;
+	}
+
+	private EditText genNoteEditText()
+	{
+		EditText et = (EditText) inflater.inflate(R.layout.note_edit_text,
+				null);
+
+		/* Most of those settings are set through XML layout but
+		 * setHorizontallyScrolling must be set using API, because when setting
+		 * android:scrollHorizontally="false" in XML results in single
+		 * line text entry with horizontal scrolling.
+		 *
+		 * Ref: https://stackoverflow.com/questions/8351254/edittext-with-single-text-line-line-wrapping-and-done-action
+		 * */
+		//et.setInputType(InputType.TYPE_CLASS_TEXT);
+		//et.setSingleLine(true);
+		et.setMaxLines(Integer.MAX_VALUE);
+		et.setHorizontallyScrolling(false);
+		//et.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+		et.setTag(TaskViewer.TAG_NAME);
+
+		return et;
 	}
 
 	private void updateIndent(Note n, View v)

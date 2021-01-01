@@ -69,6 +69,7 @@
             android:id="@+id/tb_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:textOff="B"
             android:textOn="B"
             android:textStyle="bold" />
@@ -77,6 +78,7 @@
             android:id="@+id/tb_italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:textOff="I"
             android:textOn="I"
             android:textStyle="italic" />
@@ -88,12 +90,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:id="@+id/ll_buttons_in_toolbar"
-        android:gravity="right" >
+        android:gravity="end" >
 
         <ToggleButton
             android:id="@+id/tb_edit_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:textOff="@string/tb_simple_notes"
             android:textOn="@string/tb_manage_notes" />
 
@@ -101,6 +104,7 @@
             android:id="@+id/tb_drag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="24dp"
             android:textOff="↕"
             android:textOn="↕" />
 
