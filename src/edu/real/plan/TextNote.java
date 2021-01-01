@@ -44,6 +44,6 @@ public class TextNote extends Note
 	public void save(StringWriter w)
 	{
 		saveIndent(w);
-		w.write(PREFIX + text);
+		w.write(PREFIX + " " + text);
 	}
 }

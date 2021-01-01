@@ -51,6 +51,6 @@ public class Subtask extends TextNote
 	public void save(StringWriter w)
 	{
 		saveIndent(w);
-		w.write((checked ? CHECKED_PREFIX : UNCHECKED_PREFIX) + text);
+		w.write((checked ? CHECKED_PREFIX : UNCHECKED_PREFIX) + " " + text);
 	}
 }
