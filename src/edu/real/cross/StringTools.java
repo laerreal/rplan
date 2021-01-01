@@ -17,7 +17,8 @@ public class StringTools {
 			int space_start = m.start();
 			int space_end = m.end();
 
-			if (prev_end <= i && i < space_start) {
+			/* if i points at space right after word, the word is returned. */
+			if (prev_end <= i && i <= space_start) {
 				word[0] = prev_end;
 				word[1] = space_start;
 				return true;
@@ -27,7 +28,8 @@ public class StringTools {
 		}
 
 		// last word
-		if (prev_end <= i && i < s.length()) {
+		/* If i points right at EOL, the last word is returned. */
+		if (prev_end <= i && i <= s.length()) {
 			word[0] = prev_end;
 			word[1] = s.length();
 			return true;
