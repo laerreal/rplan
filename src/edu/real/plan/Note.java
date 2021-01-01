@@ -13,7 +13,8 @@ public abstract class Note extends Notifier<NoteListener>
 		indent = _indent;
 	}
 
-	protected void notifyChanged() {
+	protected void notifyChanged()
+	{
 		for (begin(); next(); l.onChanged(this))
 			;
 	}
