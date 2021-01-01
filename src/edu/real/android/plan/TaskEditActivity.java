@@ -79,6 +79,7 @@ public class TaskEditActivity extends RPlanActivity implements
 	int dragged_index;
 	Note dragged_note;
 
+	LinearLayout ll_format_buttons;
 	ToggleButton tb_bold;
 	ToggleButton tb_italic;
 
@@ -105,6 +106,10 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		setContentView(R.layout.activity_task_edit);
 
+		ll_format_buttons = (LinearLayout) findViewById(
+				R.id.ll_format_buttons);
+		/* It will become visible when note edit widget get focus. */
+		ll_format_buttons.setVisibility(View.GONE);
 		tb_bold = (ToggleButton) findViewById(R.id.tb_bold);
 		tb_italic = (ToggleButton) findViewById(R.id.tb_italic);
 
@@ -737,6 +742,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		/* That callback is called for note edit views only. */
 		if (hasFocus) {
 			last_focused = v;
+			ll_format_buttons.setVisibility(View.VISIBLE);
+		} else {
+			ll_format_buttons.setVisibility(View.GONE);
 		}
 	}
 
