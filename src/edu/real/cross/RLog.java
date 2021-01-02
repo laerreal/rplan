@@ -18,8 +18,7 @@ public class RLog
 
 	static public int v(Class<?> cls, String format, Object... args)
 	{
-		return v(cls.getPackage().getName() + "." + cls.getName(), format,
-				args);
+		return v(cls.getName(), format, args);
 	}
 
 	static public int e(String tag, String msg)
@@ -35,7 +34,6 @@ public class RLog
 
 	static public int e(Class<?> cls, String format, Object... args)
 	{
-		return e(cls.getPackage().getName() + "." + cls.getName(), format,
-				args);
+		return e(cls.getName(), format, args);
 	}
 }
