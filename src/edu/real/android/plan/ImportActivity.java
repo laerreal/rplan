@@ -3,12 +3,12 @@ package edu.real.android.plan;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import edu.real.cross.RLog;
 import edu.real.plan.Plan;
 
 public class ImportActivity extends RPlanActivity implements OnClickListener {
@@ -42,7 +42,7 @@ public class ImportActivity extends RPlanActivity implements OnClickListener {
 			imported = Plan.load(plan_s);
 		} catch (Exception e) {
 			String msg = e.toString();
-			Log.e("RPlan", msg);
+			RLog.e(getClass(), msg);
 			Toast.makeText(getApplicationContext(), msg,
 					Toast.LENGTH_LONG).show();
 			return;

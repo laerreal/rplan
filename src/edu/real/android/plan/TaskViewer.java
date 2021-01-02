@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -26,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import edu.real.cross.RLog;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.external.Intersections;
@@ -633,7 +633,7 @@ public class TaskViewer
 		public void run()
 		{
 			if (CF.isSet(CF.DEBUG_LOG_TASK_VIEW_INVALIDATES))
-				Log.v("TaskViewerSurfaceUpdater", "drawing");
+				RLog.v(getClass(), "drawing");
 			tv.tryDrawing(tv.holder);
 		}
 

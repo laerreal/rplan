@@ -1,8 +1,8 @@
 package edu.real.android.plan;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
+import edu.real.cross.RLog;
 import edu.real.external.CF;
 import edu.real.plan.Task;
 import android.widget.RelativeLayout.LayoutParams;
@@ -37,8 +37,7 @@ public class TaskViewTag {
 		measured_h = v.getMeasuredHeight();
 
 		if (CF.isSet(CF.DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS))
-			Log.v(this.getClass().getName(), String.format("Measured: %d %d",
-					measured_w, measured_h));
+			RLog.v(getClass(), "Measured: %d %d", measured_w, measured_h);
 
 		lp = new LayoutParams(measured_w, measured_h);
 	}
@@ -65,9 +64,8 @@ public class TaskViewTag {
 		lp.bottomMargin = ph - bottom;
 
 		if (CF.isSet(CF.DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS))
-			Log.v(this.getClass().getName(), String.format("LP: %d %d %d %d",
-					lp.leftMargin, lp.topMargin, lp.rightMargin,
-					lp.bottomMargin));
+			RLog.v(getClass(), "LP: %d %d %d %d", lp.leftMargin, lp.topMargin,
+					lp.rightMargin, lp.bottomMargin);
 
 		return lp;
 	}

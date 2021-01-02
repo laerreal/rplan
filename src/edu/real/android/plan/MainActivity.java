@@ -12,7 +12,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -129,7 +128,7 @@ public class MainActivity extends RPlanActivity implements PlanListener
 				importMobileNotesJSON(text);
 			} catch (Exception e) {
 				String msg = e.toString();
-				Log.e("MobileNotes", msg);
+				RLog.e(getClass(), msg);
 				Toast.makeText(getApplicationContext(), msg,
 						Toast.LENGTH_LONG).show();
 			}
