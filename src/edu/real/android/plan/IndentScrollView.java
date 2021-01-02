@@ -2,11 +2,11 @@ package edu.real.android.plan;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
+import edu.real.cross.RLog;
 import edu.real.external.CF;
 
 public class IndentScrollView extends ScrollView
@@ -50,8 +50,8 @@ public class IndentScrollView extends ScrollView
 			return false;
 		}
 		if (tea != null) {
-			if (CF.DEBUG < -1)
-				Log.i(getClass().toString(), "onInterceptTouchEvent");
+			if (CF.isSet(CF.DEBUG_INDENT_SCROLL_VIEW))
+				RLog.v(getClass(), "onInterceptTouchEvent");
 
 			gd.onTouchEvent(ev);
 		}
@@ -62,8 +62,8 @@ public class IndentScrollView extends ScrollView
 	public boolean onTouchEvent(MotionEvent ev)
 	{
 		if (tea != null) {
-			if (CF.DEBUG < -1)
-				Log.i(getClass().toString(), "onTouchEvent");
+			if (CF.isSet(CF.DEBUG_INDENT_SCROLL_VIEW))
+				RLog.v(getClass(), "onTouchEvent");
 
 			gd.onTouchEvent(ev);
 		}
@@ -75,9 +75,8 @@ public class IndentScrollView extends ScrollView
 			MotionEvent e1, MotionEvent e2, float velocityX, float velocityY
 	)
 	{
-		if (CF.DEBUG < 1)
-			Log.i(getClass().toString(),
-					"onFling " + velocityX + ", " + velocityY);
+		if (CF.isSet(CF.DEBUG_INDENT_SCROLL_VIEW))
+			RLog.v(getClass(), "onFling " + velocityX + ", " + velocityY);
 
 		if (Math.abs(velocityX) < 1.5 * Math.abs(velocityY)) {
 			// fling is not horizontal enough
