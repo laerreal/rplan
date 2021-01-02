@@ -49,6 +49,8 @@ public class TaskEditActivity extends RPlanActivity implements
 		// to insert notes below currently focused
 		OnFocusChangeListener
 {
+	public static final String INTENT_ACTION_EDIT_TASK = "edu.real.android.plan.intent.EDIT_TASK";
+
 	public static final int INDENTATION_STEP = 50;
 	protected final int MODE_NOT_SET = 0;
 	protected final int MODE_SIMPLE = 1;
@@ -241,9 +243,14 @@ public class TaskEditActivity extends RPlanActivity implements
 			if (i_action.equals(Intent.ACTION_MAIN)) {
 				/* No current task for just started application. Redirect to
 				 * main activity. */
-				startActivity(new Intent(this, MainActivity.class));
+				Intent intent = new Intent(this, MainActivity.class);
+				intent.setAction(MainActivity.INTENT_ACTION_SELECT_TASK);
+				startActivity(intent);
+			} else {
+				/* The activity purpose is task editing. But launcher did
+				 * not set task to edit. */
+				finish();
 			}
-			finish();
 			return;
 		}
 
@@ -655,11 +662,18 @@ public class TaskEditActivity extends RPlanActivity implements
 	{
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (i_action.equals(Intent.ACTION_MAIN)) {
-				/* user explicitly ended work with current task */
+				/* User explicitly ended work with current task. Now, she have
+				 * to select another one. But this activity is an
+				 * "entry point" (finishing it will finish the application).
+				 * So, it must start an activity for task selection. */
 				service.getPlan().setCurrentTask(null);
-				startActivity(new Intent(this, MainActivity.class));
-				return true;
+				Intent intent = new Intent(this, MainActivity.class);
+				intent.setAction(MainActivity.INTENT_ACTION_SELECT_TASK);
+				startActivity(intent);
+			} else {
+				finish();
 			}
+			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -418,12 +417,6 @@ public class TaskViewer
 	public void editTask(Task task)
 	{
 		plan.setCurrentTask(task);
-		Context ctx = pane.getContext();
-		if (CF.DEBUG < 1)
-			Log.v("editTask", "starting");
-		ctx.startActivity(new Intent(ctx, TaskEditActivity.class));
-		if (CF.DEBUG < 1)
-			Log.v("editTask", "started");
 	}
 
 	@Override

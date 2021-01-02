@@ -17,16 +17,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import edu.real.external.CF;
 import edu.real.external.IOHelper;
 import edu.real.external.ZonedDateTime;
 import edu.real.plan.Plan;
+import edu.real.plan.PlanListener;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 
-public class MainActivity extends RPlanActivity
+public class MainActivity extends RPlanActivity implements PlanListener
 {
+	public static final String INTENT_ACTION_SELECT_TASK = "edu.real.android.plan.intent.SELECT_TASK";
+
 	TaskViewer viewer;
 	String import_url;
+
+	private Plan current_plan;
 
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -144,7 +150,14 @@ public class MainActivity extends RPlanActivity
 
 	protected void setPlan(Plan plan)
 	{
+		if (current_plan != null) {
+			current_plan.removeListener(this);
+		}
+		current_plan = plan;
 		viewer.update(plan);
+		if (plan != null) {
+			plan.addListener(this);
+		}
 	}
 
 	protected void importMobileNotesJSON(String json_text) throws Exception
@@ -179,6 +192,51 @@ public class MainActivity extends RPlanActivity
 					mobile_notes_tz));
 
 			plan.addTask(t);
+		}
+	}
+
+	/* Most of those events are handled by helper class TaskViewer. */
+	@Override
+	public void onTaskAdded(Plan p, Task t)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTaskRemoving(Plan p, Task t)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onViewDragged(Plan p)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onCurrentTaskSet(Plan o, Task t)
+	{
+		if (t != null) {
+			Intent intent = getIntent();
+			if (intent.getAction().equals(INTENT_ACTION_SELECT_TASK)) {
+				/* This activity done what it has been asked for: task
+				 * selection. */
+				finish();
+			} else {
+				if (CF.DEBUG < 1)
+					Log.v("editTask", "starting");
+
+				intent = new Intent(this, TaskEditActivity.class);
+				intent.setAction(TaskEditActivity.INTENT_ACTION_EDIT_TASK);
+				startActivity(intent);
+
+				if (CF.DEBUG < 1)
+					Log.v("editTask", "started");
+			}
 		}
 	}
 }
