@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import edu.real.cross.RLog;
 
 
 public class RPlanActivity extends AppCompatActivity
@@ -40,6 +41,7 @@ public class RPlanActivity extends AppCompatActivity
 	@Override
 	public void onServiceDisconnected(ComponentName name)
 	{
+		RLog.v(RPlanActivity.class, "Service disconnected!");
 		service = null;
 	}
 
