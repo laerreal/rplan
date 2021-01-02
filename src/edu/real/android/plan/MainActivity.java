@@ -40,6 +40,13 @@ public class MainActivity extends RPlanActivity
 	}
 
 	@Override
+	protected void onStop()
+	{
+		setPlan(null);
+		super.onStop();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -67,8 +74,8 @@ public class MainActivity extends RPlanActivity
 						public void onClick(DialogInterface dialog, int which)
 						{
 							Plan new_plan = new Plan();
+							setPlan(new_plan);
 							service.setPlan(new_plan);
-							viewer.update(new_plan);
 						}
 					})
 					.setNegativeButton(R.string.bt_no, null)
@@ -97,9 +104,9 @@ public class MainActivity extends RPlanActivity
 	}
 
 	@Override
-	public void onServiceConnected(ComponentName name, IBinder service)
+	public void onServiceConnected(ComponentName name, IBinder binder)
 	{
-		super.onServiceConnected(name, service);
+		super.onServiceConnected(name, binder);
 		if (viewer == null) {
 			viewer = new TaskViewer((RelativeLayout) findViewById(R.id.pane));
 		}
@@ -122,7 +129,22 @@ public class MainActivity extends RPlanActivity
 			// import file only once
 			import_url = null;
 		}
-		viewer.update(this.service.getPlan());
+		setPlan(service.getPlan());
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name)
+	{
+		/* The service has crashed.
+		 * See: https://stackoverflow.com/questions/971824/when-does-serviceconnection-onservicedisconnected-get-called */
+		/* TODO: should we finish or re-bind to the service. */
+		setPlan(null);
+		super.onServiceDisconnected(name);
+	}
+
+	protected void setPlan(Plan plan)
+	{
+		viewer.update(plan);
 	}
 
 	protected void importMobileNotesJSON(String json_text) throws Exception
