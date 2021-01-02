@@ -21,4 +21,21 @@ public class RLog
 		return v(cls.getPackage().getName() + "." + cls.getName(), format,
 				args);
 	}
+
+	static public int e(String tag, String msg)
+	{
+		return Log.e(tag, msg);
+	}
+
+	static public int e(String tag, String format, Object... args)
+	{
+		String msg = String.format(format, args);
+		return e(tag, msg);
+	}
+
+	static public int e(Class<?> cls, String format, Object... args)
+	{
+		return e(cls.getPackage().getName() + "." + cls.getName(), format,
+				args);
+	}
 }
