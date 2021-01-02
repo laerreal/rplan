@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
-import edu.real.cross.StringTools;
+import edu.real.external.StringTools;
 
 /**
  *  EditText's subclass with specially overridden `onSelectionChanged`.
