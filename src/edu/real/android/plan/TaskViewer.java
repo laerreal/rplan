@@ -632,7 +632,7 @@ public class TaskViewer
 		@Override
 		public void run()
 		{
-			if ((CF.DEBUG_FLAGS & CF.DEBUG_LOG_TASK_VIEW_INVALIDATES) != 0)
+			if (CF.isSet(CF.DEBUG_LOG_TASK_VIEW_INVALIDATES))
 				Log.v("TaskViewerSurfaceUpdater", "drawing");
 			tv.tryDrawing(tv.holder);
 		}
