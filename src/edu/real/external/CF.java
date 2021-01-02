@@ -16,6 +16,6 @@ public class CF
 
 	static public boolean isSet(int flags)
 	{
-		return (DEBUG_FLAGS & DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS) != 0;
+		return (DEBUG_FLAGS & flags) != 0;
 	}
 }
