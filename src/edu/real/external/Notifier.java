@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 
+import edu.real.cross.RLog;
+
 public abstract class Notifier<L>
 {
 	L listeners[];
@@ -31,10 +33,16 @@ public abstract class Notifier<L>
 	public void addListener(L l)
 	{
 		added_listeners.addLast(l);
+
+		if (CF.isSet(CF.DEBUG_NOTIFIER))
+			RLog.v(this.getClass(), "Added. Total listeners: %d",
+					added_listeners.size() + listeners.length);
 	}
 
 	public boolean removeListener(L l)
 	{
+		Boolean ret = null;
+
 		int I = listeners.length;
 		for (int i = 0; i < I; i++) {
 			if (listeners[i] == l) {
@@ -49,10 +57,19 @@ public abstract class Notifier<L>
 					leftmost_hole = i;
 				}
 
-				return true;
+				ret = true;
+				break;
 			}
 		}
-		return added_listeners.remove(l);
+		if (ret == null) {
+			ret = added_listeners.remove(l);
+		}
+
+		if (CF.isSet(CF.DEBUG_NOTIFIER))
+			RLog.v(this.getClass(), "Removed. Total listeners: %d",
+					added_listeners.size() + listeners.length);
+
+		return ret;
 	}
 
 	/**
@@ -199,4 +216,3 @@ public abstract class Notifier<L>
 		}
 	}
 }
-
