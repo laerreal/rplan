@@ -15,9 +15,9 @@ public class CF
 	static protected final int DEBUG_FLAGS = 0
 		// | DEBUG_LOG_TASK_VIEW_INVALIDATES
 		// | DEBUG_LOG_TASK_VIEW_LAYOUT_PARAMS
-		| DEBUG_NOTIFIER
-		| DEBUG_INDENT_SCROLL_VIEW
-		| DEBUG_ACTIVITY_WORKFLOW
+		// | DEBUG_NOTIFIER
+		// | DEBUG_INDENT_SCROLL_VIEW
+		// | DEBUG_ACTIVITY_WORKFLOW
 		;
 
 	static public boolean isSet(int flags)
