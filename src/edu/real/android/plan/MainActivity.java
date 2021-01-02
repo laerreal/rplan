@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import edu.real.cross.RLog;
 import edu.real.external.CF;
 import edu.real.external.IOHelper;
 import edu.real.external.ZonedDateTime;
@@ -227,15 +228,15 @@ public class MainActivity extends RPlanActivity implements PlanListener
 				 * selection. */
 				finish();
 			} else {
-				if (CF.DEBUG < 1)
-					Log.v("editTask", "starting");
+				if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+					RLog.v(getClass(), "starting task editing");
 
 				intent = new Intent(this, TaskEditActivity.class);
 				intent.setAction(TaskEditActivity.INTENT_ACTION_EDIT_TASK);
 				startActivity(intent);
 
-				if (CF.DEBUG < 1)
-					Log.v("editTask", "started");
+				if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+					RLog.v(getClass(), "task editing started");
 			}
 		}
 	}

@@ -14,7 +14,6 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ToggleButton;
+import edu.real.cross.RLog;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.external.StringTools;
@@ -87,8 +87,8 @@ public class TaskEditActivity extends RPlanActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		if (CF.DEBUG < 1)
-			Log.v(getClass().getName(), "onCreate");
+		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+			RLog.v(getClass(), "onCreate");
 
 		super.onCreate(savedInstanceState);
 
@@ -181,8 +181,8 @@ public class TaskEditActivity extends RPlanActivity implements
 		setDragging(tb_drag.isChecked());
 		dragged_index = -1;
 
-		if (CF.DEBUG < 1)
-			Log.v(getClass().getName(), "onCreate-d");
+		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+			RLog.v(getClass(), "onCreate-d");
 	}
 
 	private void setMode(int m)
@@ -223,8 +223,8 @@ public class TaskEditActivity extends RPlanActivity implements
 				return;
 			}
 
-			if (CF.DEBUG < 1)
-				Log.v(getClass().getName(), "initialized");
+			if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+				RLog.v(getClass(), "initialized");
 		}
 	}
 
@@ -254,8 +254,8 @@ public class TaskEditActivity extends RPlanActivity implements
 			return;
 		}
 
-		if (CF.DEBUG < 1)
-			Log.v(getClass().getName(), "initializing");
+		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+			RLog.v(getClass(), "initializing");
 
 		et_task_name.setText(task.getName());
 		et_task_description.setText(task.getDescription());
