@@ -63,6 +63,8 @@ public class Plan extends Notifier<PlanListener>
 	public void setCurrentTask(Task t)
 	{
 		current_task = t;
+		for (begin(); next(); l.onCurrentTaskSet(this, t))
+			;
 	}
 
 	public void removeTask(Task task)

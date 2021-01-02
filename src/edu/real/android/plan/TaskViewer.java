@@ -654,4 +654,11 @@ public class TaskViewer
 		invalid = true;
 		handler.postDelayed(updater, 10);
 	}
+
+	@Override
+	public void onCurrentTaskSet(Plan o, Task t)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }
