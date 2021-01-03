@@ -1,6 +1,7 @@
 package edu.real.android.plan;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -30,6 +31,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import edu.real.cross.RLog;
 import edu.real.external.BiMap;
@@ -84,6 +86,8 @@ public class TaskEditActivity extends RPlanActivity implements
 	ToggleButton tb_bold;
 	ToggleButton tb_italic;
 
+	LinkedList<View> note_widget_pull;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -108,6 +112,8 @@ public class TaskEditActivity extends RPlanActivity implements
 		setContentView(R.layout.activity_task_edit);
 
 		inflater = LayoutInflater.from(this);
+
+		note_widget_pull = new LinkedList<View>();
 
 		ll_format_buttons = (LinearLayout) findViewById(
 				R.id.ll_format_buttons);
@@ -229,17 +235,13 @@ public class TaskEditActivity extends RPlanActivity implements
 	}
 
 	@Override
-	public void onServiceConnected(ComponentName name, IBinder service)
+	public void onServiceConnected(ComponentName name, IBinder binding)
 	{
-		super.onServiceConnected(name, service);
+		super.onServiceConnected(name, binding);
 
-		if (task != null) {
-			return;
-		}
+		Task cur_task = service.getPlan().getCurrentTask();
 
-		task = this.service.getPlan().getCurrentTask();
-
-		if (task == null) {
+		if (cur_task == null) {
 			if (i_action.equals(Intent.ACTION_MAIN)) {
 				/* No current task for just started application. Redirect to
 				 * main activity. */
@@ -254,49 +256,49 @@ public class TaskEditActivity extends RPlanActivity implements
 			return;
 		}
 
-		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
-			RLog.v(getClass(), "initializing");
+		if (cur_task != task) {
+			clean();
+			task = cur_task;
 
-		et_task_name.setText(task.getName());
-		et_task_description.setText(task.getDescription());
+			if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+				RLog.v(getClass(), "initializing");
 
-		ui_handler.post(new Initializer(task.getNotes().iterator()));
+			et_task_name.setText(task.getName());
+			et_task_description.setText(task.getDescription());
+
+			ui_handler.post(new Initializer(task.getNotes().iterator()));
+		}
 	}
 
-	@SuppressLint("InflateParams")
-	private View addViewForNote(int index, Note n)
+	private void clean()
 	{
-		View main_input = null;
+		for (View ll : note2view.values()) {
+			ll_notes.removeView(ll);
+			leaveNoteView((LinearLayout) ll);
+			freeNoteView((LinearLayout) ll);
+		}
+		note2view.clear();
+	}
 
-		LinearLayout ll = (LinearLayout) inflater
-				.inflate(R.layout.note_edit_container, null);
+	private View populateNoteView(LinearLayout ll, Note n)
+	{
+		ll.setTag(n);
 
-		/* Delete button */
 		View bt_delete = ll.findViewById(R.id.bt_delete_note);
-		bt_delete.setOnClickListener(this);
 		bt_delete.setTag(n);
 
-		/* Up/Down buttons */
 		View bt_move = ll.findViewById(R.id.bt_note_up);
-		bt_move.setOnClickListener(this);
 		bt_move.setTag(n);
 
 		bt_move = ll.findViewById(R.id.bt_note_down);
-		bt_move.setOnClickListener(this);
 		bt_move.setTag(n);
 
-		/* Drag button */
 		View bt_drag = ll.findViewById(R.id.bt_drag);
-		bt_drag.setOnTouchListener(this);
 		bt_drag.setTag(n);
 
-		if (index < 0) {
-			index += ll_notes.indexOfChild(ll_buttons_below_task_notes) + 1;
-		}
-
-		ll_notes.addView(ll, index);
-
 		updateIndent(n, ll);
+
+		final View main_input;
 
 		if (n instanceof Subtask) {
 			Subtask st = (Subtask) n;
@@ -324,10 +326,90 @@ public class TaskEditActivity extends RPlanActivity implements
 			ll.addView(et, 0, note_content_lp);
 
 			main_input = et;
+		} else {
+			TextView tv = new TextView(this);
+
+			tv.setText(R.string.unsupported_note_kind);
+			tv.setTag(TaskViewer.TAG_NAME);
+
+			main_input = tv;
 		}
 
 		main_input.setOnTouchListener(this);
 		main_input.setOnFocusChangeListener(this);
+
+		return main_input;
+	}
+
+	private void leaveNoteView(LinearLayout ll)
+	{
+		View v;
+
+		Note n = (Note) ll.getTag();
+
+		/* TODO: Need we remove Note's reference from tag? */
+		ll.setTag(null);
+		while ((v = ll.findViewWithTag(n)) != null) {
+			v.setTag(null);
+		}
+
+		/* Remove note specific views. */
+		if ((v = ll.findViewWithTag(TaskViewer.TAG_NAME)) != null) {
+			ll.removeView(v);
+		}
+
+		if ((v = ll.findViewWithTag(TaskViewer.TAG_CHECKBOX)) != null) {
+			ll.removeView(v);
+		}
+
+		/* TODO: Need we remove `this` as TouchListener & FocusChangeListener
+		 * of `main_input`? */
+	}
+
+	private LinearLayout allocNoteView()
+	{
+		if (!note_widget_pull.isEmpty()) {
+			return (LinearLayout) note_widget_pull.pop();
+		}
+
+		LinearLayout ll;
+
+		ll = (LinearLayout) inflater.inflate(R.layout.note_edit_container,
+				null);
+
+		/* Delete button */
+		View bt_delete = ll.findViewById(R.id.bt_delete_note);
+		bt_delete.setOnClickListener(this);
+
+		/* Up/Down buttons */
+		View bt_move = ll.findViewById(R.id.bt_note_up);
+		bt_move.setOnClickListener(this);
+
+		bt_move = ll.findViewById(R.id.bt_note_down);
+		bt_move.setOnClickListener(this);
+
+		/* Drag button */
+		View bt_drag = ll.findViewById(R.id.bt_drag);
+		bt_drag.setOnTouchListener(this);
+
+		return ll;
+	}
+
+	private void freeNoteView(LinearLayout ll)
+	{
+		note_widget_pull.add(ll);
+	}
+
+	@SuppressLint("InflateParams")
+	private View addViewForNote(int index, Note n)
+	{
+		LinearLayout ll = allocNoteView();
+
+		if (index < 0) {
+			index += ll_notes.indexOfChild(ll_buttons_below_task_notes) + 1;
+		}
+
+		ll_notes.addView(ll, index);
 
 		applyModeToNoteView(ll);
 
@@ -337,7 +419,7 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		note2view.put(n, ll);
 
-		return main_input;
+		return populateNoteView(ll, n);
 	}
 
 	private EditText genNoteEditText()
