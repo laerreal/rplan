@@ -157,6 +157,7 @@ public class MainActivity extends RPlanActivity implements PlanListener
 		viewer.update(plan);
 		if (plan != null) {
 			plan.addListener(this);
+			handleCurrentTask(plan.getCurrentTask());
 		}
 	}
 
@@ -220,6 +221,24 @@ public class MainActivity extends RPlanActivity implements PlanListener
 	@Override
 	public void onCurrentTaskSet(Plan o, Task t)
 	{
+		handleCurrentTask(t);
+	}
+
+	private void startTaskEditting()
+	{
+		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+			RLog.v(getClass(), "starting task editing");
+
+		Intent intent = new Intent(this, TaskEditActivity.class);
+		intent.setAction(TaskEditActivity.INTENT_ACTION_EDIT_TASK);
+		startActivity(intent);
+
+		if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
+			RLog.v(getClass(), "task editing started");
+	}
+
+	private void handleCurrentTask(Task t)
+	{
 		if (t != null) {
 			Intent intent = getIntent();
 			if (intent.getAction().equals(INTENT_ACTION_SELECT_TASK)) {
@@ -227,15 +246,7 @@ public class MainActivity extends RPlanActivity implements PlanListener
 				 * selection. */
 				finish();
 			} else {
-				if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
-					RLog.v(getClass(), "starting task editing");
-
-				intent = new Intent(this, TaskEditActivity.class);
-				intent.setAction(TaskEditActivity.INTENT_ACTION_EDIT_TASK);
-				startActivity(intent);
-
-				if (CF.isSet(CF.DEBUG_ACTIVITY_WORKFLOW))
-					RLog.v(getClass(), "task editing started");
+				startTaskEditting();
 			}
 		}
 	}

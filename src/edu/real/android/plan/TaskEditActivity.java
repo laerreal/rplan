@@ -743,12 +743,14 @@ public class TaskEditActivity extends RPlanActivity implements
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			/* Task editing is finished. */
+			service.getPlan().setCurrentTask(null);
+
 			if (i_action.equals(Intent.ACTION_MAIN)) {
 				/* User explicitly ended work with current task. Now, she have
 				 * to select another one. But this activity is an
 				 * "entry point" (finishing it will finish the application).
 				 * So, it must start an activity for task selection. */
-				service.getPlan().setCurrentTask(null);
 				Intent intent = new Intent(this, MainActivity.class);
 				intent.setAction(MainActivity.INTENT_ACTION_SELECT_TASK);
 				startActivity(intent);
