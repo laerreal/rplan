@@ -24,4 +24,6 @@ public interface TaskListener
 
 	/* Called only on explicit edit timestamp changing. */
 	public void onLastEditedTSChanging(Task t, ZonedDateTime ts);
+
+	public void onColorChanged(Task t, int color);
 }

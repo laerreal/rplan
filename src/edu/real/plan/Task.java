@@ -363,4 +363,16 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		save(w);
 		return w.toString();
 	}
+
+	public int getColor()
+	{
+		return color;
+	}
+
+	public void setColor(int color)
+	{
+		this.color = color;
+		for (begin(); next(); l.onColorChanged(this, color))
+			;
+	}
 }

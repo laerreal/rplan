@@ -654,4 +654,9 @@ public class TaskViewer
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onColorChanged(Task t, int color)
+	{
+	}
 }
