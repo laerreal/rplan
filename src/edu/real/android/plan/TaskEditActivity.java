@@ -17,6 +17,8 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -866,6 +868,35 @@ public class TaskEditActivity extends RPlanActivity implements
 		} else {
 			ll_format_buttons.setVisibility(View.GONE);
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.task_edit, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		int id = item.getItemId();
+		switch (id) {
+		case R.id.export_share:
+			if (service == null) {
+				return true;
+			}
+			Intent shareBackup = new Intent(Intent.ACTION_SEND);
+			shareBackup.putExtra(Intent.EXTRA_TEXT, task.saveAsString());
+			shareBackup.putExtra(Intent.EXTRA_SUBJECT,
+					"RPlan task " + task.getName());
+			shareBackup.setType("text/plain");
+
+			Intent shareIntent = Intent.createChooser(shareBackup, null);
+			startActivity(shareIntent);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.real.android.plan;
 
+import java.text.ParseException;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import edu.real.cross.RLog;
 import edu.real.plan.Plan;
+import edu.real.plan.Task;
 
 public class ImportActivity extends RPlanActivity implements OnClickListener
 {
@@ -38,18 +41,6 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 	{
 		/* Import */
 
-		String plan_s = et.getText().toString();
-		final Plan imported;
-		try {
-			imported = Plan.load(plan_s);
-		} catch (Exception e) {
-			String msg = e.toString();
-			RLog.e(getClass(), msg);
-			Toast.makeText(getApplicationContext(), msg,
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-
 		if (service == null) {
 			/* This is very unlikely. */
 			Toast.makeText(getApplicationContext(),
@@ -57,6 +48,38 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 					Toast.LENGTH_LONG).show();
 			return;
 		}
+
+		String text = et.getText().toString();
+
+		try {
+			if (text.startsWith(Task.TASK_PREFIX)) {
+				importTask(text);
+			} else {
+				importPlan(text);
+			}
+		} catch (Exception e) {
+			String msg = e.toString();
+			RLog.e(getClass(), msg);
+			Toast.makeText(getApplicationContext(), msg,
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+	}
+
+	private void importTask(String task_s) throws IllegalAccessException,
+			IllegalArgumentException, ParseException
+	{
+		final Task task = Task.load(task_s);
+
+		service.getPlan().addTask(task);
+
+		finish();
+	}
+
+	private void importPlan(String plan_s)
+			throws IllegalAccessException, IllegalArgumentException
+	{
+		final Plan imported = Plan.load(plan_s);
 
 		(new AlertDialog.Builder(this))
 			.setTitle(R.string.imported_replaces_current_)

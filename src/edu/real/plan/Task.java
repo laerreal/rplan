@@ -14,6 +14,8 @@ import edu.real.external.ZonedDateTime;
 
 public class Task extends Notifier<TaskListener> implements NoteListener
 {
+	static public final String TASK_PREFIX = "name ";
+
 	String name;
 	String description;
 
@@ -86,7 +88,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 
 	public void save(StringWriter w)
 	{
-		w.write("name " + name + "\n");
+		w.write(TASK_PREFIX + name + "\n");
 		if (description != null) {
 			w.write("description " + description.replace("\\", "\\\\")
 					.replace("\n", "\\n") + "\n");
@@ -121,6 +123,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		if (opaque != null) {
 			w.write(opaque);
 		}
+	}
+
+	public static final Task load(String text) throws IllegalAccessException,
+			IllegalArgumentException, ParseException
+	{
+		return load(text.split("\n"));
 	}
 
 	public static final Task load(String lines[])
@@ -342,5 +350,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		for (begin(); next(); l.onLastEditedTSChanging(this, t))
 			;
 		last_edited_timestamp = t;
+	}
+
+	public String saveAsString()
+	{
+		StringWriter w = new StringWriter();
+		save(w);
+		return w.toString();
 	}
 }
