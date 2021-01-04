@@ -36,6 +36,12 @@ public class Subtask extends TextNote
 		this(false);
 	}
 
+	public Subtask(int _indent)
+	{
+		super(_indent);
+		checked = false;
+	}
+
 	public boolean getChecked()
 	{
 		return checked;
