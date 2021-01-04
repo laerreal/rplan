@@ -96,6 +96,7 @@ public class TaskViewer
 		prefs = PreferenceManager.getDefaultSharedPreferences(pane_context);
 
 		paint_task_frame = new Paint();
+		paint_task_frame.setStrokeWidth(2.0f);
 		paint_task_frame.setStyle(Paint.Style.STROKE);
 
 		paint_task_pointer = new Paint();
