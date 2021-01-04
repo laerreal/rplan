@@ -76,7 +76,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		y = _y;
 		collapsed = false;
 		notes = new LinkedList<Note>();
-		color = Color.BLACK;
+		color = Color.GRAY;
 		creation_timestamp = new ZonedDateTime();
 		prerequesites = new BiMap<Task, Task>();
 	}
