@@ -96,11 +96,9 @@ public class TaskViewer
 		prefs = PreferenceManager.getDefaultSharedPreferences(pane_context);
 
 		paint_task_frame = new Paint();
-		paint_task_frame.setColor(Color.GRAY);
 		paint_task_frame.setStyle(Paint.Style.STROKE);
 
 		paint_task_pointer = new Paint();
-		paint_task_pointer.setColor(Color.GRAY);
 		paint_task_pointer.setStyle(Paint.Style.FILL);
 
 		handler = new Handler(Looper.getMainLooper());
@@ -339,7 +337,11 @@ public class TaskViewer
 			TaskViewTag tag = (TaskViewTag) v.getTag();
 			Rect taskRect = tag.getFrameRect(plan.getViewOffsetX(),
 					plan.getViewOffsetY());
+
+			int color = task2view.getKey(v).getColor();
+
 			if (Rect.intersects(cnvRect, taskRect)) {
+				paint_task_frame.setColor(color);
 				canvas.drawRect(taskRect, paint_task_frame);
 			} else {
 				float cnvMidX = cnvRect.exactCenterX();
@@ -384,6 +386,7 @@ public class TaskViewer
 					break;
 				}
 
+				paint_task_pointer.setColor(color);
 				canvas.drawCircle(p.x, p.y, task_pointer_radius,
 						paint_task_pointer);
 			}
@@ -658,5 +661,6 @@ public class TaskViewer
 	@Override
 	public void onColorChanged(Task t, int color)
 	{
+		invalidate();
 	}
 }

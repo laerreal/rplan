@@ -40,4 +40,5 @@
     <string name="task_pointer_radius">Радиус указателя на задачу</string>
     <string name="subtask_padding_reduction">Уменьшение отступа между подзадачами</string>
     <string name="subtask_padding_reduction_summary">Позволяет отображать развёрнутые задачи на плане компактнее. Отрицательные значения увеличивают отступ.</string>
+    <string name="color">Цвет</string>
 </resources>

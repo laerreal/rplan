@@ -3,6 +3,9 @@ package edu.real.android.plan;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.chiralcode.colorpicker.ColorPickerDialog;
+import com.chiralcode.colorpicker.ColorPickerDialog.OnColorSelectedListener;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.ComponentName;
@@ -55,7 +58,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		// to insert notes below currently focused
 		OnFocusChangeListener,
 		// Adding new line will create new task/note
-		TextWatcher
+		TextWatcher,
+		// Color selection using chiralcode/Android-Color-Picker
+		OnColorSelectedListener
 {
 	public static final String INTENT_ACTION_EDIT_TASK = "edu.real.android.plan.intent.EDIT_TASK";
 
@@ -68,6 +73,7 @@ public class TaskEditActivity extends RPlanActivity implements
 	LinearLayout ll_notes;
 	EditText et_task_description;
 	EditText et_task_name;
+	Button bt_color;
 	BiMap<Note, View> note2view;
 	Button bt_add_note;
 	Button bt_add_subtask;
@@ -173,6 +179,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		tb_edit_mode = (ToggleButton) findViewById(R.id.tb_edit_mode);
 		tb_edit_mode.setOnCheckedChangeListener(this);
 
+		bt_color = (Button) findViewById(R.id.bt_color);
+		bt_color.setOnClickListener(this);
+
 		sv_notes = (IndentScrollView) findViewById(R.id.sv_notes);
 		/* XXX: This horrible hack is required to workaround conflict between
 		 * standard ScrollView and gesture detection. The standard SV do not
@@ -271,6 +280,8 @@ public class TaskEditActivity extends RPlanActivity implements
 
 			et_task_name.setText(task.getName());
 			et_task_description.setText(task.getDescription());
+
+			updateTaskColor();
 
 			ui_handler.post(new Initializer(task.getNotes().iterator()));
 		}
@@ -545,6 +556,10 @@ public class TaskEditActivity extends RPlanActivity implements
 		} else if (v == bt_add_subtask) {
 			n = new Subtask();
 		} else {
+			if (v.getId() == R.id.bt_color) {
+				selectColor();
+				return;
+			}
 			Object tag = v.getTag();
 			if (tag == null) {
 				return;
@@ -583,6 +598,13 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 
 		insertNote(note_index, n);
+	}
+
+	private void selectColor()
+	{
+		ColorPickerDialog cpd = new ColorPickerDialog(this, task.getColor(),
+				this);
+		cpd.show();
 	}
 
 	private void deleteNote(Note n)
@@ -996,5 +1018,19 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 
 		main_input.requestFocus();
+	}
+
+	@Override
+	public void onColorSelected(int color)
+	{
+		task.setColor(color);
+		updateTaskColor();
+	}
+
+	private void updateTaskColor()
+	{
+		int color = task.getColor();
+		et_task_name.setTextColor(color);
+		bt_color.setTextColor(color);
 	}
 }
