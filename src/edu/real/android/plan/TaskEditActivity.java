@@ -590,6 +590,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		View nv = note2view.pop(n);
 		ll_notes.removeView(nv);
 		task.removeNote(n);
+
+		leaveNoteView((LinearLayout) nv);
+		freeNoteView((LinearLayout) nv);
 	}
 
 	private void insertNote(int index, Note n)
