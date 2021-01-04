@@ -3,9 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="fill_horizontal"
-    android:imeOptions="actionNext"
-    android:inputType="text"
+    android:inputType="textMultiLine"
     android:paddingTop="0dip"
-    android:singleLine="true" >
+    >
 
 </edu.real.android.plan.RPlanEditText>

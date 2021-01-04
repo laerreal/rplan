@@ -11,9 +11,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -51,7 +53,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		// 2. to disable vertical scroll while drag button is being held.
 		OnTouchListener,
 		// to insert notes below currently focused
-		OnFocusChangeListener
+		OnFocusChangeListener,
+		// Adding new line will create new task/note
+		TextWatcher
 {
 	public static final String INTENT_ACTION_EDIT_TASK = "edu.real.android.plan.intent.EDIT_TASK";
 
@@ -429,18 +433,10 @@ public class TaskEditActivity extends RPlanActivity implements
 		EditText et = (EditText) inflater.inflate(R.layout.note_edit_text,
 				null);
 
-		/* Most of those settings are set through XML layout but
-		 * setHorizontallyScrolling must be set using API, because when setting
-		 * android:scrollHorizontally="false" in XML results in single
-		 * line text entry with horizontal scrolling.
-		 *
-		 * Ref: https://stackoverflow.com/questions/8351254/edittext-with-single-text-line-line-wrapping-and-done-action
-		 * */
-		//et.setInputType(InputType.TYPE_CLASS_TEXT);
-		//et.setSingleLine(true);
 		et.setMaxLines(Integer.MAX_VALUE);
 		et.setHorizontallyScrolling(false);
-		//et.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+		et.addTextChangedListener(this);
 
 		et.setTag(TaskViewer.TAG_NAME);
 
@@ -587,8 +583,14 @@ public class TaskEditActivity extends RPlanActivity implements
 			}
 			return;
 		}
-		task.insertNote(note_index, n);
-		View input = addViewForNote(note_index, n);
+
+		insertNote(note_index, n);
+	}
+
+	private void insertNote(int index, Note n)
+	{
+		task.insertNote(index, n);
+		View input = addViewForNote(index, n);
 		if (input != null) {
 			input.requestFocus();
 		}
@@ -899,4 +901,65 @@ public class TaskEditActivity extends RPlanActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterTextChanged(Editable e)
+	{
+		String s = e.toString();
+
+		// TODO: replace inner \n with <br/> ?
+		boolean was_nl = false;
+
+		while (true) {
+			final int nl_idx = s.indexOf('\n');
+			if (nl_idx < 0) {
+				break;
+			}
+			was_nl = true;
+			s = s.substring(0, nl_idx) + s.substring(nl_idx + 1);
+		}
+
+		if (!was_nl) {
+			return;
+		}
+
+		e.replace(0, e.length(), s);
+
+		int note_index = getNoteIndexByView(last_focused);
+
+		if (note_index < 0) {
+			/* not found, the change source is likely not a user.*/
+			return;
+		}
+
+		/* Create new not of same kind at same indent. */
+		Note current_note = task.getNoteAt(note_index);
+
+		final int indent = current_note.getIndent();
+
+		final Note new_note;
+		try {
+			new_note = current_note.getClass()
+					.getDeclaredConstructor(int.class).newInstance(indent);
+		} catch (Exception exc) {
+			RLog.e(getClass(), exc.toString());
+			return;
+		}
+
+		insertNote(note_index + 1, new_note);
+	}
 }
