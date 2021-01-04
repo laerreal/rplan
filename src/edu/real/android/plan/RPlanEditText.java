@@ -12,7 +12,8 @@ import edu.real.external.StringTools;
  *  EditText's subclass with specially overridden `onSelectionChanged`.
  *  */
 /* TODO: extract generic edu.real.android.REditText */
-public class RPlanEditText extends EditText {
+public class RPlanEditText extends EditText
+{
 
 	/* Use Context instead of TaskEditActivity for compatibility with
 	 * visual designer. */
