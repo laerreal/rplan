@@ -554,9 +554,7 @@ public class TaskEditActivity extends RPlanActivity implements
 			View nv;
 			switch (v.getId()) {
 			case R.id.bt_delete_note:
-				nv = note2view.pop(n);
-				ll_notes.removeView(nv);
-				task.removeNote(n);
+				deleteNote(n);
 				break;
 			case R.id.bt_note_up:
 				nv = note2view.get(n);
@@ -585,6 +583,13 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 
 		insertNote(note_index, n);
+	}
+
+	private void deleteNote(Note n)
+	{
+		View nv = note2view.pop(n);
+		ll_notes.removeView(nv);
+		task.removeNote(n);
 	}
 
 	private void insertNote(int index, Note n)
