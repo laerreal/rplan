@@ -338,6 +338,11 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		return notes.indexOf(n);
 	}
 
+	public Note getNoteAt(int index)
+	{
+		return notes.get(index);
+	}
+
 	public void setCreationTS(ZonedDateTime t)
 	{
 		for (begin(); next(); l.onCreationTSChanging(this, t))
