@@ -16,28 +16,28 @@ import edu.real.external.StringTools;
  *  EditText's subclass with specially overridden `onSelectionChanged`.
  *  */
 /* TODO: extract generic edu.real.android.REditText */
-public class RPlanEditText extends EditText
+public class NoteEditText extends EditText
 {
 
 	/* Use Context instead of TaskEditActivity for compatibility with
 	 * visual designer. */
-	public RPlanEditText(Context context)
+	public NoteEditText(Context context)
 	{
 		super(context);
 	}
 
-	public RPlanEditText(Context context, AttributeSet attrs)
+	public NoteEditText(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 	}
 
-	public RPlanEditText(Context context, AttributeSet attrs,
+	public NoteEditText(Context context, AttributeSet attrs,
 			int defStyleAttr)
 	{
 		super(context, attrs, defStyleAttr);
 	}
 
-	public RPlanEditText(Context context, AttributeSet attrs,
+	public NoteEditText(Context context, AttributeSet attrs,
 			int defStyleAttr,
 			int defStyleRes)
 	{
@@ -138,9 +138,9 @@ public class RPlanEditText extends EditText
 		{
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getKeyCode() == KeyEvent.KEYCODE_DEL) {
-				if (RPlanEditText.this.getText().length() == 0) {
+				if (NoteEditText.this.getText().length() == 0) {
 					TaskEditActivity tea = (TaskEditActivity) getContext();
-					tea.removeNoteOf(RPlanEditText.this);
+					tea.removeNoteOf(NoteEditText.this);
 					return false;
 				}
 			}
