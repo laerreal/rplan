@@ -288,6 +288,7 @@ public class TaskViewer
 		tv_name.setTag(TAG_NAME);
 		tv_name.setTextSize(tv_name.getTextSize() * task_title_font_scale);
 		updateTaskName(task, tv_name);
+		tv_name.setTextColor(task.getColor());
 		l.addView(tv_name);
 
 		return l;
@@ -661,6 +662,8 @@ public class TaskViewer
 	@Override
 	public void onColorChanged(Task t, int color)
 	{
+		TextView tv = (TextView) task2view.get(t).findViewWithTag(TAG_NAME);
+		tv.setTextColor(color);
 		invalidate();
 	}
 }
