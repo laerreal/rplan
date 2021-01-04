@@ -970,4 +970,31 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		insertNote(note_index + 1, new_note);
 	}
+
+	public void removeNoteOf(View v)
+	{
+		int note_index = getNoteIndexByView(v);
+		if (note_index < 0) {
+			RLog.e(getClass(),
+					"removeNoteOf must be called for a view that corresponds to a note");
+		}
+
+		deleteNote(task.getNoteAt(note_index));
+
+		/* Input focus to previous note. */
+		if (note_index == 0) {
+			return;
+		}
+
+		View prev_view = note2view.get(task.getNoteAt(note_index - 1));
+		View main_input = prev_view.findViewWithTag(TaskViewer.TAG_NAME);
+
+		if (main_input == null) {
+			RLog.e(getClass(), "Can't find main input of note at %d",
+					note_index - 1);
+			return;
+		}
+
+		main_input.requestFocus();
+	}
 }

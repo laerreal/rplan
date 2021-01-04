@@ -5,6 +5,10 @@ import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.EditText;
 import edu.real.external.StringTools;
 
@@ -110,4 +114,37 @@ public class RPlanEditText extends EditText
 		tea.tb_italic.setOnCheckedChangeListener(tea);
 	}
 
+	/** Remove note on backspace in already empty note.
+	 * https://stackoverflow.com/questions/4886858/android-edittext-deletebackspace-key-event/11377462#11377462
+	 */
+
+	@Override
+	public InputConnection onCreateInputConnection(EditorInfo outAttrs)
+	{
+		return new RPlanInputConnection(
+				super.onCreateInputConnection(outAttrs), true);
+	}
+
+	private class RPlanInputConnection extends InputConnectionWrapper
+	{
+
+		public RPlanInputConnection(InputConnection target, boolean mutable)
+		{
+			super(target, mutable);
+		}
+
+		@Override
+		public boolean sendKeyEvent(KeyEvent event)
+		{
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getKeyCode() == KeyEvent.KEYCODE_DEL) {
+				if (RPlanEditText.this.getText().length() == 0) {
+					TaskEditActivity tea = (TaskEditActivity) getContext();
+					tea.removeNoteOf(RPlanEditText.this);
+					return false;
+				}
+			}
+			return super.sendKeyEvent(event);
+		}
+	}
 }
