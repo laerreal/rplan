@@ -11,7 +11,8 @@ import android.widget.Toast;
 import edu.real.cross.RLog;
 import edu.real.plan.Plan;
 
-public class ImportActivity extends RPlanActivity implements OnClickListener {
+public class ImportActivity extends RPlanActivity implements OnClickListener
+{
 
 	EditText et;
 
@@ -21,9 +22,9 @@ public class ImportActivity extends RPlanActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.import_activity);
 
-		((Button)findViewById(R.id.bt_import)).setOnClickListener(this);
+		((Button) findViewById(R.id.bt_import)).setOnClickListener(this);
 
-		et = (EditText)findViewById(R.id.et_import_text);
+		et = (EditText) findViewById(R.id.et_import_text);
 		/*
 		et.setText(R.string.insert_imported_here_);
 		*/
@@ -33,7 +34,8 @@ public class ImportActivity extends RPlanActivity implements OnClickListener {
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View v)
+	{
 		/* Import */
 
 		String plan_s = et.getText().toString();
