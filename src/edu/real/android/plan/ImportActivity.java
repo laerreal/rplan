@@ -71,7 +71,10 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 	{
 		final Task task = Task.load(task_s);
 
-		service.getPlan().addTask(task);
+		Plan plan = service.getPlan();
+
+		plan.addTask(task);
+		plan.setViewOffset(-task.getX(), -task.getY());
 
 		finish();
 	}
