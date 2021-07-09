@@ -482,6 +482,11 @@ public class TaskEditActivity extends RPlanActivity implements
 	protected void onPause()
 	{
 		super.onPause();
+		commit();
+	}
+
+	protected void commit()
+	{
 		if (task == null) {
 			return;
 		}
@@ -918,6 +923,9 @@ public class TaskEditActivity extends RPlanActivity implements
 			if (service == null) {
 				return true;
 			}
+
+			commit();
+
 			Intent shareBackup = new Intent(Intent.ACTION_SEND);
 			shareBackup.putExtra(Intent.EXTRA_TEXT, task.saveAsString());
 			shareBackup.putExtra(Intent.EXTRA_SUBJECT,
