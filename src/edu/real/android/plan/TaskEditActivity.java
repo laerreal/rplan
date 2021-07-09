@@ -45,6 +45,7 @@ import edu.real.external.BiMap;
 import edu.real.external.CF;
 import edu.real.external.StringTools;
 import edu.real.plan.Note;
+import edu.real.plan.Plan;
 import edu.real.plan.Subtask;
 import edu.real.plan.Task;
 import edu.real.plan.TextNote;
@@ -483,6 +484,19 @@ public class TaskEditActivity extends RPlanActivity implements
 	{
 		super.onPause();
 		commit();
+
+		if (task == null) {
+			return;
+		}
+
+		/* Main purpose of this code is to remove a task created as a result
+		 * of miss click on TaskViewer. */
+		if (task.isEmpty()) {
+			Plan plan = service.getPlan();
+			plan.setCurrentTask(null);
+			plan.removeTask(task);
+			task = null;
+		}
 	}
 
 	protected void commit()

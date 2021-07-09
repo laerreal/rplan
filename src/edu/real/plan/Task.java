@@ -16,6 +16,8 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 {
 	static public final String TASK_PREFIX = "name ";
 
+	private static final int DEFAULT_COLOR = Color.GRAY;
+
 	String name;
 	String description;
 
@@ -76,7 +78,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		y = _y;
 		collapsed = false;
 		notes = new LinkedList<Note>();
-		color = Color.GRAY;
+		color = DEFAULT_COLOR;
 		creation_timestamp = new ZonedDateTime();
 		prerequesites = new BiMap<Task, Task>();
 	}
@@ -84,6 +86,35 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	public Task()
 	{
 		this(0, 0);
+	}
+
+	public boolean isEmpty()
+	{
+		if (name.length() > 0) {
+			return false;
+		}
+		if (description != null && description.length() > 0) {
+			return false;
+		}
+		if (!notes.isEmpty()) {
+			return false;
+		}
+		if (color != DEFAULT_COLOR) {
+			return false;
+		}
+		if (icon != null) {
+			return false;
+		}
+		if (!prerequesites.isEmpty()) {
+			return false;
+		}
+		if (deadline != null) {
+			return false;
+		}
+		if (opaque != null && opaque.length() > 0) {
+			return false;
+		}
+		return true;
 	}
 
 	public void save(StringWriter w)
