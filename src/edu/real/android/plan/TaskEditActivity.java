@@ -757,6 +757,50 @@ public class TaskEditActivity extends RPlanActivity implements
 		}
 	}
 
+	/*
+	 * https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-in-html
+	 */
+	static private String escapePart(String part)
+	{
+		part = part.replace("&", "&amp;");
+		part = part.replace("<", "&lt;");
+		part = part.replace(">", "&gt;");
+		part = part.replace("  ", "&nbsp;&nbsp;");
+
+		/*
+		// Not working because Html.fromHtml ignores &#32; as raw spaces.
+		String ret = "";
+		String prefix = "";
+		int spaces = 0;
+		for (String w : part.split(" ")) {
+			if (w.length() > 0) {
+				while (spaces-- > 1) {
+					ret += "&#32;";
+				}
+				spaces = 0;
+				ret += prefix;
+				ret += w;
+				prefix = " ";
+			} else {
+				if (spaces == 0) {
+					prefix = " &#32;";
+				} else {
+					prefix = " ";
+				}
+				spaces++;
+			}
+		}
+
+		while (spaces-- > 0) {
+			ret += "&#32;";
+		}
+
+		part = ret;
+		*/
+
+		return part;
+	}
+
 	/* Note, Html.toHtml yields to many junk. */
 	static private String noteToHTML(SpannableStringBuilder text)
 	{
@@ -781,6 +825,7 @@ public class TaskEditActivity extends RPlanActivity implements
 			}
 
 			String part = text.subSequence(i, next_i).toString();
+			part = escapePart(part);
 			if (bold) {
 				part = "<b>" + part + "</b>";
 			}
@@ -789,6 +834,7 @@ public class TaskEditActivity extends RPlanActivity implements
 			}
 			ret += part;
 		}
+
 		return ret;
 	}
 
