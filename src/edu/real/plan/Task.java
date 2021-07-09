@@ -66,6 +66,12 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	boolean collapsed;
 
 	/**
+	 * false: task can be moved
+	 * true: task behaves as a whitespace
+	 */
+	boolean pinned;
+
+	/**
 	 * Unsupported data read from string during loading. Preserved to be saved.
 	 * This is forward compatibility.
 	 */
@@ -81,6 +87,7 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		color = DEFAULT_COLOR;
 		creation_timestamp = new ZonedDateTime();
 		prerequesites = new BiMap<Task, Task>();
+		pinned = false;
 	}
 
 	public Task()
@@ -150,6 +157,9 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 		w.write(String.format("y %d\n", y));
 		if (collapsed) {
 			w.write("collapsed\n");
+		}
+		if (pinned) {
+			w.write("pinned\n");
 		}
 		if (opaque != null) {
 			w.write(opaque);
@@ -289,6 +299,18 @@ public class Task extends Notifier<TaskListener> implements NoteListener
 	{
 		collapsed = v;
 		for (begin(); next(); l.onCollapsedChanged(this, v))
+			;
+	}
+
+	public boolean isPinned()
+	{
+		return pinned;
+	}
+
+	public void setPinned(boolean v)
+	{
+		pinned = v;
+		for (begin(); next(); l.onPinnedChanged(this, v))
 			;
 	}
 

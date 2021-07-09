@@ -20,6 +20,8 @@ public interface TaskListener
 
 	public void onCollapsedChanged(Task t, boolean colapsed);
 
+	public void onPinnedChanged(Task t, boolean pinned);
+
 	public void onCreationTSChanging(Task t, ZonedDateTime ts);
 
 	/* Called only on explicit edit timestamp changing. */

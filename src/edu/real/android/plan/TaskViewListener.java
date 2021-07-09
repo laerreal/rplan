@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
+import android.test.MoreAsserts;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -40,12 +42,34 @@ public class TaskViewListener
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
+		final boolean pinned = task.isPinned();
+
 		gd.onTouchEvent(event);
+
+		int action = event.getActionMasked();
+
+		switch (action) {
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_HOVER_EXIT:
+		case MotionEvent.ACTION_OUTSIDE:
+		case MotionEvent.ACTION_CANCEL:
+			if (pinned) {
+				viewer.onTouch(v, event);
+			}
+			viewer.setOverTask(false);
+			break;
+		default:
+			viewer.setOverTask(true);
+			if (pinned) {
+				viewer.onTouch(v, event);
+			}
+			break;
+		}
 
 		final int X = (int) event.getRawX();
 		final int Y = (int) event.getRawY();
 
-		switch (event.getActionMasked()) {
+		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			if (viewer.getMode() == TaskViewer.MODE_MOVE) {
 				x = X;
@@ -56,19 +80,21 @@ public class TaskViewListener
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (viewer.getMode() == TaskViewer.MODE_MOVE) {
-				final int dx = X - x;
-				final int dy = Y - y;
-				if (pressed) {
-					if (Math.abs(dx) > DRAG_THRESHOLD ||
-							Math.abs(dy) > DRAG_THRESHOLD) {
-						dragging = true;
-						pressed = false;
+				if (!task.isPinned()) {
+					final int dx = X - x;
+					final int dy = Y - y;
+					if (pressed) {
+						if (Math.abs(dx) > DRAG_THRESHOLD ||
+								Math.abs(dy) > DRAG_THRESHOLD) {
+							dragging = true;
+							pressed = false;
+						}
 					}
-				}
-				if (dragging) {
-					x = X;
-					y = Y;
-					task.move(task.getX() + dx, task.getY() + dy);
+					if (dragging) {
+						x = X;
+						y = Y;
+						task.move(task.getX() + dx, task.getY() + dy);
+					}
 				}
 			}
 			break;
@@ -87,13 +113,50 @@ public class TaskViewListener
 	@Override
 	public void onLongPress(MotionEvent e)
 	{
-		if (dragging) {
+		final boolean pinned = task.isPinned();
+
+		if (dragging
+			|| (pinned && viewer.isDragged())) {
 			return;
 		}
+
 		longpressed = true;
 		// prevent dragging during this (below) dialog is being shown
 		pressed = false;
 
+		CharSequence[] options = new CharSequence[2];
+
+		Resources res = viewer.pane_context.getResources();
+
+		options[0] =  res.getString(R.string.task_popup_remove);
+
+		if (pinned) {
+			options[1] =  res.getString(R.string.task_popup_unpin);
+		} else {
+			options[1] =  res.getString(R.string.task_popup_pin);
+		}
+
+		AlertDialog.Builder builder = new Builder(viewer.pane_context);
+		builder.setItems(options, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						switch (which) {
+						case 0:
+							askRemoveTask();
+							break;
+						case 1:
+							task.setPinned(!pinned);
+							break;
+						}
+					}
+				});
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+
+	protected void askRemoveTask()
+	{
 		AlertDialog.Builder builder = new Builder(viewer.pane_context);
 		builder.setMessage(R.string.msg_remove_task_q)
 				.setTitle(task.getName())

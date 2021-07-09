@@ -41,4 +41,7 @@
     <string name="subtask_padding_reduction">Уменьшение отступа между подзадачами</string>
     <string name="subtask_padding_reduction_summary">Позволяет отображать развёрнутые задачи на плане компактнее. Отрицательные значения увеличивают отступ.</string>
     <string name="color">Цвет</string>
+    <string name="task_popup_remove">Удалить</string>
+    <string name="task_popup_unpin">Открепить</string>
+    <string name="task_popup_pin">Закрепить</string>
 </resources>

@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -53,6 +55,9 @@ public class TaskViewer
 
 	static final int MODE_MOVE = 1;
 
+	private static final PathEffect pinned_path_effect = new DashPathEffect(
+			new float[] {10f, 20f}, 0f);
+
 	Plan plan;
 	SurfaceView backpane;
 	RelativeLayout pane;
@@ -68,6 +73,7 @@ public class TaskViewer
 	boolean dragged;
 	int prev_x;
 	int prev_y;
+	boolean over_task;
 
 	float task_title_font_scale;
 
@@ -340,10 +346,17 @@ public class TaskViewer
 			Rect taskRect = tag.getFrameRect(plan.getViewOffsetX(),
 					plan.getViewOffsetY());
 
-			int color = task2view.getKey(v).getColor();
+			Task task =  task2view.getKey(v);
+
+			int color = task.getColor();
 
 			if (Rect.intersects(cnvRect, taskRect)) {
 				paint_task_frame.setColor(color);
+				if (task.isPinned()) {
+					paint_task_frame.setPathEffect(pinned_path_effect);
+				} else {
+					paint_task_frame.setPathEffect(null);
+				}
 				canvas.drawRect(taskRect, paint_task_frame);
 			} else {
 				float cnvMidX = cnvRect.exactCenterX();
@@ -471,8 +484,8 @@ public class TaskViewer
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
-		final int X = (int) event.getX();
-		final int Y = (int) event.getY();
+		final int X = (int) event.getRawX();
+		final int Y = (int) event.getRawY();
 		int dx;
 		int dy;
 
@@ -488,9 +501,15 @@ public class TaskViewer
 			if (dragged) {
 				break;
 			}
+			if (over_task) {
+				over_task = false;
+				break;
+			}
 			Task t = new Task(
-					X + TASK_CREATION_OFFSET_X - plan.getViewOffsetX(),
-					Y + TASK_CREATION_OFFSET_Y - plan.getViewOffsetY()
+					(int) event.getX()
+						+ TASK_CREATION_OFFSET_X - plan.getViewOffsetX(),
+					(int) event.getY()
+						+ TASK_CREATION_OFFSET_Y - plan.getViewOffsetY()
 			);
 			plan.addTask(t);
 			editTask(t);
@@ -665,6 +684,22 @@ public class TaskViewer
 	{
 		TextView tv = (TextView) task2view.get(t).findViewWithTag(TAG_NAME);
 		tv.setTextColor(color);
+		invalidate();
+	}
+
+	public boolean isDragged()
+	{
+		return dragged;
+	}
+
+	public void setOverTask(boolean v)
+	{
+		over_task = v;
+	}
+
+	@Override
+	public void onPinnedChanged(Task t, boolean pinned)
+	{
 		invalidate();
 	}
 }
