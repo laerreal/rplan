@@ -3,7 +3,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.real.android.plan"
     android:versionCode="9"
-    android:versionName="1.9" >
+    android:versionName="0.9" >
 
     <!-- android:minSdkVersion="11" is removed because of Android Studio
     limitation but is added because of Eclipse do not have the limitation.
