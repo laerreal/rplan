@@ -108,7 +108,6 @@ public class TaskViewListener
 				.setNegativeButton(R.string.bt_no, null);
 		AlertDialog dialog = builder.create();
 		dialog.show();
-		return;
 	}
 
 	@Override
