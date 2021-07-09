@@ -26,7 +26,7 @@ public class TextNote extends Note
 	public TextNote(String text, int indent)
 	{
 		super(indent);
-		this.text = text;
+		setText(text);
 	}
 
 	public String getText()
