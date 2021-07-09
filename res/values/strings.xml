@@ -44,4 +44,5 @@
     <string name="task_popup_remove">Удалить</string>
     <string name="task_popup_unpin">Открепить</string>
     <string name="task_popup_pin">Закрепить</string>
+    <string name="task_popup_duplicate">Дублировать</string>
 </resources>

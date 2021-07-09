@@ -124,7 +124,7 @@ public class TaskViewListener
 		// prevent dragging during this (below) dialog is being shown
 		pressed = false;
 
-		CharSequence[] options = new CharSequence[2];
+		CharSequence[] options = new CharSequence[3];
 
 		Resources res = viewer.pane_context.getResources();
 
@@ -135,6 +135,8 @@ public class TaskViewListener
 		} else {
 			options[1] =  res.getString(R.string.task_popup_pin);
 		}
+
+		options[2] = res.getString(R.string.task_popup_duplicate);
 
 		AlertDialog.Builder builder = new Builder(viewer.pane_context);
 		builder.setItems(options, new OnClickListener() {
@@ -147,6 +149,9 @@ public class TaskViewListener
 							break;
 						case 1:
 							task.setPinned(!pinned);
+							break;
+						case 2:
+							viewer.duplicateTask(task);
 							break;
 						}
 					}

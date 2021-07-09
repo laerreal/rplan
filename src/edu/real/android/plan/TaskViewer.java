@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.real.cross.RLog;
 import edu.real.external.BiMap;
 import edu.real.external.CF;
@@ -49,6 +50,9 @@ public class TaskViewer
 	static final int TASK_CREATION_OFFSET_Y = -60;
 
 	static final int TASK_CREATION_THRESHOLD = 40; // a Manchester distance
+
+	static final int TASK_DUP_OFFSET_X = 20;
+	static final int TASK_DUP_OFFSET_Y = 20;
 
 	static final String TAG_NAME = "name";
 	static final String TAG_CHECKBOX = "checkbox";
@@ -596,6 +600,24 @@ public class TaskViewer
 	public void removeTask(Task task)
 	{
 		plan.removeTask(task);
+	}
+
+	public void duplicateTask(Task task)
+	{
+		Task task_copy;
+		String task_as_string = task.saveAsString();
+		try {
+			task_copy = Task.load(task_as_string);
+		} catch (Exception e) {
+			String msg = e.toString();
+			RLog.e(getClass(), msg);
+			Toast.makeText(pane.getContext().getApplicationContext(), msg,
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+		task_copy.move(task_copy.getX() + TASK_DUP_OFFSET_X,
+				task_copy.getY() + TASK_DUP_OFFSET_Y);
+		plan.addTask(task_copy);
 	}
 
 	@Override
