@@ -85,8 +85,6 @@ public class TaskEditActivity extends RPlanActivity implements
 	ToggleButton tb_drag;
 	/* Indentation by fling. */
 	View last_touched;
-	/* Note insertion below. */
-	View last_focused;
 	/* Performs time spread user interface operations */
 	Handler ui_handler;
 	String i_action;
@@ -141,7 +139,9 @@ public class TaskEditActivity extends RPlanActivity implements
 		ll_notes = (LinearLayout) findViewById(R.id.ll_task_notes);
 		et_task_description = (EditText) findViewById(
 				R.id.et_task_description);
+		et_task_description.setOnFocusChangeListener(this);
 		et_task_name = (EditText) findViewById(R.id.et_task_name);
+		et_task_name.setOnFocusChangeListener(this);
 
 		note2view = new BiMap<Note, View>();
 
@@ -553,7 +553,11 @@ public class TaskEditActivity extends RPlanActivity implements
 			if (p == ll_notes) {
 				return ll_notes.indexOfChild(v);
 			} else {
-				v = (View) p;
+				try {
+					v = (View) p;
+				} catch (ClassCastException e) {
+					break;
+				}
 			}
 		}
 		return -1;
@@ -563,11 +567,19 @@ public class TaskEditActivity extends RPlanActivity implements
 	public void onClick(View v)
 	{
 		Note n;
+		View focused = getCurrentFocus();
 
-		/* Insert note below last touched note */
-		int note_index = getNoteIndexByView(last_focused);
+		int note_index = getNoteIndexByView(focused);
 		if (note_index >= 0) { /* found */
+			/* Insert note below last touched note */
 			note_index++;
+		} else if (
+			focused == et_task_description
+			||
+			focused == et_task_name
+		) {
+			/* insert to the top */
+			note_index = 0;
 		}
 
 		if (v == bt_add_note) {
@@ -668,7 +680,7 @@ public class TaskEditActivity extends RPlanActivity implements
 		SpannableStringBuilder text;
 		EditText et;
 		try {
-			et = (EditText) last_focused;
+			et = (EditText) getCurrentFocus();
 			text = (SpannableStringBuilder) et.getText();
 		} catch (Exception e) {
 			return false;
@@ -958,9 +970,9 @@ public class TaskEditActivity extends RPlanActivity implements
 	@Override
 	public void onFocusChange(View v, boolean hasFocus)
 	{
-		/* That callback is called for note edit views only. */
+		/* That callback is called for note edit views and name/description
+		widgets only. */
 		if (hasFocus) {
-			last_focused = v;
 			ll_format_buttons.setVisibility(View.VISIBLE);
 		} else {
 			ll_format_buttons.setVisibility(View.GONE);
@@ -1037,7 +1049,7 @@ public class TaskEditActivity extends RPlanActivity implements
 
 		e.replace(0, e.length(), s);
 
-		int note_index = getNoteIndexByView(last_focused);
+		int note_index = getNoteIndexByView(getCurrentFocus());
 
 		if (note_index < 0) {
 			/* not found, the change source is likely not a user.*/
