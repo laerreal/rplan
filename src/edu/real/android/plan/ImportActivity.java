@@ -3,12 +3,16 @@ package edu.real.android.plan;
 import java.text.ParseException;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import edu.real.cross.RLog;
 import edu.real.plan.Plan;
@@ -34,6 +38,18 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 		Toast.makeText(getApplicationContext(),
 				R.string.insert_imported_here_,
 				Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName _name, IBinder _service)
+	{
+		super.onServiceConnected(_name, _service);
+
+		Plan plan = service.getPlan();
+		int x = -plan.getViewOffsetX();
+		int y = -plan.getViewOffsetY();
+		String coords = String.format(" (%d; %d)", x,  y);
+		((TextView) findViewById(R.id.tv_xy)).setText(coords);
 	}
 
 	@Override
@@ -74,7 +90,13 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 		Plan plan = service.getPlan();
 
 		plan.addTask(task);
-		plan.setViewOffset(-task.getX(), -task.getY());
+
+		CheckBox cb = (CheckBox) findViewById(R.id.cb_move_to_current_place);
+		if (cb.isChecked()) {
+			task.move(-plan.getViewOffsetX(), -plan.getViewOffsetY());
+		} else {
+			plan.setViewOffset(-task.getX(), -task.getY());
+		}
 
 		finish();
 	}
