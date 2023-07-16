@@ -5,6 +5,7 @@ import java.text.ParseException;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -21,6 +22,8 @@ import edu.real.plan.Task;
 public class ImportActivity extends RPlanActivity implements OnClickListener
 {
 
+	public static final String INTENT_ACTION_START_WITH_TEXT
+		= "edu.real.android.plan.intent.IMPORT_WITH_TEXT";
 	EditText et;
 
 	@Override
@@ -38,6 +41,17 @@ public class ImportActivity extends RPlanActivity implements OnClickListener
 		Toast.makeText(getApplicationContext(),
 				R.string.insert_imported_here_,
 				Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		Intent i = getIntent();
+		if (i.getAction() == INTENT_ACTION_START_WITH_TEXT) {
+			String text = i.getExtras().getString(Intent.EXTRA_TEXT);
+			et.setText(text);
+		}
 	}
 
 	@Override
