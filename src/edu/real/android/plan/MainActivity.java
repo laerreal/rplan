@@ -1,5 +1,6 @@
 package edu.real.android.plan;
 
+import java.net.URLDecoder;
 import java.util.TimeZone;
 
 import org.json.JSONArray;
@@ -119,13 +120,21 @@ public class MainActivity extends RPlanActivity implements PlanListener
 		if (import_url != null) {
 			try {
 				final String import_file;
-				if (import_url.startsWith("file:")) {
-					import_file = import_url.substring(5);
+				if (import_url.startsWith("file://")) {
+					import_url = import_url.substring(7);
+
+					import_file = URLDecoder.decode(import_url, "utf-8");
+					String text = IOHelper.getStringFromFile(import_file);
+					importMobileNotesJSON(text);
 				} else {
-					import_file = import_url;
+					Toast.makeText(getApplicationContext(),
+						String.format(
+							"URL '%s' is not supported!",
+							import_url
+						),
+						Toast.LENGTH_LONG
+					).show();
 				}
-				String text = IOHelper.getStringFromFile(import_file);
-				importMobileNotesJSON(text);
 			} catch (Exception e) {
 				String msg = e.toString();
 				RLog.e(getClass(), msg);
