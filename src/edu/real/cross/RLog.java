@@ -36,4 +36,9 @@ public class RLog
 	{
 		return e(cls.getName(), format, args);
 	}
+
+	static public int e(Class<?> cls, String msg)
+	{
+		return e(cls.getName(), msg);
+	}
 }
