@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.util.TimeZone;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
@@ -48,6 +49,8 @@ public class MainActivity extends RPlanActivity implements PlanListener
 		Intent i = getIntent();
 		if (i.getAction() == Intent.ACTION_VIEW) {
 			import_url = i.getDataString();
+			// handle this intent only once
+			i.setAction(Intent.ACTION_MAIN);
 		}
 	}
 
@@ -123,19 +126,34 @@ public class MainActivity extends RPlanActivity implements PlanListener
 			viewer = new TaskViewer((RelativeLayout) findViewById(R.id.pane));
 		}
 		if (import_url != null) {
+			String url = import_url;
+			// import file only once
+			import_url = null;
 			try {
 				final String import_file;
-				if (import_url.startsWith("file://")) {
-					import_url = import_url.substring(7);
+				if (url.startsWith("file://")) {
+					url = url.substring(7);
 
-					import_file = URLDecoder.decode(import_url, "utf-8");
+					import_file = URLDecoder.decode(url, "utf-8");
 					String text = IOHelper.getStringFromFile(import_file);
-					importMobileNotesJSON(text);
+					try {
+						importMobileNotesJSON(text);
+					} catch (JSONException json_e) {
+						Intent import_text_intent = new Intent(
+							this,
+							ImportActivity.class
+						);
+						import_text_intent.setAction(
+							ImportActivity.INTENT_ACTION_START_WITH_TEXT
+						);
+						import_text_intent.putExtra(Intent.EXTRA_TEXT, text);
+						startActivity(import_text_intent);
+					}
 				} else {
 					Toast.makeText(getApplicationContext(),
 						String.format(
 							"URL '%s' is not supported!",
-							import_url
+							url
 						),
 						Toast.LENGTH_LONG
 					).show();
@@ -146,8 +164,6 @@ public class MainActivity extends RPlanActivity implements PlanListener
 				Toast.makeText(getApplicationContext(), msg,
 						Toast.LENGTH_LONG).show();
 			}
-			// import file only once
-			import_url = null;
 		}
 		setPlan(service.getPlan());
 	}
