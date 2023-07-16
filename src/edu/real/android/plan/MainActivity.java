@@ -39,7 +39,12 @@ public class MainActivity extends RPlanActivity implements PlanListener
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+	}
 
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
 		Intent i = getIntent();
 		if (i.getAction() == Intent.ACTION_VIEW) {
 			import_url = i.getDataString();
